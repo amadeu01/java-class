@@ -162,3 +162,6 @@ Achados confirmados são corrigidos; o que não puder ser confirmado é removido
 - Artigos, teses e material de curso de universidades de ponta (Stanford, MIT, CMU, Yale, ETH, KTH, TU Delft, USP, Unicamp, UFMG etc.), em inglês e pt-BR, sobre JVM, VMs, TDD, testes, e2e e arquitetura.
 - Só entra o que foi aberto e confirmado (título, autores, ano, venue), com DOI ou link aberto.
 - Cada item entra no "Onde aprofundar" do capítulo que conecta, e um apêndice "Pesquisa acadêmica" reúne tudo por tema e instituição.
+
+### 11.3 Onde comprar ou baixar cada referência (aprovado 2026-10-18)
+Toda referência diz onde encontrar: livros com a página da editora para compra (e a da editora brasileira quando houver edição em português, mais leitura gratuita legal se existir); papers e teses com DOI e link aberto legal (arXiv, repositório institucional, página do autor), ou "acesso pago". Nada de links não oficiais. Implementado nas Tasks 8 e 12 e conferido no peer review (Task 9).
