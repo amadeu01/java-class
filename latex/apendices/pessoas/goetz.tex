@@ -1,0 +1,47 @@
+\section{Brian Goetz}
+Java Language Architect na Oracle; foi spec lead do JSR-335 (lambdas) e é o
+autor de \emph{Java Concurrency in Practice} (fonte:
+\citeobra{bio:goetz-inside}).
+
+\subsection*{Lambdas e bytecode}
+\begin{itemize}
+\obra{doc:state-of-lambda}{Lambdas, interfaces funcionais, method
+  references e default methods, explicados pelo designer. O documento não
+  tem linha de autor: está hospedado no diretório pessoal dele em
+  \texttt{cr.openjdk.org/\textasciitilde briangoetz}.}
+\obra{doc:lambda-translation}{Como o \texttt{javac} traduz um lambda em
+  \texttt{invokedynamic} e \texttt{LambdaMetafactory}. Leia com o
+  \texttt{javap -c} aberto. Mesma hospedagem, também sem byline.}
+\obra{video:goetz-lambda-hood}{A mesma tradução em palestra.}
+\obra{doc:jep126}{O JEP que trouxe os lambdas ao Java~8 (Owner: Goetz).}
+\obra{doc:jep484}{A API oficial para ler e gerar bytecode, que substitui o
+  ASM dentro do JDK (autor: Goetz).}
+\end{itemize}
+
+\subsection*{Java moderno}
+\begin{itemize}
+\obra{artigo:dop-java}{Records, sealed types e pattern matching como
+  modelagem de dados: tornar estados ilegais irrepresentáveis.}
+\obra{doc:beyond-records}{Design note do Amber sobre levar a
+  desestruturação a classes que não são records.}
+\obra{doc:on-ramp}{Por que o Java simplificou o \enquote{hello world}.
+  Ótimo para quem está começando.}
+\obra{doc:jep286}{O \texttt{var}: motivação, limites e as alternativas
+  descartadas (autor: Goetz).}
+\obra{artigo:goetz-virtual-threads}{Virtual threads e o modelo
+  thread-per-request.}
+\obra{video:goetz-fp-vs-oo}{Funcional e orientado a objetos como
+  ferramentas complementares.}
+\obra{video:goetz-growing-java}{Como e por que a linguagem evolui (JVMLS
+  2025).}
+\end{itemize}
+
+\subsection*{Valhalla e o futuro da JVM}
+\begin{itemize}
+\obra{doc:state-of-valhalla}{Value objects, layout de memória e por que
+  objetos têm identidade.}
+\obra{doc:defense-of-erasure}{Por que os genéricos do Java usam erasure,
+  explicado por quem decide o futuro deles.}
+\obra{video:goetz-valhalla-refactor}{Value classes, tipos null-restricted
+  e strict initialization (Devoxx 2024).}
+\end{itemize}

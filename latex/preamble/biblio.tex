@@ -101,6 +101,25 @@
   \ondecabecalho
   \printbiblist[keyword=#2, heading=none]{ondeachar}}
 
+% ---- Citação com link: \citeobra{chave} e \obra{chave}{frase} ----
+% Título (ano), link: o mesmo link das listas "Onde achar" (editora, edição
+% PT, leitura gratuita, assistir/abrir, ou DOI quando o acesso é pago).
+\newbibmacro{obra:link}{%
+  \iffieldundef{urlgratis}
+    {\ifboolexpr{test {\iffieldequalstr{acesso}{compra}}
+                 or test {\iffieldequalstr{acesso}{esgotado}}}
+       {\usebibmacro{onde:comprar}%
+        \iffieldundef{edicaopt}{}{; edição PT: \usebibmacro{onde:pt}}}
+       {\usebibmacro{onde:gratis}}}
+    {\usebibmacro{onde:gratis}}}
+\DeclareCiteCommand{\citeobra}{}
+  {\mkbibemph{\printfield[noformat]{title}}%
+   \iffieldundef{year}{}{ (\thefield{year})}, \usebibmacro{obra:link}}
+  {; }{}
+% Item de lista: \obra{chave}{frase}; \obra*{chave}{frase} começa pelo autor.
+\NewDocumentCommand{\obra}{s m m}{\item \IfBooleanT{#1}{\citeauthor{#2}, }%
+  \citeobra{#2}. #3}
+
 % URLs longas quebram em qualquer caractere na bibliografia (evita overfull).
 \appto{\bibsetup}{\sloppy}
 \setcounter{biburlnumpenalty}{9000}

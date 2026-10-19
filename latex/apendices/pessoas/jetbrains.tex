@@ -1,0 +1,74 @@
+\section{Para praticar no IDE: blog da JetBrains e JetBrains Guide}
+\label{ap:jetbrains}
+
+Não é gente que fez o Java, mas é onde muita gente aprende a usá-lo no dia
+a dia: o blog do IntelliJ IDEA e os tutoriais gratuitos do JetBrains Guide.
+São textos práticos, sempre com o IDE aberto, escritos por developer
+advocates como Trisha Gee, Mala Gupta, Marit van Dijk, Helen Scott e Igor
+Kulakov. Os mais úteis para cada capítulo também aparecem nas seções
+\enquote{Onde aprofundar}.
+
+% Todos os itens de jetbrains.bib entram nas listas por tema abaixo.
+\nocite{artigo:jetbrains-writing-tests-junit5,
+  artigo:jetbrains-migrating-junit4-junit5,
+  artigo:jetbrains-testcontainers-spring-boot,
+  artigo:jetbrains-ai-agent-flaky-tests,
+  curso:jetbrains-guide-writing-junit5-tests,
+  curso:jetbrains-guide-writing-tests-spock,
+  curso:jetbrains-guide-testing-debugging,
+  artigo:jetbrains-pattern-matching-5-examples,
+  artigo:jetbrains-evolution-switch-java,
+  artigo:jetbrains-project-loom-intellij,
+  artigo:jetbrains-java-25-lts,
+  artigo:jetbrains-do-you-really-know-java,
+  artigo:jetbrains-java-still-relevant,
+  artigo:jetbrains-thread-dumps-virtual-threads,
+  artigo:jetbrains-debugging-java-intellij,
+  artigo:jetbrains-sources-bytecode-debugging,
+  artigo:jetbrains-println-debugging,
+  artigo:jetbrains-debug-without-breakpoints,
+  artigo:jetbrains-intellij-profiler,
+  artigo:jetbrains-profiling-parrot-party,
+  artigo:jetbrains-get-started-profiling,
+  artigo:jetbrains-5-profiling-features,
+  curso:jetbrains-guide-javax-jakarta,
+  artigo:jetbrains-java-best-practices,
+  artigo:jetbrains-code-smells-null,
+  artigo:jetbrains-code-smells-mutation,
+  artigo:jetbrains-code-smells-if,
+  artigo:jetbrains-basic-refactorings,
+  artigo:jetbrains-3-ways-refactor,
+  curso:jetbrains-guide-refactoring}
+
+\begin{description}
+\item[Como foram conferidos] O blog da JetBrains bloqueia acesso
+  automatizado; título, autor e data foram lidos no snapshot do Internet
+  Archive, e o link impresso é o do blog. O JetBrains Guide foi aberto
+  direto.
+\item[O que ficou de fora] O post sobre String Templates: o recurso saiu
+  em preview no JDK~21 e~22 e foi retirado (o JEP~465, terceira preview,
+  está \emph{Closed/Withdrawn}); ensinar a sintaxe hoje seria ensinar algo
+  que não existe no Java. Também saíram as pesquisas \emph{State of
+  Developer Ecosystem}, com pouco conteúdo de Java, notas de versão do IDE e
+  resumos mensais.
+\end{description}
+
+\subsection{Testes}
+JUnit~5, migração do JUnit~4, Testcontainers e Spock; complementam a
+Parte~I.
+\ondeachar*{jb-testes}
+
+\subsection{Java moderno}
+Pattern matching, \texttt{switch}, Project Loom e o Java~25; complementam
+o capítulo de Java moderno.
+\ondeachar*{jb-moderno}
+
+\subsection{JVM, depuração e profiling}
+Thread dumps com virtual threads, bytecode no depurador e o IntelliJ
+Profiler; complementam os capítulos de JVM e de bytecode.
+\ondeachar*{jb-jvm}
+
+\subsection{Código limpo, refatoração e Jakarta}
+A série \emph{Code Smells}, refatoração com o IDE e a migração de
+\texttt{javax} para \texttt{jakarta}, que o Quarkus usa.
+\ondeachar*{jb-limpo}

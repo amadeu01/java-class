@@ -17,6 +17,10 @@ exclude = [
   # a clientes que não são navegador; com navegador a página abre (conferida
   # em 2026-10-19). Verificado manualmente no peer review.
   '^https://loja\.grupoa\.com\.br/',
+  # Blog da JetBrains: WAF bloqueia robôs (AWS WAF responde 403/202);
+  # verificado via Wayback e manualmente no peer review. O JetBrains Guide
+  # (www.jetbrains.com/guide) abre normalmente e continua sendo checado.
+  '^https://blog\.jetbrains\.com/',
 ]
 
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam
