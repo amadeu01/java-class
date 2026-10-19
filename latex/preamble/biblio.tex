@@ -55,6 +55,10 @@
     {\ondelinhas{Obra}{Comprar}{Edição PT}{Download gratuito}}%
   \par\endgroup\nobreak\vspace{2pt}\hrule\nobreak\vspace{3pt}}
 
+% Prefixos de link montados aqui; "https:" separado do resto para que o
+% link check (lychee) não trate o modelo como endereço.
+\edef\ondedoibase{\detokenize{https:}//doi.org/}
+\edef\ondearxivbase{\detokenize{https:}//arxiv.org/abs/}
 \newbibmacro{onde:obra}{%
   \mkbibemph{\printfield[noformat]{title}}%
   \iffieldequalstr{langid}{brazilian}{\addspace\pt}{}%
@@ -75,13 +79,13 @@
 % (ou ausente, como em vídeos e documentação); acesso pago: só o DOI.
 \newbibmacro{onde:gratis}{%
   \iffieldequalstr{acesso}{pago}
-    {\href{https://doi.org/\thefield{doi}}{acesso pago (DOI)}}
+    {\href{\ondedoibase\thefield{doi}}{acesso pago (DOI)}}
   {\iffieldundef{urlgratis}
   {\ifboolexpr{test {\iffieldundef{acesso}} or test {\iffieldequalstr{acesso}{aberto}}}
     {\iffieldundef{url}
       {\iffieldequalstr{eprinttype}{arxiv}
-        {\href{https://arxiv.org/abs/\thefield{eprint}}{arXiv}}
-        {\iffieldundef{doi}{---}{\href{https://doi.org/\thefield{doi}}{DOI}}}}
+        {\href{\ondearxivbase\thefield{eprint}}{arXiv}}
+        {\iffieldundef{doi}{---}{\href{\ondedoibase\thefield{doi}}{DOI}}}}
       {\href{\thefield{url}}{\ifkeyword{video}{assistir}{abrir}}}}
     {---}}
   {\href{\thefield{urlgratis}}{ler grátis}}}}
