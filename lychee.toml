@@ -25,6 +25,10 @@ exclude = [
   # links conferidos manualmente no peer review (ambas as entradas também têm
   # DOI quando disponível).
   '^https://teses\.usp\.br/',
+  # Repositório LUME da UFRGS: estoura o tempo a partir dos runners do GitHub
+  # (falhou em 2 de 3 execuções em 2026-10-19), mas abre normalmente fora do
+  # CI (HTTP 200, título conferido). Verificado manualmente no peer review.
+  '^https://lume\.ufrgs\.br/',
 ]
 
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam
