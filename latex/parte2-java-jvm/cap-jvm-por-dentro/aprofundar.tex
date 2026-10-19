@@ -1,0 +1,102 @@
+\section{Onde aprofundar}
+
+\subsection*{Livros}
+\small
+\begin{longtable}{@{}p{1.8cm} p{4.4cm} p{2.6cm} p{4cm}@{}}
+\toprule
+Tema & Livro & Autor(es), ano & Por que ler \\
+\midrule \endhead
+Desempenho & \citetitle{livro:oaks2020}, 2ª ed. & \citeauthor{livro:oaks2020},
+  \citeyear{livro:oaks2020} & JIT, GC, memória, threads e metodologia de
+  teste de desempenho, com foco em Java~8 e 11 \\
+Desempenho & \citetitle{livro:evans2018} & \citeauthor{livro:evans2018},
+  \citeyear{livro:evans2018} & Abordagem quantitativa: logs de GC, JIT,
+  ferramentas e os perigos dos microbenchmarks \\
+Concorrência & \citetitle{livro:goetz2006} & \citeauthor{livro:goetz2006},
+  \citeyear{livro:goetz2006} & Visibilidade, publicação segura e
+  utilitários de \texttt{java.util.concurrent} \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Os dois livros de desempenho são anteriores ao ZGC geracional e ao cache
+AOT; use-os pelos conceitos e confira opções e padrões nos JEPs e na
+documentação do JDK~25.
+
+\subsection*{Artigos}
+Da série \emph{JVM Anatomy Quarks}, de Aleksey Shipilëv:
+\citetitle{artigo:shipilev-uncommon-traps},
+\citetitle{artigo:shipilev-megamorphic} e
+\citetitle{artigo:shipilev-safepoint}. Sobre o modelo de memória:
+\citetitle{artigo:shipilev-jmm}.
+
+\subsection*{Documentação}
+\citetitle{doc:jvms25} (cap.~5), \citetitle{doc:jls25} (cap.~17),
+\citetitle{doc:hotspot-perf}, \citetitle{doc:gc-collectors} e
+\citetitle{doc:java-cmd}.
+
+\subsection*{De quem fez o Java}
+Nomes, bios e mais obras de cada pessoa no apêndice~\ref{ap:pessoas}.
+\begin{itemize}
+\obra*{doc:state-of-valhalla}{Por que objetos têm identidade e cabeçalho,
+  e o que os value objects mudam no layout da memória.}
+\obra*{video:reinhold-unsafe}{A história do \texttt{sun.misc.Unsafe},
+  que bibliotecas usavam para mexer direto na memória.}
+\end{itemize}
+
+\subsection*{No IDE: blog da JetBrains}
+Outros posts da JetBrains no apêndice~\ref{ap:jetbrains}.
+\begin{itemize}
+\obra*{artigo:jetbrains-thread-dumps-virtual-threads}{Como obter e ler
+  thread dumps com virtual threads.}
+\obra*{artigo:jetbrains-profiling-parrot-party}{Tutorial de profiling de
+  alocações, passo a passo, no IntelliJ Profiler.}
+\end{itemize}
+
+\subsection*{Pesquisa acadêmica}
+Os papers que estão por trás do JIT e dos coletores do HotSpot, e cursos
+abertos de compiladores. Acesso (aberto ou pago) e links no
+apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:self-type-feedback}{Type feedback: o JIT usa os tipos vistos
+  em execução para fazer inlining especulativo.}
+\pesquisa{paper:hotspot-server-compiler}{O C2 descrito por quem o fez:
+  sea of nodes, inlining e alocação de registradores.}
+\pesquisa{paper:hotspot-client-compiler-java6}{O C1, o primeiro nível da
+  tiered compilation.}
+\pesquisa{paper:jalapeno-adaptive-optimization}{Otimização adaptativa na
+  JVM de pesquisa da IBM: amostragem e recompilação em níveis.}
+\pesquisa{paper:survey-adaptive-optimization-vms}{Panorama de perfilamento e
+  recompilação seletiva em VMs.}
+\pesquisa{paper:escape-analysis-deoptimization}{Escape analysis no HotSpot,
+  com desotimização quando uma classe nova invalida a análise.}
+\pesquisa{paper:graal-partial-escape-analysis}{A escape analysis parcial do
+  Graal, que elimina alocações nos caminhos em que o objeto não escapa.}
+\pesquisa{paper:g1-garbage-first}{O paper original do G1, o coletor padrão
+  desde o JDK~9.}
+\pesquisa{paper:shenandoah}{Compactação concorrente da Red Hat, com pausas
+  que não crescem com o heap.}
+\pesquisa{paper:zgc-deep-dive}{O ZGC descrito e medido em revista
+  revisada por pares (Uppsala e Oracle).}
+\pesquisa{paper:gc-myths-realities}{Mostra o custo do GC na localidade e no
+  tempo total, não só nas pausas.}
+\pesquisa{paper:immix}{O coletor mark-region, que junta a velocidade do
+  mark-sweep com a localidade da compactação.}
+\pesquisa{paper:java-memory-model}{A base formal do capítulo~17 da JLS.}
+\pesquisa{paper:manson-tese-jmm-2004}{A tese de doutorado de Manson
+  (University of Maryland), aberta, com o modelo explicado em detalhe.}
+\pesquisa*{paper:neves-memoria-java-embarcado}{Dissertação da UFRGS sobre
+  gerência de memória e um coletor de tempo real para Java embarcado.}
+\pesquisa*{paper:heuristica-gc-jvm-wso2008}{Heurística que ajusta o
+  tamanho do heap da JVM (UFRJ, Unicamp e UFJF).}
+\pesquisa*{paper:cruz-gc-jikes-usp}{Dissertação do IME-USP que modulariza
+  o GC da JVM de pesquisa Jikes RVM.}
+\pesquisa{doc:stanford-cs143}{Compiladores em Stanford, com aulas de
+  ambiente de execução e gerência automática de memória.}
+\pesquisa{doc:mit-6035-ocw}{Compilador completo com otimizações, no MIT
+  OpenCourseWare.}
+\pesquisa{doc:cmu-15411}{Compilador do zero na CMU, com organização do
+  runtime e coleta de lixo.}
+\pesquisa*{doc:unicamp-mc921}{Plano da disciplina de compiladores da
+  Unicamp, com projetos em Python.}
+\end{itemize}

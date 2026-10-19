@@ -1,0 +1,65 @@
+\section{Onde aprofundar}
+
+\subsection*{Livros e artigos}
+\small
+\begin{longtable}{@{}p{4.4cm} p{3cm} p{4.8cm}@{}}
+\toprule
+Fonte & Autor(es), ano & Por que ler \\
+\midrule \endhead
+\citetitle{livro:martin2017} \pt{} (\emph{Arquitetura Limpa})
+  & \citeauthor{livro:martin2017}, \citeyear{livro:martin2017}
+  & Caps.~22 (os círculos e a Dependency Rule) e 32 (o framework como
+  detalhe) \\
+\citetitle{artigo:cockburn-hexagonal}
+  & \citeauthor{artigo:cockburn-hexagonal}, 2005
+  & O texto original de ports \& adapters, com a motivação de testar a
+  aplicação sem UI nem banco \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Documentação}
+\citetitle{doc:quarkus-cdi}, \citetitle{doc:quarkus-cdi-reference},
+\citetitle{doc:quarkus-rest}, \citetitle{doc:quarkus-panache},
+\citetitle{doc:quarkus-config-mappings},
+\citetitle{doc:quarkus-testing}, \citetitle{doc:quarkus-dev-services},
+\citetitle{doc:quarkus-fault-tolerance}, \citetitle{doc:quarkus-health},
+\citetitle{doc:quarkus-micrometer} e
+\citetitle{doc:quarkus-opentelemetry}.
+
+\subsection*{No IDE: blog da JetBrains}
+Outros posts da JetBrains no apêndice~\ref{ap:jetbrains}.
+\begin{itemize}
+\obra*{artigo:jetbrains-testcontainers-spring-boot}{Testes de integração
+  com Testcontainers; o exemplo é Spring Boot, mas a ideia é a mesma dos Dev
+  Services do Quarkus.}
+\obra*{curso:jetbrains-guide-javax-jakarta}{Migrar de \texttt{javax} para
+  \texttt{jakarta}, o namespace que o Quarkus usa.}
+\end{itemize}
+
+\subsection*{Pesquisa acadêmica}
+Não encontramos estudo acadêmico revisado por pares sobre arquitetura
+hexagonal ou Clean Architecture; os itens abaixo são a base conceitual e
+empírica por trás delas. Acesso e links no apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:parnas-modules-1972}{A raiz de portas e adaptadores:
+  esconder atrás de uma interface o que pode mudar.}
+\pesquisa{paper:garlan-shaw-intro-softarch-1994}{Relatório técnico da CMU
+  sobre estilos arquiteturais: camadas, eventos, pipes and filters.}
+\pesquisa{paper:perry-wolf-foundations-1992}{Define arquitetura e introduz
+  as ideias de erosão e desvio arquitetural.}
+\pesquisa{paper:desilva-erosion-survey-2012}{Técnicas contra a erosão, como
+  regras de dependência no estilo do ArchUnit.}
+\pesquisa{paper:dragoni-microservices-2017}{Panorama histórico de
+  microsserviços e dos problemas em aberto.}
+\pesquisa{paper:soldani-microservices-pains-gains-2018}{O que praticantes
+  relatam de bom e de ruim em microsserviços.}
+\pesquisa{paper:viggiato-microservices-practice-2018}{Pesquisa da UFMG com
+  122 profissionais sobre microsserviços na prática.}
+\pesquisa{paper:spadini-mock-objects-java-2019}{Por que se mocka em Java e
+  como os mocks evoluem com o código.}
+\pesquisa{paper:almeida-mock-objects-sbqs-2023}{Da UFF: Mockito é o
+  framework mais usado em Java e dependências externas são as mais mockadas.}
+\pesquisa*{livro:valente2020}{Capítulo~7 (arquitetura: camadas, MVC,
+  microsserviços, mensageria) e capítulo~8 (testes).}
+\end{itemize}

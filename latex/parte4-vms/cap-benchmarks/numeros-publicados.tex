@@ -1,0 +1,88 @@
+\section{Números publicados, com a ficha de cada um}
+\label{sec:numeros-publicados}
+
+A tabela reúne os números citados nesta parte. \enquote{Fornecedor}
+marca medições feitas por quem desenvolve o sistema que sai ganhando.
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{5.2cm}@{}}
+\toprule
+Número & O que mede & Quem mediu, quando, com quê \\
+\midrule \endhead
+Self roda 2× mais rápido que o Smalltalk mais rápido &
+  Implementação com \emph{maps} e customização & Os autores do Self,
+  \textcite{paper:self-efficient-impl}; a página do paper não dá
+  versões nem máquina \\
+\addlinespace
+PICs: mediana de 11\% de ganho; 27\% com o compilador usando os tipos
+  & Programas Self típicos & Os autores,
+  \textcite{paper:self-pics}, no próprio sistema Self \\
+\addlinespace
+Registradores: $>$47\% menos instruções, bytecode 25\% maior, 32,3\% /
+  26,5\% menos tempo & Interpretador JVM de pilha contra o mesmo
+  interpretador com registradores & \textcite{paper:vm-showdown}
+  (Trinity College Dublin, TU Wien); Sun J2ME CDC~1.0, SPECjvm98 e Java
+  Grande, Pentium~4 \\
+\addlinespace
+No máximo 43,5\% dos pares (VM, benchmark) chegam a steady state de pico
+  & Microbenchmarks em várias VMs, três máquinas &
+  \textcite{paper:vm-warmup-hot-cold}; HotSpot~8u112b15, Graal~0.18,
+  PyPy~5.6.0, V8~5.4.500.43, LuaJIT~2.0.4 e outras \\
+\addlinespace
+Truffle: 0,83× o V8 (mais lento), 3,8× o JRuby, 5× o GNU~R & Desempenho de pico após
+  30 a 90~s de aquecimento, média de 10 execuções &
+  \textcite{paper:truffle-partial-evaluation}, Oracle Labs
+  (\textbf{fornecedor}); V8~5.3.332.6, JRuby~9.1.6.0 sobre HotSpot
+  1.8.0\_102, GNU~R~3.3.2; Xeon E5-2699~v3 \\
+\addlinespace
+Graal melhor que C2 em 51 de 68 benchmarks (mediana +20\%); C2 melhor em
+  10 (mediana $-$4\%); 7 sem diferença significativa & Steady state, Graal
+  e C2 como último nível da HotSpot, em quatro suítes &
+  \textcite{paper:renaissance}; autores da Oracle Labs, que desenvolve o
+  Graal (\textbf{fornecedor}), e de universidades; as versões da JVM
+  ficam no material suplementar, que não conferimos \\
+\addlinespace
+Startup do Native Image até duas ordens de grandeza melhor que a HotSpot,
+  preservando o pico & Startup de aplicações Java &
+  \textcite{paper:native-image-initialize-once}, Oracle Labs
+  (\textbf{fornecedor}); o resumo não dá versões \\
+\addlinespace
+Quarkus: 4417 / 1859 / 581~ms até a 1ª requisição; 304 / 240 / 95~MiB
+  & JVM, JVM com cache AOT e nativo & Perf-lab do Quarkus
+  (\textbf{fornecedor}), 21/04/2026; ficha completa na
+  seção~\ref{sec:jvm-vs-nativo} \\
+\addlinespace
+327 palavras por processo Erlang novo & Memória de um processo recém-criado
+  & Documentação do Erlang/OTP (\citetitle{doc:erlang-eff-processes}),
+  sessão de exemplo do guia (cabeçalho OTP~27, erts-14.2.3) \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Lição 1: leia o que ficou de fora.}
+O paper do Truffle é honesto sobre o que excluiu: na comparação com o V8,
+deixou de fora os benchmarks de carga de código e de latência, nos quais
+o Truffle é \enquote{significantly worse}, e os de throughput de GC, nos
+quais é melhor graças aos coletores da HotSpot. Está escrito no paper;
+num slide de marketing, essa frase some. O 0,83× vale para pico, depois
+de 30 a 90 segundos de aquecimento, não para os primeiros segundos.
+
+\paragraph{Lição 2: quem mediu tem interesse.}
+O Renaissance é uma suíte aberta e bem documentada, publicada no PLDI.
+Ainda assim, a comparação Graal × C2 foi feita por uma equipe que inclui
+quem desenvolve o Graal, e o objetivo declarado dela no paper é mostrar
+que o Graal é uma base razoável para os experimentos. Isso não invalida
+o número; diz como usá-lo.
+
+\paragraph{Lição 3: rodadas e hardware mudam.}
+O TechEmpower Framework Benchmarks compara frameworks web em vários
+testes. A Rodada~23 saiu em 17/03/2025, num hardware novo fornecido pela patrocinadora,
+Microsoft: servidores ProLiant DL360 Gen10 Plus com Xeon Gold 6330 de 56
+núcleos, 64~GB de RAM e rede de 40~Gbps. O post da rodada diz que os
+frameworks do topo triplicaram o desempenho nos testes práticos limitados
+por rede e atribui a melhora geral ao hardware novo
+(\citetitle{artigo:techempower-round23}). Segundo o próprio post, o salto
+veio da máquina e da rede, não do software. Nunca compare posições ou números entre
+rodadas diferentes, e não reproduzimos aqui números da tabela de
+resultados: se for usá-los, anote a rodada, o tipo de teste, o hardware
+e se o framework usou uma configuração ajustada só para o benchmark.

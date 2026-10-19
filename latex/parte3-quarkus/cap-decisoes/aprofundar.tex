@@ -1,0 +1,53 @@
+\section{Onde aprofundar}
+
+\subsection*{Documentação}
+\small
+\begin{longtable}{@{}p{5cm} p{7.2cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\citetitle{doc:quarkus-building-native} & Como gerar o executável,
+  Mandrel e GraalVM, e a comparação JVM/Leyden/nativo \\
+\citetitle{doc:quarkus-performance-measure} & Como medir RSS e tempo até
+  a primeira requisição sem se enganar \\
+\citetitle{doc:graalvm-native-basics} e \citetitle{doc:graalvm-compat}
+  & Mundo fechado, inicialização em build time e o que exige metadados \\
+\citetitle{doc:quarkus-native-tips} & Registro de reflexão, recursos e
+  inicialização em runtime \\
+\citetitle{doc:graalvm-memory} & GCs e tamanho de heap no nativo \\
+\citetitle{doc:quarkus-virtual-threads} e
+  \citetitle{doc:quarkus-reactive-architecture} & Os três modelos de
+  execução e as limitações de virtual threads \\
+\citetitle{doc:java-cmd} e \citetitle{doc:gc-collectors} & Opções de
+  memória e coletores da HotSpot no JDK~25 \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Ferramentas e dados}
+\citetitle{doc:quarkus-perf-comparison} (a aplicação e os scripts do
+benchmark) e \citetitle{doc:quarkus-benchmarks} (os resultados e
+gráficos). Para medir na sua máquina: JFR, \texttt{jcmd} e
+async-profiler (seção~\ref{sec:ferramentas}).
+
+\subsection*{De quem fez o Java}
+Nomes, bios e mais obras de cada pessoa no apêndice~\ref{ap:pessoas}.
+\begin{itemize}
+\obra{doc:jep403}{Por que o JDK fechou o acesso por reflexão aos seus
+  internos (Owner: Mark Reinhold): a mesma família de problema da reflexão
+  no modo nativo.}
+\end{itemize}
+
+\subsection*{Pesquisa acadêmica}
+Antes de comparar JVM e nativo, veja como medir. Acesso e links no
+apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:statistically-rigorous-java-perf}{Intervalos de confiança
+  em vez de \enquote{melhor de N}, separando startup de regime estável.}
+\pesquisa{paper:vm-warmup-hot-cold}{Muitos benchmarks nunca chegam a um
+  regime estável limpo, mesmo depois de aquecer.}
+\pesquisa{paper:gc-myths-realities}{O tamanho do heap muda o custo total do
+  GC, o que importa quando o container limita a memória.}
+\pesquisa{paper:graal-partial-escape-analysis}{Por que o Graal elimina
+  alocações que o C2 mantém.}
+\end{itemize}

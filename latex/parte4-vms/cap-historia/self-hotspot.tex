@@ -1,0 +1,75 @@
+\section{Self e a origem do JIT da HotSpot}
+\label{sec:hist-self}
+
+O Self era uma linguagem dinâmica, sem classes, em que tudo é envio de
+mensagem. Isso deveria torná-la lenta. O grupo de Stanford (e depois da
+Sun) passou anos provando que não precisava ser, e as técnicas que
+inventou para isso estão na HotSpot.
+
+\paragraph{1989: customização e compilação dinâmica.}
+\textcite{paper:self-efficient-impl} agrupam objetos clonados do mesmo
+protótipo em \emph{maps} (o que dá ao compilador informação de tipo) e
+compilam em runtime várias versões de um mesmo método, cada uma
+especializada para o \emph{map} do receptor, o que permite fazer inline
+das mensagens enviadas a \texttt{self}. Os autores afirmam que essa
+implementação roda duas vezes mais rápido que o Smalltalk mais rápido da
+época.
+
+\paragraph{1991: inline caches polimórficos.}
+O inline cache da seção anterior falha quando um ponto de chamada vê
+vários tipos. \textcite{paper:self-pics} propõem os
+\termo{polymorphic inline caches}{PICs: inline caches com uma entrada
+por tipo de receptor já visto naquele ponto de chamada.}, e notam o
+efeito colateral mais importante: o PIC \emph{registra} os tipos que
+apareceram em cada ponto de chamada, e o compilador pode usar isso ao
+recompilar. Números dos autores, medidos no próprio sistema Self: mediana
+de 11\% de ganho só com PICs e de 27\% quando o compilador usa os tipos
+coletados, com cerca de metade das chamadas não inlinadas eliminadas.
+
+\paragraph{1992: desotimização.}
+Código muito otimizado é difícil de depurar.
+\textcite{paper:self-deoptimization} resolvem isso
+\enquote{dynamically deoptimizing code on demand}: só as ativações que
+estão sendo depuradas voltam a código não otimizado, e o resto roda em
+velocidade máxima. Com isso, também dá para mudar um programa em
+execução e ver o efeito na hora. Uma ferramenta de depuração virou a
+desotimização (\emph{deoptimization}, seção~\ref{sec:jit}) que a
+HotSpot usa quando uma especulação falha
+(\citetitle{artigo:shipilev-uncommon-traps}).
+
+\paragraph{1994: otimização adaptativa.}
+A tese de \textcite{paper:holzle-thesis-adaptive-optimization} junta as
+peças: um compilador rápido gera o código inicial, as partes muito usadas
+são recompiladas por um compilador otimizador usando o \emph{type
+feedback} e o código não otimizado é recriado quando necessário. Leia de
+novo a seção~\ref{sec:jit}: interpretador ou C1 primeiro, C2 com perfil
+depois, \emph{uncommon trap} e desotimização quando o perfil mente. É o
+mesmo desenho.
+
+\paragraph{A ligação, nas palavras de quem fez.}
+Não precisamos adivinhar a ligação. O paper do compilador C2,
+\textcite{paper:hotspot-server-compiler}, diz que o runtime usa
+otimização adaptativa para concentrar a compilação nos métodos críticos
+e cita Hölzle e Ungar para isso; e diz que, quando o carregamento de uma
+classe invalida uma decisão de inlining, os métodos dependentes são
+desotimizados, citando o paper de 1992 acima.
+\textcite{paper:truffle-partial-evaluation}, da Oracle Labs, abrem o
+paper dizendo que VMs como a HotSpot e o V8 \enquote{follow the design
+that was first implemented for the SELF language}.
+
+\paragraph{O que isso explica na JVM.}
+\begin{itemize}
+\item Por que o warm-up existe e por que a HotSpot coleta perfil: o
+  compilador otimizador só é bom porque viu os tipos reais
+  (seção~\ref{sec:jit}).
+\item Por que chamadas virtuais e interfaces não são caras na prática:
+  inline caches e inlining guiado por tipo, herdados do Self.
+\item Por que carregar uma classe nova pode deixar o programa mais lento
+  por um instante: desotimização de métodos que assumiam um só
+  implementador (seção~\ref{sec:class-loading}).
+\item Por que o nativo pode perder em throughput de pico, como na
+  medição do Quarkus (seção~\ref{sec:jvm-vs-nativo}), embora o paper do
+  Native Image fale em preservar o desempenho de pico: sem perfil
+  coletado em produção (no máximo o de um treino, via PGO) e sem
+  desotimização, o compilador só pode apostar no que decide no build (seção~\ref{sec:vms-jit-aot}).
+\end{itemize}

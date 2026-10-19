@@ -1,0 +1,34 @@
+% Macros da apostila.
+
+% Caixa "Próximas aulas": marca capítulos de aulas futuras.
+\newtcolorbox{caixaproximas}{colback=yellow!10, colframe=orange!70!black,
+  title={Próximas aulas}, fonttitle=\bfseries}
+\newcommand{\proximasaulas}{%
+  \begin{caixaproximas}
+  Este capítulo antecipa conteúdo de aulas futuras e pode mudar até lá.
+  \end{caixaproximas}}
+
+% Fonte ainda não confirmada: sempre visível no PDF.
+\newcommand{\naoverificado}[1]{\textcolor{red!70!black}{\textbf{[não verificado]}}
+  \textit{#1}\xspace}
+
+% Termo em inglês: itálico + nota de rodapé com a explicação.
+\newcommand{\termo}[2]{\textit{#1}\footnote{#2}}
+
+% Marca de edição/vídeo em português.
+\newcommand{\pt}{\textbf{(PT)}\xspace}
+
+% Listagem de bytecode real (javap), gerada por scripts/gen-bytecode.sh.
+% Caminho relativo a latex/. Arquivo ausente = erro de build (de propósito).
+\newcommand{\inputbytecode}[1]{%
+  \lstinputlisting[language=bytecode]{generated/bytecode/#1.txt}}
+
+% Desafio prático (texto, sem solução).
+\newtcolorbox{caixadesafio}{colback=azulapostila!5, colframe=azulapostila,
+  title={Desafio}, fonttitle=\bfseries}
+\newcommand{\desafio}[1]{\begin{caixadesafio}#1\end{caixadesafio}}
+
+% Item de "Pesquisa acadêmica": autor (ano), título. Frase.
+% \pesquisa*{chave}{frase} marca a obra em português com (PT).
+\NewDocumentCommand{\pesquisa}{s m m}{\item \citeauthor{#2}
+  (\citeyear{#2}), \citetitle{#2}\IfBooleanT{#1}{ \pt}. #3}

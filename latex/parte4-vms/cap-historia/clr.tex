@@ -1,0 +1,50 @@
+\section{CLR: a VM que fez generics de outro jeito}
+\label{sec:hist-clr}
+
+\paragraph{O padrão.}
+A plataforma .NET é especificada pelo padrão
+\citetitle{doc:ecma335} (6ª edição, junho de 2012, equivalente ao
+ISO/IEC~23271). A página da Ecma descreve a
+\termo{CLI}{\emph{Common Language Infrastructure}: o padrão que define
+como programas em várias linguagens rodam sobre uma mesma VM.} como uma
+infraestrutura para que programas em várias linguagens rodem em vários
+ambientes sem serem reescritos, e lista as partes do padrão: a
+\emph{Virtual Execution System} (VES, a máquina virtual), os metadados
+e o seu formato de arquivo, e o conjunto de instruções
+\emph{Common Intermediate Language} (CIL). O CLR é a implementação da
+Microsoft. Troque os nomes e a JVM aparece: a especificação da JVM
+(\citetitle{doc:jvms25}) define a máquina, o formato \texttt{.class} e o
+conjunto de instruções.
+
+\paragraph{A diferença que importa: generics.}
+Em Java, generics são resolvidos pelo compilador e apagados: a JLS chama
+isso de \emph{type erasure}, \enquote{a mapping from types (possibly
+including parameterized types and type variables) to types (that are
+never parameterized types or type variables)}
+(\citetitle{doc:jls25}, §4.6). Em runtime, \texttt{List<String>} e
+\texttt{List<Integer>} são a mesma classe.
+
+O CLR fez outra escolha. \textcite{paper:clr-generics} descrevem generics
+com \enquote{exact run-time types}: a VM sabe, em runtime, que uma lista
+é de inteiros. A implementação aproveita o JIT para fazer
+\enquote{just-in-time type specialization}, com código compartilhado
+entre instanciações de mesma representação; os primeiros resultados
+sugerem que quem usa generics não paga sobrecusto por isso.
+
+\paragraph{O que isso explica na JVM.}
+\begin{itemize}
+\item Por que não existe \texttt{new T[]} nem
+  \texttt{obj instanceof List<String>} com \texttt{obj} declarado como
+  \texttt{Object}: a informação foi apagada antes de chegar à VM (a JLS,
+  §15.20.2, exige que a expressão seja \emph{checked cast compatible} com
+  o tipo testado, e a conversão de \texttt{Object} para
+  \texttt{List<String>} não é verificável em runtime).
+\item Por que \texttt{List<Integer>} guarda objetos \texttt{Integer} e
+  não \texttt{int}: com erasure, a VM só vê \texttt{Object}, e o
+  autoboxing da seção~\ref{sec:autoboxing} é o preço. Uma VM que conhece
+  o tipo exato pode especializar o código para o tipo primitivo, como o
+  paper do CLR descreve.
+\item Que erasure é uma escolha da plataforma Java, não um limite de
+  toda VM com bytecode: o CLR mostra a alternativa, com o custo de levar
+  os tipos genéricos para dentro da VM e do JIT.
+\end{itemize}

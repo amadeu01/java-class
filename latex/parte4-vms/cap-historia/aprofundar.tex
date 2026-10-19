@@ -1,0 +1,70 @@
+\section{Onde aprofundar}
+
+\subsection*{Livros}
+\citetitle{livro:pemberton1982} \parencite{livro:pemberton1982}, com o
+texto completo publicado pelo autor, é a melhor leitura sobre o p-code:
+compilador e interpretador comentados. \citetitle{livro:goldberg1983}
+\parencite{livro:goldberg1983}, capítulos~26 a~30, especifica a VM do
+Smalltalk-80.
+
+\subsection*{Papers}
+\small
+\begin{longtable}{@{}p{5.2cm} p{7cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\textcite{paper:aycock-history-jit} & Survey de quarenta anos de JIT,
+  de 1960 a 2000: o mapa para o resto da lista \\
+\textcite{paper:self-pics} & Inline caches polimórficos; curto e com PDF
+  aberto \\
+\textcite{paper:self-deoptimization} & De onde vem a desotimização \\
+\textcite{paper:holzle-thesis-adaptive-optimization} & Otimização
+  adaptativa completa: o desenho da HotSpot, em 1994 \\
+\textcite{paper:hotspot-server-compiler} & O C2 descrito por quem o
+  fez; PDF aberto na USENIX \\
+\textcite{paper:clr-generics} & Generics com tipos exatos em runtime, o
+  contraponto ao erasure \\
+\textcite{paper:vm-showdown} & Pilha contra registradores, com dados \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Documentação}
+\citetitle{doc:ecma335} (o padrão da CLI, com download do PDF na página
+da Ecma), \citetitle{doc:android-dalvik-bytecode},
+\citetitle{doc:android-art} e \citetitle{doc:android-art-jit}.
+
+\subsection*{De quem fez o Java}
+Nomes, bios e mais obras de cada pessoa no apêndice~\ref{ap:pessoas}.
+\begin{itemize}
+\obra*{paper:java-language-environment}{O white paper de 1996: o que o
+  Java herdou e o que recusou das linguagens e VMs deste capítulo.}
+\obra*{paper:feel-of-java}{Gosling sobre as decisões de design, em
+  primeira pessoa.}
+\obra*{livro:lindholm2014}{O item~1.1, \enquote{A Bit of History}, conta
+  de onde veio a JVM.}
+\obra*{video:java-story}{O documentário oficial, com quem construiu o
+  Java.}
+\end{itemize}
+
+\subsection*{Pesquisa acadêmica}
+Itens que completam os papers acima. Acesso e links no
+apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:pascal-p-code-generation}{O compilador Pascal-P de Zurique
+  e a máquina de pilha hipotética que a UCSD adaptou no p-System.}
+\pesquisa{paper:self-power-of-simplicity}{A linguagem Self: protótipos,
+  slots e mensagens, o começo da linha Self, Strongtalk, HotSpot.}
+\pesquisa{paper:self-type-feedback}{Type feedback, a ideia central dos JITs
+  modernos.}
+\pesquisa{paper:jalapeno-adaptive-optimization}{A otimização adaptativa da
+  JVM de pesquisa da IBM, que virou a Jikes RVM.}
+\pesquisa{paper:lua50-implementation}{A primeira VM de registradores de uso
+  amplo, feita na PUC-Rio.}
+\pesquisa*{paper:hazan-maquina-registradores-java}{Pilha ou registradores
+  para Java, com o olhar de dispositivos móveis (PUC-Rio).}
+\pesquisa{paper:jit-value-specialization}{Pesquisa da UFMG em JIT
+  especulativo: especializar funções JavaScript para os valores reais.}
+\pesquisa{paper:isamap-dbt}{Tradução dinâmica de binários do IC-Unicamp,
+  parente do JIT: traduzir e guardar código em execução.}
+\end{itemize}

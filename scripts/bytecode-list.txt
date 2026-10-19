@@ -1,0 +1,15 @@
+# NomeClasse [flags-javap]  (padrão: -c -p)
+ConcatenacaoStrings -c -p
+LambdaInvokeDynamic -c -p
+Autoboxing -c -p
+SwitchStrings -c -p
+TryWithResources -c -p
+Sincronizacao -c -p
+PatternSwitch -c -p
+RecordExemplo -c -p
+RecordExemplo$Ponto -c -p
+SealedForma -c -p
+PoolConstantes -v -p
+ThreadsVirtuais -c -p
+SealedForma$Forma -v
+InjecaoSemReflexao -c -p

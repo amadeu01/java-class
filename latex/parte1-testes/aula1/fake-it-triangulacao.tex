@@ -1,0 +1,15 @@
+\section{Fake it, triangulação e implementação óbvia}
+
+Para chegar ao verde há dois caminhos, ambos de Kent Beck
+(\citetitle{livro:beck2002}):
+
+\begin{description}
+\item[Sem saber a solução.] Fingir (\emph{fake it}): devolver a constante
+  que o teste espera, por exemplo \texttt{return 100.0}. Em seguida
+  \emph{triangular}: escrever um segundo exemplo que a constante não
+  satisfaz, o que força a generalizar.
+\item[Sabendo a solução.] Escrever direto a \emph{implementação óbvia}.
+\end{description}
+
+Ficou vermelho sem entender por quê? O passo foi grande demais. Volte,
+desfaça, e dê um passo menor.

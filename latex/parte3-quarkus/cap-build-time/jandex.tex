@@ -1,0 +1,71 @@
+\section{Jandex: ler anotações sem carregar classes}
+\label{sec:jandex}
+
+Para descobrir beans, endpoints REST e entidades sem carregar classes, o
+Quarkus usa o \termo{Jandex}{Biblioteca da SmallRye que indexa arquivos
+\texttt{.class}; o índice pode ser gravado em
+\texttt{META-INF/jandex.idx} dentro do JAR.}. O repositório do projeto
+(\citetitle{doc:jandex}) o descreve como \enquote{a space efficient Java
+class file indexer and offline reflection library}: \emph{offline
+reflection} porque responde às perguntas que a reflexão responderia
+(que classes têm esta anotação, quem implementa esta interface) sem
+pedir nada à JVM.
+
+\paragraph{Por que isso é possível.}
+Anotações com retenção \texttt{RUNTIME} ficam gravadas no próprio
+\texttt{.class}, no atributo \texttt{RuntimeVisibleAnnotations} (JVMS
+§4.7.16, \citetitle{doc:jvms25}), e apontam para entradas do constant
+pool (seção~\ref{sec:constant-pool}). Um indexador só precisa ler bytes
+e montar tabelas; não precisa de class loader, verificação nem
+\texttt{<clinit>}. Com \texttt{javap -v} você vê esse atributo em
+qualquer classe anotada.
+
+\subsection*{Como uma dependência entra no índice}
+
+O guia \citetitle{doc:quarkus-cdi-reference} descreve uma
+\emph{descoberta de beans simplificada}, com um único \emph{bean archive}
+formado, entre outras fontes, pela aplicação e por:
+\begin{itemize}
+\item dependências que têm um descritor \texttt{beans.xml} (o conteúdo é
+  ignorado);
+\item dependências que já trazem um índice Jandex
+  (\texttt{META-INF/jandex.idx});
+\item dependências listadas em \texttt{quarkus.index-dependency} no
+  \texttt{application.properties}.
+\end{itemize}
+
+O guia de extensões completa: o índice das classes analisadas
+\enquote{will not automatically include your external class dependencies}
+e nenhum artefato é incluído transitivamente. O sintoma clássico é um
+módulo compartilhado (por exemplo, adaptadores comuns a vários serviços)
+num JAR separado cujos beans \enquote{somem}: o Quarkus não os viu porque
+o JAR não estava no índice.
+
+\subsection*{Remoção de beans não usados}
+
+Com o índice e o grafo de injeção em mãos, o container CDI do Quarkus
+(ArC) faz algo que só é seguro em build time. Segundo o guia de CDI, ele
+tenta remover beans, interceptors e decorators não usados durante o
+build, por padrão. Dois avisos do mesmo guia:
+\begin{itemize}
+\item O Quarkus não detecta busca programática via \texttt{CDI.current()};
+  um bean usado só assim pode ser removido. Desligue com
+  \texttt{quarkus.arc.remove-unused-beans=none} ou, melhor, injete o bean.
+\item Classes sem \emph{bean defining annotation} (por exemplo,
+  \texttt{@ApplicationScoped}) não são descobertas. Isso importa na
+  arquitetura do capítulo~\ref{cap:arquitetura-quarkus}: uma classe de
+  caso de uso sem anotação precisa de um \emph{producer} para virar bean.
+\end{itemize}
+
+\paragraph{O preço.}
+O guia de CDI admite o custo dessa abordagem: o ArC não implementa o
+\emph{CDI Full}, e \emph{CDI Portable Extensions} não são suportadas;
+o guia apresenta isso como a desvantagem das otimizações de build time.
+Biblioteca que
+funciona via portable extension em outro servidor precisa de uma
+extensão Quarkus equivalente.
+
+\paragraph{Vendo o resultado.}
+Em dev mode, os endpoints \texttt{/q/arc} e \texttt{/q/arc/beans} mostram
+os beans que sobraram, e o nível de log \texttt{DEBUG} mostra os que foram
+removidos, segundo o mesmo guia.

@@ -1,0 +1,49 @@
+\section{Constant pool e \texttt{javap -v}}
+\label{sec:constant-pool}
+
+Todo \texttt{.class} tem um constant pool (JVMS §4.4): uma tabela com
+os nomes de classes, métodos e campos que o código referencia, as
+strings literais e as constantes numéricas. As instruções não contêm
+nomes, só índices nessa tabela; na resolução (fase de linking, em geral
+de forma preguiçosa, no primeiro uso), a JVM troca os índices por
+referências concretas (seção~\ref{sec:class-loading}).
+
+\lstinputlisting[language=Java]{generated/source/PoolConstantes.java}
+
+\inputbytecode{PoolConstantes}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item \texttt{major version: 69}: o \texttt{.class} foi gerado para o
+  Java~25. Uma JVM mais antiga recusa esse arquivo com
+  \texttt{UnsupportedClassVersionError}; é o erro clássico de compilar
+  com um JDK e rodar com outro.
+\item As entradas se referenciam: \texttt{\#1} é um \texttt{Methodref}
+  que aponta para a classe \texttt{\#2} e para o
+  \texttt{NameAndType} \texttt{\#3}, que por sua vez aponta para os
+  \texttt{Utf8} com o nome \texttt{<init>} e o descritor \texttt{()V}.
+\item O campo \texttt{LIMITE} tem o atributo \texttt{ConstantValue: int
+  1000}. E em \texttt{rotulo}, offset 1: \texttt{sipush 1000}. O valor
+  foi \emph{copiado} para dentro do método; não há \texttt{getstatic}.
+\item \texttt{\#9} é um \texttt{InvokeDynamic} que aponta para o
+  bootstrap \texttt{\#0}, listado no fim em \texttt{BootstrapMethods}:
+  \texttt{StringConcatFactory.makeConcatWithConstants}, com o argumento
+  \texttt{"grande: \textbackslash u0001"}. A próxima seção explica.
+\end{itemize}
+
+\paragraph{O bug que isso explica.}
+Se \texttt{LIMITE} estivesse numa biblioteca e mudasse para 2000, as
+classes clientes já compiladas continuariam usando 1000, porque o valor
+está no bytecode delas. A JLS (§13.4.9) diz exatamente isso: mudar o
+valor de uma constante \texttt{static} não quebra os binários existentes,
+mas eles só veem o novo valor se forem recompilados. Na prática:
+\enquote{mudei a constante no módulo comum e o serviço continua com o
+valor antigo} é sintoma de build incremental que não recompilou os
+dependentes.
+
+\paragraph{A decisão que isso muda.}
+\texttt{static final} com valor constante (primitivo ou
+\texttt{String}) é parte do contrato público de uma biblioteca, como a
+assinatura de um método. Valores que podem mudar entre versões (limites
+de negócio, URLs, timeouts) devem vir de configuração ou de um método,
+não de uma constante compartilhada entre módulos.

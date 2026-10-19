@@ -1,0 +1,44 @@
+\section{Pascal-P e o p-code}
+\label{sec:hist-pcode}
+
+\paragraph{A ideia.}
+O livro de \textcite{livro:pemberton1982}, que comenta linha a linha o
+compilador Pascal-P4, resume o desenho logo na introdução: em vez de
+gerar código para uma máquina real, o compilador gera o que veio a ser
+chamado de \termo{p-code}{\emph{Pseudo-code}: instruções de uma máquina
+hipotética, a P-machine, executadas por um interpretador.}, \enquote{for a
+hypothetical stack-based computer that is in many ways ideal for Pascal
+compilation}. O compilador e o interpretador do p-code são escritos em
+Pascal.
+
+\paragraph{Por que isso portava.}
+Para levar o sistema a uma máquina nova, o livro descreve caminhos como
+este: compilar o compilador Pascal-P com qualquer compilador Pascal já
+existente, usá-lo para traduzir o próprio compilador para p-code e, daí
+em diante, só traduzir à mão o \emph{interpretador} para a máquina nova.
+O livro diz que o Pascal-P foi a base de muitos sistemas Pascal,
+\enquote{including the well-known UCSD system}.
+
+\paragraph{A máquina.}
+O capítulo~10 descreve a P-machine: um processador e uma memória, em que
+muitas operações usam a pilha, chamadas de procedimento empilham
+parâmetros e endereço de retorno, e um conjunto pequeno de registradores
+(contador de programa, ponteiro de pilha e outros) controla a execução.
+
+\paragraph{O que isso explica na JVM.}
+\begin{itemize}
+\item \emph{Bytecode de pilha.} A JVM também é uma máquina de pilha:
+  \texttt{iload}, \texttt{iadd}, \texttt{ireturn} empilham e desempilham
+  operandos, como a seção~\ref{sec:javap-basico} mostrou no
+  \texttt{javap}. A troca, segundo \textcite{paper:vm-showdown}: código
+  de pilha é menor, mas precisa de mais instruções para a mesma conta
+  (seção~\ref{sec:hist-dalvik}).
+\item \emph{Portar a VM, não o programa.} O \enquote{escreva uma vez, rode
+  em qualquer lugar} do Java é a mesma aposta: o \texttt{.class} é o
+  mesmo, e o trabalho de cada plataforma é ter uma JVM.
+\item \emph{O custo.} Interpretar tem um preço por instrução:
+  \textcite{paper:vm-showdown} descrevem cada despacho de instrução como
+  um desvio indireto caro e, em geral, imprevisível. A JVM paga isso só
+  no começo e depois compila; as seções~\ref{sec:hist-smalltalk}
+  e~\ref{sec:hist-self} mostram de onde veio essa saída.
+\end{itemize}

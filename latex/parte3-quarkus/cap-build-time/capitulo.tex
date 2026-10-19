@@ -1,0 +1,27 @@
+\chapter{O que o Quarkus faz em build time}
+\label{cap:build-time}
+
+\proximasaulas
+
+Um framework Java tradicional faz muito trabalho na subida: varre o
+classpath atrás de anotações, lê essas anotações por reflexão, monta o
+grafo de dependências e cria proxies. Tudo isso roda a cada start, em
+cada réplica, e o resultado é sempre o mesmo, porque o código não mudou
+desde o build. A página \citetitle{doc:quarkus-container-first} resume
+a proposta do Quarkus numa frase: \enquote{The central idea behind
+Quarkus is to do at build-time what traditional frameworks do at
+runtime}.
+
+Este capítulo mostra como isso funciona e por que reduz reflexão e
+startup, usando o que a Parte~II explicou: carregamento e inicialização
+de classes (seção~\ref{sec:class-loading}), o JIT
+(seção~\ref{sec:jit}) e a leitura de bytecode
+(capítulo~\ref{cap:lendo-bytecode}). A fonte principal é o guia
+\citetitle{doc:quarkus-writing-extensions}, escrito para quem cria
+extensões, mas que é o lugar onde o Quarkus explica o próprio modelo.
+
+\input{parte3-quarkus/cap-build-time/augmentation}
+\input{parte3-quarkus/cap-build-time/jandex}
+\input{parte3-quarkus/cap-build-time/gizmo-bytecode}
+\input{parte3-quarkus/cap-build-time/aprofundar}
+\input{parte3-quarkus/cap-build-time/desafios}

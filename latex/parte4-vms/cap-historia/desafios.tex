@@ -1,0 +1,22 @@
+\section{Desafios práticos}
+
+\desafio{Pegue o método \texttt{center} do Smalltalk-80 da
+seção~\ref{sec:hist-smalltalk}, escreva o equivalente em Java
+(\texttt{record Retangulo(Ponto origem, Ponto canto)}) e compare a saída
+do \texttt{javap -c} com os seis bytecodes do Blue Book. O que a JVM
+precisa dizer explicitamente que o Smalltalk não precisa?}
+
+\desafio{Escreva um ponto de chamada que vê primeiro um só tipo e,
+depois de aquecido, passa a ver três. Rode com
+\texttt{-XX:+PrintCompilation} e procure a linha \enquote{made not
+entrant}. Relacione o que você viu com os PICs e a desotimização do
+Self.}
+
+\desafio{Escreva um método genérico que tenta criar um \texttt{T[]} e
+veja o erro do compilador. Leia a §4.6 da JLS e explique por que o
+mesmo código seria possível com os generics do CLR.}
+
+\desafio{Leia o capítulo~10 de Pemberton e Daniels e escreva, em
+Java, um interpretador de umas dez instruções de uma máquina de pilha.
+Meça quanto tempo ele leva para somar um milhão de números e compare
+com o mesmo laço em Java puro. Onde está a diferença?}

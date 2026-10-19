@@ -1,0 +1,42 @@
+\section{Sincronização}
+\label{sec:sincronizacao}
+
+\lstinputlisting[language=Java]{generated/source/Sincronizacao.java}
+
+\inputbytecode{Sincronizacao}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item Offsets 0--3: \texttt{this} é duplicado, guardado na variável
+  local 1 e usado por \texttt{monitorenter}.
+\item Offsets 4--11: \texttt{contador++}, as três etapas discutidas na
+  seção~\ref{sec:modelo-memoria}.
+\item Offsets 14--16: \texttt{monitorexit} no caminho normal.
+\item Offsets 19--23: o tratador de exceção, de tipo \texttt{any} na
+  tabela, libera o monitor e relança. A segunda linha da tabela cobre o
+  próprio tratador.
+\end{itemize}
+
+A JVMS (§3.14) diz que o compilador garante um \texttt{monitorexit} para
+cada \texttt{monitorenter}, termine o método normalmente ou com exceção,
+gerando tratadores que capturam qualquer exceção. Ela diz também que um
+\emph{método} \texttt{synchronized} normalmente não usa essas instruções:
+é marcado com a flag \texttt{ACC\_SYNCHRONIZED}, e a própria chamada
+adquire o monitor. Por isso, num método \texttt{synchronized}, o
+\texttt{javap -c} não mostra \texttt{monitorenter}; use \texttt{-v} e
+procure a flag.
+
+\paragraph{A decisão que isso muda.}
+\texttt{synchronized(this)} usa como lock um objeto que qualquer código
+com referência a ele também pode usar para sincronizar. Um
+\texttt{private final Object lock = new Object()} deixa o lock sob seu
+controle. Em JDK~21, \texttt{monitorenter} era também o ponto em que uma
+virtual thread ficava presa à carrier ao bloquear; desde o JDK~24
+(\citetitle{doc:jep491}) não é mais (seção~\ref{sec:virtual-threads}).
+
+\paragraph{Ponte com Quarkus.}
+O guia \citetitle{doc:quarkus-virtual-threads} registra a mesma mudança:
+em Java~24 ou mais novo, blocos e métodos \texttt{synchronized} não
+causam mais pinning de virtual threads. Antes
+de trocar \texttt{synchronized} por \texttt{ReentrantLock} num serviço
+Quarkus, confira a versão do JDK em produção.

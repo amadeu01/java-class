@@ -1,0 +1,33 @@
+\chapter{Ferramentas e documentação oficial}
+\label{ap:ferramentas}
+
+Sites oficiais das ferramentas citadas nas Partes~I e~II. Os detalhes de uso
+estão nos capítulos das aulas.
+
+\small
+\begin{longtable}{@{}p{3.6cm} p{9cm}@{}}
+\toprule
+Uso & Ferramenta \\
+\midrule \endhead
+Testes unitários & \citetitle{doc:junit5}, \citetitle{doc:assertj},
+  \citetitle{doc:mockito} \\
+Testes de propriedade & \citetitle{doc:jqwik} \\
+Testes de mutação & \citetitle{doc:pitest} \\
+Testes de contrato & \citetitle{doc:pact} (mantido),
+  \citetitle{doc:spring-cloud-contract} (sem manutenção pela Spring desde
+  julho de 2026; passou para o Stubborn.sh) \\
+Testes de integração & \citetitle{doc:testcontainers} \\
+Testes de carga & \citetitle{doc:gatling}, \citetitle{doc:jmeter},
+  \citetitle{doc:k6} \\
+Injeção de falha & \citetitle{doc:chaos-monkey-spring},
+  \citetitle{doc:toxiproxy}, \citetitle{doc:netflix-chaosmonkey} \\
+Padrões de resiliência & \citetitle{doc:resilience4j} \\
+Bytecode & \citetitle{doc:javap} \\
+JIT & \citetitle{doc:java-cmd} (\texttt{-XX:+PrintCompilation}),
+  \citetitle{doc:jitwatch} \\
+Diagnóstico da JVM & \citetitle{doc:jcmd}, \citetitle{doc:jfr-tool},
+  \citetitle{doc:jmc}, \citetitle{doc:async-profiler} \\
+Microbenchmarks & \citetitle{doc:jmh} \\
+\bottomrule
+\end{longtable}
+\normalsize

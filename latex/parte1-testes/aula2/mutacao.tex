@@ -1,0 +1,24 @@
+\section{Mutação}
+
+Cobertura mede o que foi \emph{executado}, não o que foi \emph{verificado}:
+um teste sem asserção dá 100\% de cobertura
+(\citetitle{artigo:testcoverage}, \citetitle{artigo:assertion-free-testing}).
+
+O PIT introduz pequenos defeitos no código (por exemplo, \texttt{<=} vira
+\texttt{<}) e roda os testes. Mutante que sobrevive costuma ser uma borda
+que ninguém especificou. Em Maven, o PIT roda com
+\texttt{mvn test-compile org.pitest:pitest-maven:mutationCoverage} e o
+escopo se limita com \texttt{targetClasses}
+(\citetitle{doc:pitest-maven}).
+
+Limites da técnica:
+\begin{itemize}
+\item mutantes equivalentes (a mudança não altera o comportamento, então
+  nenhum teste a detecta);
+\item custo de execução;
+\item o escore virando meta (lei de Goodhart: quando a medida vira alvo,
+  deixa de ser boa medida).
+\end{itemize}
+
+Meça o resultado, como propõe o DORA (taxa de falha de mudanças, tempo de
+recuperação; \citetitle{artigo:dora}), e use o escore como diagnóstico.

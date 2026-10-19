@@ -1,0 +1,46 @@
+\section{Onde aprofundar}
+
+\subsection*{Documentação}
+\small
+\begin{longtable}{@{}p{5cm} p{7.2cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\citetitle{doc:quarkus-writing-extensions} & Build steps, build items,
+  recorders, índice e as propriedades de depuração deste capítulo \\
+\citetitle{doc:quarkus-cdi-reference} & Descoberta de beans, remoção de
+  beans não usados, membros \texttt{private} e limitações em relação ao
+  CDI \\
+\citetitle{doc:quarkus-class-loading} & Os class loaders do dev mode e
+  do pacote de produção (seção~\ref{sec:class-loading}) \\
+\citetitle{doc:graalvm-native-basics} & Inicialização de classes em
+  build time e o que vai para o binário nativo \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Ferramentas}
+\citetitle{doc:jandex} (o indexador) e \citetitle{doc:gizmo} (o gerador
+de bytecode). Para ler o que eles produzem, as mesmas ferramentas da
+seção~\ref{sec:ferramentas}: \texttt{javap}, JFR e JITWatch.
+
+Os livros sobre Quarkus estão no capítulo~\ref{cap:onde-aprender}.
+
+\subsection*{De quem fez o Java}
+Nomes, bios e mais obras de cada pessoa no apêndice~\ref{ap:pessoas}.
+\begin{itemize}
+\obra*{doc:leyden-beginnings}{Os objetivos do Project Leyden: startup,
+  warmup e footprint, os mesmos que o Quarkus ataca em build time.}
+\obra*{doc:leyden-condensers}{Transformar a aplicação antes de rodar: a
+  versão do JDK para a ideia de build time do Quarkus.}
+\end{itemize}
+
+\subsection*{Pesquisa acadêmica}
+Acesso (aberto ou pago) e links no apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:native-image-initialize-once}{O paper do Native Image:
+  análise em mundo fechado e inicialização de classes no build, a base do
+  modo nativo do Quarkus.}
+\pesquisa{paper:one-vm-to-rule-them-all}{O manifesto do Graal e do Truffle:
+  uma VM para muitas linguagens.}
+\end{itemize}

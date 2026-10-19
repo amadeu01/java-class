@@ -1,0 +1,87 @@
+\section{Concorrência: threads, virtual threads e processos}
+\label{sec:vms-concorrencia}
+
+\paragraph{HotSpot.}
+A Parte~II mostrou os dois tipos de thread do Java. A thread de plataforma
+é uma thread do sistema operacional. A virtual thread
+(seção~\ref{sec:virtual-threads}) é escalonada pelo próprio JDK: o
+\citetitle{doc:jep444} diz que o escalonador padrão é um
+\texttt{ForkJoinPool} em modo FIFO, com paralelismo igual ao número de
+processadores disponíveis. Em qualquer dos dois casos, todas as threads
+enxergam o mesmo heap: a especificação da JVM diz que ele é
+\enquote{shared among all Java Virtual Machine threads}
+(\citetitle{doc:jvms25}, §2.5.3). Por isso a Parte~II precisou falar de
+\texttt{synchronized} e do modelo de memória
+(seções~\ref{sec:sincronizacao} e~\ref{sec:modelo-memoria}).
+
+\paragraph{BEAM.}
+A unidade de concorrência do Erlang é o processo, que não é um processo
+do sistema operacional. A documentação diz que eles são
+\enquote{lightweight (grow and shrink dynamically) with a small memory
+footprint} e se comunicam por sinais assíncronos; uma mensagem recebida
+vai para o fim da fila do processo, a sua
+\termo{mailbox}{Caixa de correio: a fila de mensagens de um processo
+Erlang, lida com \texttt{receive}.} (\citetitle{doc:erlang-processes}).
+Três números da documentação dão a escala:
+\begin{itemize}
+\item Um processo recém-criado ocupa 327 palavras de memória, das quais
+  233 são o heap inicial (que inclui a pilha). O número vem da sessão de
+  exemplo do guia (\citetitle{doc:erlang-eff-processes}), cujo cabeçalho
+  mostra \enquote{Erlang/OTP 27 [erts-14.2.3]}; o guia não diz se ele muda
+  entre versões. Em máquina de 64 bits,
+  uma palavra tem 8~bytes.
+\item O limite padrão de processos simultâneos de um nó é 1\,048\,576
+  (opção \texttt{+P} do \citetitle{doc:erlang-erl}).
+\item O número de \termo{schedulers}{Escalonadores: threads do sistema
+  operacional que executam processos Erlang, cada uma com a sua fila.}
+  é, por padrão, o número de processadores lógicos (opção \texttt{+S},
+  mesma página).
+\end{itemize}
+O mesmo guia diz que tudo o que vai numa mensagem entre processos é
+\emph{copiado}, com duas exceções no mesmo nó: \emph{refc binaries}
+(binários grandes, contados por referência) e literais. Não há memória
+compartilhada para proteger com lock: o preço é a cópia.
+
+\paragraph{Preempção por reductions.}
+Aqui está a diferença mais funda com as virtual threads. O
+\citetitle{livro:stenman} descreve o escalonamento da BEAM como
+\enquote{preemptive scheduling on top of cooperative scheduling}: o
+processo só pode ser suspenso em certos pontos, como uma chamada de
+função ou um \texttt{receive}, mas a VM conta
+\termo{reductions}{Unidades de trabalho de um processo Erlang;
+grosso modo, cada chamada de função gasta uma. O nome vem do Prolog, em
+que cada passo de execução é uma redução.} e, quando o processo gasta a
+sua cota, ele é suspenso e outro entra. O livro dá a cota: 4000
+reductions (\texttt{CONTEXT\_REDS} em \texttt{erl\_vm.h}); antes do
+OTP~20, eram 2000. Como em Erlang não há laço sem chamada de função, um
+processo Erlang quase nunca segura um scheduler por muito tempo (as
+exceções estão logo abaixo).
+
+O JEP~444 diz o contrário para o Java: \enquote{The scheduler does not
+currently implement time sharing for virtual threads}. Uma virtual
+thread que faz conta sem bloquear fica com a carrier thread até acabar,
+o mesmo alerta que o guia do Quarkus repete
+(seção~\ref{sec:vt-vs-reativo}).
+
+\paragraph{Onde a BEAM também trava.}
+A preempção vale para código Erlang. Uma NIF (função nativa em C chamada
+pelo Erlang) roda fora dessa contagem, e o livro avisa que algumas BIFs
+também podem demorar sem ceder o scheduler; o \emph{BEAM Book} recomenda
+mantê-las curtas \enquote{to avoid blocking the BEAM scheduler} e usar
+\emph{dirty schedulers} para operações longas. É o equivalente, na BEAM,
+do \emph{pinning} das virtual threads em código nativo
+(seção~\ref{sec:virtual-threads}).
+
+\paragraph{O próprio JEP compara.}
+O JEP~444 apresenta virtual threads como \emph{user-mode threads}, um
+modelo que deu certo em outras linguagens, e cita \enquote{goroutines in
+Go and processes in Erlang}. A comparação é justa no custo de criar e
+no número de tarefas. Não é justa em dois pontos: o heap continua
+compartilhado e não há preempção por tempo. Uma virtual thread é uma
+thread barata, não um processo isolado.
+
+\paragraph{GraalVM.}
+No modo JIT, o modelo é o da HotSpot, em que a GraalVM se baseia
+(\citetitle{doc:graalvm-java}). No Native Image, a linguagem e as APIs de
+concorrência são as do Java; o que muda é a compilação e o GC, assunto
+das próximas seções.

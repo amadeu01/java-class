@@ -1,0 +1,80 @@
+\section{Augmentation: o build que roda o framework}
+\label{sec:augmentation}
+
+No Quarkus, o build não só compila: ele executa a parte pesada do
+framework. Essa etapa se chama \termo{augmentation}{\enquote{Aumento}: a
+fase do build em que as extensões do Quarkus analisam a aplicação e
+geram o código que será executado em runtime. Na documentação aparece
+também como \emph{build-time augmentation}.}, e o guia
+\citetitle{doc:quarkus-writing-extensions} dá a regra que orienta todas
+as extensões: \enquote{As much as possible favor doing work at build
+time}. O motivo vem logo depois: quanto mais trabalho for feito ali,
+menores ficam as aplicações e mais rápido elas sobem. A introdução do
+mesmo guia acrescenta que os metadados são processados uma só vez, no
+build.
+
+\subsection*{Extensões em duas metades}
+
+Toda extensão tem dois módulos. O módulo \emph{deployment} roda só no
+build; o módulo \emph{runtime} vai para o artefato final. O guia é
+taxativo: o módulo runtime nunca pode depender de um artefato de
+deployment. É por isso que o parser de anotações, a validação do grafo
+de beans e o gerador de código não pesam no seu container: eles ficaram
+na máquina de build.
+
+\subsection*{Build steps e build items}
+
+O trabalho do deployment é dividido em \termo{build steps}{Passos do
+build: métodos anotados com \texttt{@BuildStep} numa classe de
+processamento da extensão.}, que se comunicam por \termo{build
+items}{Objetos que um passo produz e outros consomem; são a única forma
+de as extensões trocarem informação no build.}. Dois detalhes do guia
+importam para quem só usa o Quarkus:
+\begin{itemize}
+\item Um build step só roda se produzir algo de que outro passo precisa,
+  direta ou transitivamente. Extensão que você não usa não custa nada no
+  build nem no runtime.
+\item Os processadores de build \enquote{should not attempt to load any
+  application classes}: eles leem a aplicação pelo índice
+  (seção~\ref{sec:jandex}), não carregando as classes. Carregar uma classe
+  dispararia linking e, no primeiro uso ativo, o \texttt{<clinit>}
+  (seção~\ref{sec:class-loading}).
+\end{itemize}
+
+\subsection*{Recorders: STATIC\_INIT e RUNTIME\_INIT}
+
+Parte do trabalho não pode ser feito no build (abrir um pool de conexões,
+por exemplo), mas pode ser \emph{preparado} nele. Para isso existem os
+\termo{recorders}{Gravadores: classes do módulo runtime cujas chamadas,
+feitas durante o build, são gravadas e reproduzidas na subida da
+aplicação.}. No build, a extensão recebe um proxy do recorder que grava
+as chamadas; segundo o guia, essa gravação é usada para gerar bytecode que
+faz a mesma sequência de chamadas em runtime. O momento da reprodução
+depende da anotação:
+
+\begin{description}
+\item[\texttt{@Record(STATIC\_INIT)}] O bytecode roda num método de
+  inicialização estática da classe principal gerada. Nesse momento é
+  proibido ler configuração de runtime.
+\item[\texttt{@Record(RUNTIME\_INIT)}] O bytecode roda a partir do
+  \texttt{main} da aplicação, e aí a configuração de runtime já está
+  disponível.
+\end{description}
+
+A divisão faz sentido à luz do executável nativo. O guia
+\citetitle{doc:graalvm-native-basics} diz que, se uma classe é
+inicializada em build time, os campos \texttt{static} dela são salvos no
+binário, e o primeiro uso em runtime não dispara inicialização. Tudo o
+que roda em STATIC\_INIT pode, portanto, virar parte do executável já
+pronto; ler uma variável de ambiente ali significaria congelar o valor
+da máquina de build. O capítulo~\ref{cap:decisoes-quarkus} volta a isso.
+
+\subsection*{Vendo o build trabalhar}
+
+O guia lista duas opções úteis para curiosos:
+\texttt{-Dquarkus.debug.print-startup-times=true}, passado ao
+\emph{iniciar} a aplicação, imprime quanto cada tarefa de startup gravada
+por um recorder leva em runtime, e
+\texttt{-Dquarkus.builder.graph-output=build.dot}, passado no build, grava o
+grafo de dependências entre os passos. Rodar as duas uma vez num projeto
+seu é a forma mais rápida de entender o que cada extensão faz.

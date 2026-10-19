@@ -1,0 +1,94 @@
+\section{Portas e adaptadores ligados por CDI}
+\label{sec:hexagonal-cdi}
+
+A arquitetura hexagonal de Alistair Cockburn
+(\citetitle{artigo:cockburn-hexagonal}, 2005) chega à mesma regra por
+outro caminho. A intenção declarada é permitir que a aplicação seja
+\enquote{equally be driven by users, programs, automated test or batch
+scripts} e desenvolvida e testada isolada dos dispositivos e bancos que
+vai usar. Uma \termo{porta}{\emph{Port}, no vocabulário de
+\emph{ports \& adapters}: o ponto onde a aplicação conversa com o mundo
+de fora, definido como uma API.} identifica uma conversa com propósito;
+um \termo{adaptador}{\emph{Adapter}: converte a API da porta nos sinais
+de um dispositivo concreto (HTTP, SQL, fila) e vice-versa.} traduz essa
+conversa para uma tecnologia. No Quarkus, o CDI é quem liga uma ponta à
+outra.
+
+\paragraph{A porta e o caso de uso.}
+Em \texttt{aplicacao.porta}, uma interface; em \texttt{aplicacao}, o
+caso de uso que depende dela pelo construtor, sem anotação:
+
+\begin{lstlisting}[language=Java]
+package br.com.turma.pedidos.aplicacao.porta;
+public interface Pedidos {                 // porta de saída
+    Optional<Pedido> porId(PedidoId id);
+    void salvar(Pedido pedido);
+}
+
+package br.com.turma.pedidos.aplicacao;
+public final class FecharPedido {          // caso de uso, Java puro
+    private final Pedidos pedidos;
+    private final CobrancaGateway cobranca;
+    public FecharPedido(Pedidos pedidos, CobrancaGateway cobranca) {
+        this.pedidos = pedidos; this.cobranca = cobranca;
+    }
+    public Pedido executar(PedidoId id) { /* regras em dominio */ }
+}
+\end{lstlisting}
+
+\paragraph{O adaptador e o producer.}
+Em \texttt{adaptador.saida.persistencia}, o adaptador é um bean comum que
+implementa a porta. Em \texttt{config}, um producer cria o caso de uso:
+
+\begin{lstlisting}[language=Java]
+package br.com.turma.pedidos.adaptador.saida.persistencia;
+@ApplicationScoped
+class PedidosPanache implements Pedidos { /* usa PedidoRepository */ }
+
+package br.com.turma.pedidos.config;
+@ApplicationScoped
+class CasosDeUso {
+    @Produces @Singleton
+    FecharPedido fecharPedido(Pedidos p, CobrancaGateway c) {
+        return new FecharPedido(p, c);
+    }
+}
+\end{lstlisting}
+
+\paragraph{Por que \texttt{@Singleton} no producer.}
+O guia \citetitle{doc:quarkus-cdi} recomenda \texttt{@ApplicationScoped}
+por padrão, a menos que haja um bom motivo para \texttt{@Singleton}. A
+diferença é o \termo{client proxy}{Objeto gerado que fica no lugar do bean
+injetado e delega para a instância real, criada sob demanda.}: um bean
+\texttt{@Singleton} não tem proxy. Aqui há um motivo: \texttt{FecharPedido}
+é \texttt{final}, e o guia \citetitle{doc:quarkus-cdi-reference} explica
+que classes \texttt{final} não podem ser \enquote{proxiadas}, a não ser que
+o Quarkus transforme o bytecode removendo o \texttt{final}. Um caso de uso
+imutável e sem estado não ganha nada com o proxy. O preço, segundo o
+mesmo guia: um bean \texttt{@Singleton} não pode ser substituído por
+\texttt{QuarkusMock}; num \texttt{@QuarkusTest} use \texttt{@InjectMock}
+com \texttt{@MockitoConfig(convertScopes = true)}.
+
+\paragraph{Por que isso combina com o build time.}
+Toda a ligação é estática e visível no índice: o tipo da porta, o bean
+que a implementa e o producer. O guia de CDI diz que exatamente um bean
+deve ser atribuível a cada ponto de injeção, senão \enquote{the build
+fails} (com \texttt{UnsatisfiedResolutionException} ou
+\texttt{AmbiguousResolutionException}). Faltou um adaptador ou sobrou um:
+você descobre no build, não na primeira requisição. Note também que nada é
+\texttt{private} onde o container precisa entrar: injeção pelo construtor
+(ou pelo parâmetro do producer), como recomenda o guia
+\citetitle{doc:quarkus-cdi-reference} e como a
+seção~\ref{sec:gizmo} explicou em bytecode.
+
+\paragraph{Trade-offs.}
+\begin{itemize}
+\item O producer é código a mais para manter. Num serviço pequeno,
+  anotar \texttt{FecharPedido} com \texttt{@ApplicationScoped} é uma
+  troca razoável; registre a decisão.
+\item Uma porta por adaptador pode virar burocracia. Crie portas onde
+  existe uma segunda implementação real ou provável: o dublê de teste
+  (Parte~I) já conta como segunda implementação.
+\item Separar domínio e entidade JPA significa mapear um para o outro.
+  A próxima seção discute quando isso vale.
+\end{itemize}

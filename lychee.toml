@@ -1,0 +1,45 @@
+# Configuração do lychee (job `links` do CI).
+accept = ["200", "429"]
+timeout = 30
+max_retries = 3
+
+# Exclusões por domínio: o blog da Netflix (e o espelho no Medium) responde 403
+# a IPs de CI (bloqueio de bot) embora as páginas existam. Esses links são
+# verificados manualmente na etapa de peer review. 403 NÃO é aceito globalmente.
+exclude = [
+  '^https://netflixtechblog\.com/',
+  '^https://netflixtechblog\.medium\.com/',
+  '^https://techblog\.netflix\.com/',
+  # O'Reilly responde 403 a acesso automatizado; a página do livro foi
+  # conferida pelo índice de busca (título, autores, edição de 2016).
+  '^https://www\.oreilly\.com/',
+  # Loja do Grupo A (Bookman, edições PT): responde 403 "Loja em manutenção"
+  # a clientes que não são navegador; com navegador a página abre (conferida
+  # em 2026-10-19). Verificado manualmente no peer review.
+  '^https://loja\.grupoa\.com\.br/',
+  # Blog da JetBrains: WAF bloqueia robôs (AWS WAF responde 403/202);
+  # verificado via Wayback e manualmente no peer review. O JetBrains Guide
+  # (www.jetbrains.com/guide) abre normalmente e continua sendo checado.
+  '^https://blog\.jetbrains\.com/',
+  # Repositório de teses da USP estoura o tempo a partir dos runners do GitHub;
+  # links conferidos manualmente no peer review (ambas as entradas também têm
+  # DOI quando disponível).
+  '^https://teses\.usp\.br/',
+  # Repositório LUME da UFRGS: estoura o tempo a partir dos runners do GitHub
+  # (falhou em 2 de 3 execuções em 2026-10-19), mas abre normalmente fora do
+  # CI (HTTP 200, título conferido). Verificado manualmente no peer review.
+  '^https://lume\.ufrgs\.br/',
+]
+
+# A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam
+# para ela. Em vez de excluí-los, o lychee checa o registro do mesmo DOI no
+# Crossref: se o DOI não existir, o link falha.
+#
+# O mesmo vale para IEEE (10.1109, responde 202/418 a robôs), Elsevier
+# (10.1016) e Wiley (10.1002, responde 403): o DOI é conferido no Crossref.
+remap = [
+  '^https://doi\.org/(10\.1145/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1109/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1016/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1002/.+)$ https://api.crossref.org/works/$1',
+]

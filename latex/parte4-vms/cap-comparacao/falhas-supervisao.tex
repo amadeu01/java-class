@@ -1,0 +1,85 @@
+\section{Falhas: exceções ou \emph{let it crash}}
+\label{sec:vms-falhas}
+
+\paragraph{A filosofia do Erlang.}
+A tese de Joe Armstrong (\citetitle{paper:armstrong-thesis-reliable-systems},
+KTH, 2003) parte de uma premissa: sistemas grandes vão para produção
+\emph{com} erros, por mais que tenham sido testados. A resposta não é
+evitar todo erro, e sim isolar o estrago. Na seção~2.4.3, o isolamento
+tem consequências diretas: processos não compartilham nada, mensagem é o
+único jeito de passar dados e, por isso, a troca de mensagens é
+assíncrona. Na seção~4.3, a filosofia vira quatro lemas:
+\begin{quote}
+Let some other process do the error recovery. If you can't do what you
+want to do, die. Let it crash. Do not program defensively.
+\end{quote}
+
+\paragraph{Exceção não é erro.}
+A seção~4.4 da tese faz uma distinção que vale para Java também:
+\enquote{exceptions occur when the run-time system does not know what to
+do} e \enquote{errors occur when the programmer doesn't know what to do}.
+Abrir um arquivo que não existe gera uma exceção, mas, se o programador
+previu o caso e sabe o que fazer, não é erro: ele trata. O
+\termo{let it crash}{Deixe quebrar: quando o código não sabe o que fazer,
+o processo termina e outro processo cuida da recuperação.} vale para o
+segundo caso, o que ninguém previu. Em vez de um \texttt{catch} genérico
+que tenta seguir com estado duvidoso, o processo morre limpo.
+
+\paragraph{Links e supervisores.}
+Morrer só é seguro se alguém percebe. A documentação de processos diz que
+dois processos podem ser ligados por um \emph{link}, bidirecional, e que
+um processo que termina \enquote{will send exit signals to all processes
+and ports that it is linked to} (\citetitle{doc:erlang-processes}). Sobre
+isso o OTP monta os supervisores. Segundo \citetitle{doc:erlang-supervisor},
+um supervisor é \enquote{responsible for starting, stopping, and
+monitoring its child processes}, e supervisores supervisionam outros
+supervisores, formando uma
+\termo{supervision tree}{Árvore de supervisão: supervisores cujos filhos
+são processos de trabalho ou outros supervisores.}. A página lista três
+estratégias principais de reinício\footnote{A página também descreve
+\texttt{simple\_one\_for\_one}, um \texttt{one\_for\_one} simplificado em
+que todos os filhos são instâncias, adicionadas dinamicamente, do mesmo
+processo.}:
+\begin{description}
+\item[\texttt{one\_for\_one}] só o filho que terminou é reiniciado;
+\item[\texttt{one\_for\_all}] os outros filhos também são terminados e
+  todos são reiniciados;
+\item[\texttt{rest\_for\_one}] terminam e reiniciam o filho e os que
+  foram iniciados depois dele.
+\end{description}
+E um freio: se houver mais de \texttt{intensity} reinícios em
+\texttt{period} segundos, o supervisor termina todos os filhos e depois a
+si mesmo, e o problema sobe um nível na árvore. Reiniciar em laço para
+sempre não é recuperação.
+
+\paragraph{Java: a exceção mata a thread, não o estado.}
+A JLS (\citetitle{doc:jls25}, §11.3) diz o que acontece com uma exceção
+que ninguém trata: a thread que a lançou termina, depois de executar os
+\texttt{finally}, e o \emph{uncaught exception handler} é chamado. As
+outras threads seguem. Como o heap é compartilhado
+(seção~\ref{sec:vms-concorrencia}), os objetos que a thread estava
+alterando continuam lá, visíveis para as outras, talvez pela metade. O
+\enquote{morrer limpo} do Erlang depende de o processo levar o próprio
+estado junto; em Java, isso só vale se você desenhar assim.
+
+\paragraph{O que o Java tem de parecido.}
+\begin{itemize}
+\item \emph{Concorrência estruturada.} O \citetitle{doc:jep505} (prévia
+  no JDK~25) trata um grupo de subtarefas como uma unidade, com
+  tratamento de erro e cancelamento juntos, e diz que ideias como
+  \enquote{Erlang's hierarchical supervisors} informaram o desenho. É
+  uma API em prévia: precisa de \texttt{--enable-preview} e pode mudar.
+\item \emph{Padrões de resiliência.} Timeout, retry, circuit breaker e
+  bulkhead (seção~\ref{sec:resiliencia-quarkus}) limitam o estrago de uma
+  dependência que falha. O bulkhead é o parente mais próximo do
+  isolamento: separa recursos para que um cliente lento não leve os
+  outros junto.
+\item \emph{Supervisão fora da JVM.} No Kubernetes, quando o container
+  falha o \emph{liveness probe} além da tolerância configurada,
+  \enquote{the kubelet restarts that container}
+  (\citetitle{doc:k8s-probes}). O Quarkus expõe esses probes pelo
+  \citetitle{doc:quarkus-health}. É um supervisor \texttt{one\_for\_one}
+  com granularidade de container, não de tarefa.
+\end{itemize}
+O capítulo~\ref{cap:decisoes-vm} volta a essas pontes e às diferenças
+que ficam.

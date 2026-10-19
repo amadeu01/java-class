@@ -1,0 +1,70 @@
+\chapter{Glossário inglês--português}
+\label{ap:glossario}
+
+Os termos em inglês explicados em nota de rodapé ao longo da apostila (só
+eles), em ordem alfabética do inglês. Quando o texto usa o termo em
+português, ele está na segunda coluna.
+
+\small
+\begin{longtable}{@{}>{\raggedright}p{3.9cm} >{\raggedright}p{3.6cm} >{\raggedright\arraybackslash}p{6.3cm}@{}}
+\toprule
+Inglês & Português & Em uma linha \\
+\midrule \endhead
+\textit{accessors} & métodos de acesso & Métodos de leitura; num record, \texttt{x()} e não \texttt{getX()} \\
+\textit{adapter} & adaptador & Converte a API da porta para um dispositivo concreto (HTTP, SQL, fila) \\
+\textit{AOT (ahead-of-time)} & antecipado & Compilar ou preparar antes de executar, não durante \\
+\textit{augmentation} & aumento & Fase do build do Quarkus em que as extensões geram o código de runtime \\
+\textit{backoff} & (sem tradução usual) & Espera crescente entre uma tentativa e a próxima \\
+\textit{BEAM} & (nome próprio) & A máquina virtual do Erlang \\
+\textit{blast radius} & raio de explosão & O tanto do sistema e dos usuários que um experimento pode afetar \\
+\textit{bootstrap} & método de inicialização & Chamado uma vez, na primeira execução de um \texttt{invokedynamic} \\
+\textit{build items} & itens do build & Objetos que um passo do build produz e outros consomem \\
+\textit{build steps} & passos do build & Métodos \texttt{@BuildStep} de uma extensão do Quarkus \\
+\textit{bulkhead} & antepara & Limitar os recursos de cada dependência para isolar falhas \\
+\textit{class loader} & carregador de classes & Encontra os bytes de uma classe e a define na JVM \\
+\textit{CLI (Common Language Infrastructure)} & infraestrutura comum de linguagem & Padrão de VM multilinguagem da plataforma .NET \\
+\textit{client proxy} & proxy do cliente & Objeto gerado no lugar do bean injetado, que delega à instância real \\
+\textit{closed-world assumption} & suposição de mundo fechado & Todo o código que pode executar é conhecido no build \\
+\textit{code smells} & cheiros de código & Sinais de código mal estruturado, mesmo que funcione \\
+\textit{constant pool} & tabela de constantes & Nomes, strings e números de um \texttt{.class} \\
+\textit{coordinated omission} & omissão coordenada & O gerador de carga espera a resposta lenta e deixa de medir a espera real \\
+\textit{data race} & corrida de dados & Acessos concorrentes, ao menos um de escrita, sem happens-before \\
+\textit{deoptimization} & desotimização & Trocar, em execução, código otimizado por código não otimizado \\
+\textit{escape analysis} & análise de escape & Descobre se um objeto sai do método ou da thread que o criou \\
+\textit{event loop} & laço de eventos & Thread que atende muitas conexões sem bloquear \\
+\textit{fixture} & (sem tradução usual) & Estado inicial conhecido de que o teste precisa \\
+\textit{garbage collector (GC)} & coletor de lixo & Recupera a memória de objetos que não são mais alcançáveis \\
+\textit{Gizmo} & (nome próprio) & Biblioteca de geração de bytecode do Quarkus \\
+\textit{happens-before} & acontece antes & Relação que garante visibilidade e ordem entre ações de threads \\
+\textit{hot code loading} & carga de código a quente & Trocar um módulo com o sistema rodando \\
+\textit{inline cache} & cache em linha & Resultado da busca de método guardado no ponto de chamada \\
+\textit{inlining} & expansão em linha & Copiar o corpo do método chamado para dentro do chamador \\
+\textit{Jandex} & (nome próprio) & Índice de arquivos \texttt{.class} da SmallRye \\
+\textit{JIT (just-in-time)} & compilação durante a execução & Compila com informação de como o programa está rodando \\
+\textit{let it crash} & deixe quebrar & O processo termina e outro cuida da recuperação \\
+\textit{load shedding} & descarte de carga & Descartar requisições menos importantes sob sobrecarga \\
+\textit{mailbox} & caixa de correio & Fila de mensagens de um processo Erlang \\
+\textit{mock} & (sem tradução usual) & Dublê que verifica as chamadas que recebe \\
+\textit{p-code (pseudo-code)} & pseudocódigo & Instruções da P-machine do Pascal, executadas por interpretador \\
+\textit{partial evaluation} & avaliação parcial & Especializar um programa para entradas já conhecidas \\
+\textit{PGO (profile-guided optimization)} & otimização guiada por perfil & AOT guiado por um perfil de uma execução de treino \\
+\textit{pinned} & presa & Virtual thread que não consegue desmontar da carrier thread \\
+\textit{polymorphic inline caches (PICs)} & caches em linha polimórficos & Inline cache com uma entrada por tipo de receptor \\
+\textit{port} & porta & Ponto em que a aplicação conversa com o mundo de fora \\
+\textit{preview} & prévia & Recurso para experimentação, com \texttt{-{}-enable-preview} \\
+\textit{recorders} & gravadores & Chamadas gravadas no build e reproduzidas na subida da aplicação \\
+\textit{reductions} & reduções & Unidades de trabalho de um processo Erlang \\
+\textit{RSS (resident set size)} & memória residente & Memória física de fato ocupada pelo processo \\
+\textit{safepoints} & pontos seguros & Pontos em que a JVM conhece o estado da thread e pode pará-la \\
+\textit{schedulers} & escalonadores & Threads do SO que executam processos Erlang \\
+\textit{steady state} & regime estável & Desempenho depois do aquecimento, sem tendência \\
+\textit{stub} & (sem tradução usual) & Dublê que devolve respostas prontas \\
+\textit{supervision tree} & árvore de supervisão & Supervisores e seus processos filhos \\
+\textit{SUT (system under test)} & sistema sob teste & O código que o teste está exercitando \\
+\textit{throughput} & vazão & Trabalho útil por unidade de tempo: requisições por segundo num serviço; em GC, fração do tempo fora da coleta \\
+\textit{tiered compilation} & compilação em camadas & Interpretador, depois C1 com perfil, depois C2 \\
+\textit{uncommon trap} & (sem tradução usual) & Devolve o controle ao runtime num caminho tido como impossível \\
+\textit{unmount} & desmontar & A virtual thread sai da carrier thread, que fica livre \\
+\bottomrule
+\end{longtable}
+\normalsize

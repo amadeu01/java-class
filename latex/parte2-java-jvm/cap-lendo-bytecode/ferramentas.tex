@@ -1,0 +1,48 @@
+\section{Ferramentas para olhar a JVM}
+\label{sec:ferramentas}
+
+O \texttt{javap} mostra o que o \texttt{javac} gerou. Para ver o que a
+JVM faz com isso em execução, estas são as ferramentas, todas com
+documentação oficial:
+
+\small
+\begin{longtable}{@{}p{3.2cm} p{9cm}@{}}
+\toprule
+Ferramenta & Para que serve \\
+\midrule \endhead
+\texttt{javap} & Desmonta \texttt{.class}: \texttt{-c}, \texttt{-p},
+  \texttt{-v} (\citetitle{doc:javap}) \\
+\texttt{-XX:+\allowbreak PrintCompilation} & Uma linha a cada método compilado pelo
+  JIT (\citetitle{doc:java-cmd}) \\
+\texttt{-XX:+\allowbreak LogCompilation} & Log detalhado de compilação em
+  \texttt{hotspot\_pid<pid>.log} (o manual ainda diz \texttt{hotspot.log});
+  exige \texttt{-XX:+UnlockDiagnosticVMOptions} \\
+JITWatch & Analisador e visualizador do log de compilação da HotSpot:
+  inlining, métodos quentes, bytecode e assembly
+  (\citetitle{doc:jitwatch}) \\
+JFR & Flight Recorder: grava eventos da aplicação, da JVM e do sistema
+  operacional num arquivo, com meta de no máximo 1\% de overhead
+  (\citetitle{doc:jep328}, JDK~11). Inicie com
+  \texttt{-XX:StartFlightRecording} ou \texttt{jcmd <pid> JFR.start} \\
+\texttt{jfr} & Lê gravações: \texttt{print}, \texttt{summary},
+  \texttt{view} (\citetitle{doc:jfr-tool}) \\
+\texttt{jcmd} & Comandos para uma JVM rodando: \texttt{JFR.start},
+  \texttt{Thread.dump\_to\_file}, \texttt{GC.heap\_info},
+  \texttt{VM.flags}, \texttt{Compiler.queue} (\citetitle{doc:jcmd}) \\
+JMC & JDK Mission Control, projeto do OpenJDK com ferramentas gráficas
+  que abrem gravações do JFR (\citetitle{doc:jmc}) \\
+async-profiler & Profiler por amostragem de CPU e alocação, que segundo
+  a documentação não sofre de \emph{safepoint bias}; gera flame graphs
+  (\citetitle{doc:async-profiler}) \\
+JMH & Harness para microbenchmarks na JVM (\citetitle{doc:jmh}) \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Por onde começar.}
+Para \enquote{está lento em produção}, comece pelo JFR: o overhead é
+baixo, ele já vem no JDK e cobre GC, alocação, locks e CPU. Para
+\enquote{este trecho ficou mais rápido?}, use JMH, nunca um laço com
+\texttt{nanoTime}. Para \enquote{por que o JIT não otimizou este
+método?}, \texttt{PrintCompilation} e depois JITWatch. Para \enquote{o
+que exatamente o \texttt{javac} gerou?}, \texttt{javap}.

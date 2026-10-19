@@ -1,0 +1,64 @@
+\section{\texttt{invokedynamic}: concatenação e lambdas}
+\label{sec:invokedynamic}
+
+As outras instruções de chamada sabem, em tempo de compilação, qual
+método chamar. O \texttt{invokedynamic} adia essa decisão: na primeira
+execução, a JVM chama um \emph{método de bootstrap}, que devolve o código
+a usar naquele ponto; nas execuções seguintes, a mesma instrução reutiliza
+o resultado, sem chamar o bootstrap de novo (JVMS §5.4.3.6).
+
+\paragraph{Concatenação de strings (JDK~9+).}
+Na listagem de \texttt{ConcatenacaoStrings}
+(seção~\ref{sec:javap-basico}), \texttt{"Olá, " + nome + "! Idade: " +
+idade} virou \emph{uma} instrução \texttt{invokedynamic}, de nome
+\texttt{makeConcatWithConstants} e descritor
+\nolinkurl{(Ljava/lang/String;I)Ljava/lang/String;}. Só os
+valores variáveis vão na pilha; o texto fixo vai como receita no
+argumento do bootstrap, com \texttt{\textbackslash u0001} marcando onde
+entra cada valor (veja \texttt{PoolConstantes}, na seção anterior). O
+\citetitle{doc:jep280} explica o motivo: até o JDK~8 o \texttt{javac}
+gerava uma cadeia de \texttt{StringBuilder.append}, e as otimizações do
+JIT para reconhecer essa cadeia eram frágeis. Com \texttt{invokedynamic},
+a estratégia fica na biblioteca do JDK e pode melhorar sem recompilar o
+seu código.
+
+\emph{Bug ou mito:} o conselho \enquote{troque \texttt{+} por
+\texttt{StringBuilder}} vem da era do JDK~8. Numa expressão única, o
+\texttt{+} já é uma chamada só. Dentro de um laço que acumula numa
+\texttt{String}, cada volta ainda cria uma \texttt{String} nova, e aí o
+\texttt{StringBuilder} continua sendo a escolha (o tema do item 63 do
+\citetitle{livro:bloch2017}).
+
+\paragraph{Lambdas.}
+\lstinputlisting[language=Java]{generated/source/LambdaInvokeDynamic.java}
+
+\inputbytecode{LambdaInvokeDynamic}
+
+\begin{itemize}
+\item O corpo do lambda virou um método privado e sintético,
+  \texttt{lambda\$dobro\$0}. Sem \texttt{-p}, o \texttt{javap} não o
+  mostra.
+\item Em \texttt{dobro}, uma única instrução: \texttt{invokedynamic}
+  \nolinkurl{apply:()Ljava/util/function/Function;}. Com \texttt{-v}, o bootstrap
+  aparece como \texttt{LambdaMetafactory.metafactory}, que recebe uma
+  referência a \texttt{lambda\$dobro\$0}.
+\item Não existe \texttt{LambdaInvokeDynamic\$1.class} no JAR, como
+  existiria com uma classe anônima. Segundo o \citetitle{doc:jep371}
+  (JDK~15), a \texttt{LambdaMetafactory} define em tempo de execução uma
+  \emph{hidden class} que implementa a interface funcional.
+\item Dentro de \texttt{lambda\$dobro\$0}: \texttt{intValue}, \texttt{imul},
+  \texttt{Integer.valueOf}. Um \texttt{Function<Integer,\allowbreak Integer>}
+  desembrulha e reembrulha a cada chamada; a seção seguinte mostra o
+  custo e o risco disso.
+\end{itemize}
+
+\paragraph{Ponte com Quarkus.}
+Executáveis nativos do Quarkus são gerados pelo GraalVM Native Image,
+que trabalha com a hipótese de mundo fechado: todo o código é conhecido
+em tempo de build. O \citetitle{doc:graalvm-compat} diz que
+\texttt{invokedynamic} e method handles em geral são incompatíveis com
+essa hipótese, porque podem introduzir chamadas em tempo de execução, mas
+que os usos gerados pelo \texttt{javac} para lambdas e concatenação de
+strings são suportados, porque não mudam o método chamado. Ou seja:
+lambdas e \texttt{+} estão liberados no nativo; geração dinâmica de
+código com method handles, não. A Parte~III detalha.

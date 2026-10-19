@@ -1,0 +1,105 @@
+\section{Modo JVM ou executável nativo}
+\label{sec:jvm-vs-nativo}
+
+O GraalVM Native Image compila a aplicação inteira, antes da execução,
+num executável. O guia \citetitle{doc:graalvm-native-basics} dá a
+restrição central: depois de construído o binário, nenhum elemento novo
+pode ser adicionado em runtime, por exemplo por class loading. A
+documentação chama isso de \termo{closed-world assumption}{Suposição de
+mundo fechado: tudo o que pode executar precisa ser conhecido no build.
+Só os elementos alcançáveis pela análise estática entram no binário.}.
+Compare com a seção~\ref{sec:class-loading}: na HotSpot, uma classe pode
+ser carregada a qualquer momento; no nativo, não existe class loading
+dinâmico, e o \emph{image heap} já traz objetos criados durante o build.
+
+O que muda em relação à Parte~II:
+\begin{itemize}
+\item O código é compilado antes da execução, não pelo JIT da HotSpot
+  em runtime (seção~\ref{sec:jit}). O guia do Quarkus atribui a isso a
+  diferença de throughput: em cargas longas, o JIT pode superar o
+  nativo.
+\item O GC padrão é outro (seção~\ref{sec:memoria-container}).
+\item Reflexão, recursos e proxies precisam ser declarados no build
+  (seção~\ref{sec:reflexao-nativo}).
+\end{itemize}
+
+\subsection*{O que o fornecedor mediu}
+
+O guia \citetitle{doc:quarkus-building-native} publica a tabela abaixo,
+atribuída ao benchmark \emph{tuned} do perf-lab do Quarkus de
+21/04/2026: Quarkus~3.34.3, JDK~25.0.2, GraalVM~25.0.2-graalce, 4~CPUs,
+\texttt{-Xmx512m}. A linha nativa leva o rótulo \enquote{Mandrel},
+embora a configuração cite o GraalVM CE; a página não explica a
+diferença. O guia não nomeia a aplicação. Os resultados dessa data
+ficam em
+\url{https://github.com/quarkusio/benchmarks/tree/main/results/spring-quarkus-perf-comparison/2026-04-21_09-26-13},
+o que aponta para o repositório \citetitle{doc:quarkus-perf-comparison}:
+um serviço REST completo, com JPA/Hibernate sobre PostgreSQL e, na
+estratégia \emph{tuned}, métricas e OpenTelemetry. No comando de exemplo
+do repositório, a aplicação fica em quatro núcleos fixos
+(\texttt{--cpus-app 0,1,2,3}), separada do banco e do gerador de carga.
+\textbf{Números do fornecedor.}
+
+\small
+\begin{longtable}{@{}p{4cm} p{2.4cm} p{3.6cm} p{1.8cm}@{}}
+\toprule
+Modo & 1ª requisição & Throughput de pico & RSS \\
+\midrule \endhead
+JVM (\emph{fast-jar}) & 4417~ms & 13\,265~tps (referência) & 304~MiB \\
+JVM + cache AOT (Leyden) & 1859~ms & 12\,389~tps ($\approx$7\% abaixo) &
+  240~MiB \\
+Nativo (Mandrel) & 581~ms & 5\,411~tps ($\approx$59\% abaixo) & 95~MiB \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+A \enquote{1ª requisição} é o \emph{time to first request}: do comando
+de start até a primeira resposta com sucesso, não o \enquote{started
+in} do log (guia \citetitle{doc:quarkus-performance-measure}). Isso
+explica por que 4,4~s não contradiz o \enquote{sub-second startup} que o
+guia \citetitle{doc:quarkus-building-native} atribui ao modo JVM: nessa
+página, o \emph{cold start} do
+modo JVM vai de cerca de 0,4~s (um REST pequeno) a cerca de 3~s (um CRUD
+grande), vindo de outros posts do blog, e a medição do perf-lab inclui
+subir o serviço completo e atender a primeira requisição.
+
+Leia a tabela com a Parte~II na cabeça. O nativo ganha em tempo até a
+primeira requisição e em memória; o JVM ganha em throughput de pico, que
+é onde o JIT, compilando os métodos quentes com o perfil da execução
+(seção~\ref{sec:jit}), faz diferença. A linha do meio usa o cache AOT
+do Projeto Leyden, a mesma família de recursos dos JEPs~483 e 514
+(seção~\ref{sec:class-loading}); o guia não detalha as opções usadas.
+É parte do ganho de startup sem sair da HotSpot. Na mesma página, sem atribuir a fonte, o
+guia estima o build nativo em 3 a 10 minutos e 4 a 8~GB de RAM na
+máquina de build. Tamanhos de imagem e tempos de \emph{cold start} da
+página vêm de outros posts do blog, com outras condições; por isso não
+entram na tabela.
+
+\subsection*{A decisão}
+
+O guia resume: \enquote{Start with JVM mode. Move to native when you
+have a concrete need.}
+
+\begin{description}
+\item[Quando escolher JVM] Serviço de longa duração em que o throughput
+  de pico importa; build rápido no ciclo de desenvolvimento e no CI; uso
+  intenso de reflexão ou class loading dinâmico, inclusive por
+  bibliotecas sem extensão Quarkus.
+\item[Quando escolher nativo] Startup é crítico (serverless, CLI,
+  \emph{scale-to-zero}, segundo o guia); memória por réplica é o custo
+  dominante; você quer a menor imagem possível.
+\item[O que medir] Seguindo o guia \citetitle{doc:quarkus-performance-measure}:
+  \emph{time to first request} (do comando de start até a primeira
+  resposta 200, não o tempo que o framework imprime no log), RSS com
+  \texttt{ps} ou \texttt{pmap} (o guia pede explicitamente para
+  \emph{não} usar \texttt{docker stats}), throughput e p99 sob o teste
+  de carga da Parte~I, e o tempo de build no CI. Compare as três
+  opções da tabela no \emph{seu} serviço antes de decidir.
+\end{description}
+
+\paragraph{Mandrel ou GraalVM.}
+O mesmo guia descreve o Mandrel como uma distribuição \emph{downstream}
+do GraalVM CE, construída sobre o OpenJDK padrão e sem suporte a
+programação poliglota, e o recomenda para alvos Linux em container.
+Para builds com \texttt{-Dnative} sem GraalVM instalado, há
+\texttt{-Dquarkus.native.container-build=true}.

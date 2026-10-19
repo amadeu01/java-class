@@ -1,0 +1,28 @@
+\section{Desafios práticos}
+
+\desafio{Rode \texttt{javap -v -p} em \texttt{RecordExemplo\$Ponto} e
+ache a seção \texttt{BootstrapMethods}. Quais argumentos o
+\texttt{ObjectMethods.bootstrap} recebe? O que muda neles se você
+acrescentar um terceiro componente ao record?}
+
+\desafio{Escolha uma classe de DTO do seu projeto que tenha
+\texttt{equals} e \texttt{hashCode} escritos à mão (ou via Lombok).
+Reescreva como record e liste o que deixou de ser responsabilidade sua.
+Algum componente é uma coleção mutável?}
+
+\desafio{Acrescente \texttt{record Triangulo(\ldots) implements Forma} a
+\texttt{SealedForma} e adicione-o ao \texttt{permits}. Compile sem mexer
+no \texttt{switch} e leia a mensagem de erro. Depois mova
+\texttt{Forma} e seus records para outra classe de nível superior,
+acrescente \texttt{Triangulo} lá e recompile só essa classe: o que
+acontece ao chamar \texttt{area} com um triângulo?}
+
+\desafio{No \texttt{PatternSwitch}, troque a ordem dos dois
+\texttt{case Integer}. Que erro o \texttt{javac} dá, e por que ele
+existe?}
+
+\desafio{Encontre no seu código um pool de threads usado para chamadas
+bloqueantes (HTTP, JDBC). Escreva, em texto, como seria a versão com
+\texttt{newVirtualThreadPerTaskExecutor} e um \texttt{Semaphore}, e em
+qual versão do JDK o seu serviço roda: isso muda o que fazer com os
+blocos \texttt{synchronized}?}

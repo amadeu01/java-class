@@ -1,0 +1,20 @@
+\section{Desafios práticos}
+
+\desafio{Rode um benchmark do Renaissance (ou do DaCapo) dez vezes, cada
+vez numa JVM nova, e registre o tempo de cada iteração. Calcule o
+\enquote{melhor de 10} e um intervalo de confiança de 95\% para a média
+do steady state. Repita com outro GC. As duas formas de resumir dão a
+mesma conclusão?}
+
+\desafio{Com os dados do desafio anterior, faça um gráfico do tempo por
+iteração dentro de uma mesma JVM. Onde termina o aquecimento? Existe
+mesmo um patamar, ou o tempo continua mudando, como em Barrett et al.?}
+
+\desafio{Escolha um post de blog ou slide que compare dois frameworks ou
+VMs e passe o checklist da seção~\ref{sec:como-ler-benchmark}. Quantas
+das sete perguntas o material responde?}
+
+\desafio{Refaça a medição de startup e RSS da seção~\ref{sec:jvm-vs-nativo}
+no seu serviço, seguindo a metodologia de startup de Georges et al.
+(uma JVM nova por medição, várias medições). Quanto o seu intervalo de
+confiança é largo comparado à diferença entre JVM e nativo?}

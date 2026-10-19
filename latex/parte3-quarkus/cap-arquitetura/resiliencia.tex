@@ -1,0 +1,47 @@
+\section{Resiliência nos adaptadores de saída}
+\label{sec:resiliencia-quarkus}
+
+A aula~2 e o capítulo~\ref{cap:ponte-quarkus} apresentaram retry,
+timeout, fallback, circuit breaker e bulkhead, e o SmallRye Fault
+Tolerance que o Quarkus usa. A pergunta arquitetural é \emph{onde}
+colocar as anotações \texttt{@Retry}, \texttt{@Timeout},
+\texttt{@Fallback}, \texttt{@CircuitBreaker} e \texttt{@Bulkhead} que o
+guia \citetitle{doc:quarkus-fault-tolerance} mostra.
+
+\paragraph{Na borda, perto da chamada que falha.}
+A falha de rede é um detalhe do adaptador: o domínio não sabe que a
+cobrança é HTTP. As anotações vão no adaptador de saída que implementa a
+porta:
+
+\begin{lstlisting}[language=Java]
+package br.com.turma.pedidos.adaptador.saida.cobranca;
+@ApplicationScoped
+class CobrancaHttp implements CobrancaGateway {
+    @Inject @RestClient CobrancaApi api;   // package-private, sem reflexão
+
+    @Timeout(800) @Retry(maxRetries = 2) @CircuitBreaker
+    public ResultadoCobranca cobrar(Pedido p) { /* converte e chama api */ }
+}
+\end{lstlisting}
+
+\paragraph{O que a porta devolve quando tudo falha.}
+O \texttt{@Fallback} é uma decisão de negócio disfarçada de técnica:
+\enquote{cobrança indisponível} vira pedido pendente, erro para o usuário
+ou fila? Exponha esse resultado no tipo de retorno da porta
+(\texttt{ResultadoCobranca} com um caso \texttt{Indisponivel}, por
+exemplo, com um \texttt{sealed interface} da
+seção~\ref{sec:sealed-pattern}), para que o caso de uso decida e o teste
+unitário cubra a decisão.
+
+\paragraph{Bulkhead e virtual threads.}
+O bulkhead limita execuções concorrentes. Com virtual threads, a regra
+da seção~\ref{sec:virtual-threads} é a mesma: não limite com pool de
+threads, limite o recurso escasso. O bulkhead no adaptador é o lugar
+natural para isso.
+
+\paragraph{Testando.}
+Os padrões da aula~2 se testam no adaptador: um \texttt{@QuarkusTest}
+com o serviço externo simulado (por exemplo, com o Toxiproxy da aula~2)
+mostra se timeout e circuit breaker se comportam como configurado. O
+caso de uso, por sua vez, testa só a reação a
+\texttt{Indisponivel}, com um fake da porta.

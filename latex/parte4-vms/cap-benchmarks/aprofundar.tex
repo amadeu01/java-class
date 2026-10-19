@@ -1,0 +1,40 @@
+\section{Onde aprofundar}
+
+\subsection*{Papers}
+\small
+\begin{longtable}{@{}p{5.2cm} p{7cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\textcite{paper:statistically-rigorous-java-perf} & Leitura obrigatória
+  antes de comparar dois números de JVM \\
+\textcite{paper:vm-warmup-hot-cold} & Por que \enquote{basta aquecer} nem
+  sempre é verdade; versão aberta no arXiv \\
+\textcite{paper:dacapo} e \textcite{paper:dacapo-chopin} & Como uma suíte
+  de aplicações reais é montada e analisada \\
+\textcite{paper:renaissance} & Concorrência e programação funcional como
+  carga de benchmark; PDF aberto no site da suíte \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Livros}
+\citetitle{livro:oaks2020} e \citetitle{livro:evans2018} tratam de
+medição de desempenho na JVM do ponto de vista de quem opera serviços.
+
+\subsection*{Ferramentas}
+\citetitle{doc:jmh} para microbenchmarks; \citetitle{doc:renaissance} e
+\citetitle{doc:dacapo} para cargas de aplicação; o guia
+\citetitle{doc:quarkus-performance-measure} e o repositório
+\citetitle{doc:quarkus-perf-comparison} para medir um serviço inteiro.
+
+\subsection*{Pesquisa acadêmica}
+Acesso (aberto ou pago) e links no apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:gc-myths-realities}{Um experimento cuidadoso de GC: o que
+  medir além das pausas.}
+\pesquisa{paper:survey-adaptive-optimization-vms}{Por que a mesma VM muda de
+  desempenho durante a execução.}
+\pesquisa{paper:jiang-load-testing-2015}{Como desenhar e analisar testes de
+  carga, o par dos benchmarks de serviço inteiro.}
+\end{itemize}

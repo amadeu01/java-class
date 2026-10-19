@@ -1,0 +1,42 @@
+\chapter{HotSpot, BEAM e GraalVM}
+\label{cap:comparacao-vms}
+
+\proximasaulas
+
+As Partes~II e~III olharam uma VM só: a HotSpot, com e sem Quarkus.
+Este capítulo põe outras duas ao lado dela, para que as escolhas da
+HotSpot apareçam como escolhas, e não como a única forma de fazer uma VM.
+
+\begin{description}
+\item[HotSpot] A JVM do OpenJDK, que a Parte~II abriu por dentro:
+  interpretador, JIT em camadas (seção~\ref{sec:jit}), GC sobre um heap
+  compartilhado (seção~\ref{sec:gc}).
+\item[BEAM] A máquina virtual do Erlang (e do Elixir). O livro aberto
+  \citetitle{livro:stenman} explica o nome, \termo{BEAM}{\emph{Bogdan's Erlang Abstract Machine}, hoje lido como
+  \emph{Björn's Erlang Abstract Machine}: Bogumil \enquote{Bogdan} Hausman
+  começou a VM na Ericsson no início dos anos~1990; Björn Gustavsson, o
+  mantenedor atual, assumiu o trabalho depois.}, e a
+  define como a máquina que executa o código no Erlang Runtime System.
+  Das três, é a que mais se afasta da HotSpot em concorrência e falhas.
+\item[GraalVM] Um nome, dois modos de execução. No modo JIT, a documentação
+  diz que a GraalVM \enquote{is based on the Java HotSpot Virtual
+  Machine} e entrega o código quente ao compilador Graal, escrito em Java
+  (\citetitle{doc:graalvm-java}). No modo Native Image, compila tudo antes
+  da execução, como no modo nativo do Quarkus
+  (seção~\ref{sec:jvm-vs-nativo}).
+\end{description}
+
+Cada seção compara um eixo: concorrência, GC, falhas, carga de código e
+compilação. A seção~\ref{sec:vms-tabela} junta tudo numa tabela, com a
+fonte de cada célula. As versões citadas são as das páginas abertas em
+18/10/2026: Erlang/OTP~29.1.2, JDK~25 e a documentação \emph{latest} da
+GraalVM.
+
+\input{parte4-vms/cap-comparacao/concorrencia}
+\input{parte4-vms/cap-comparacao/gc}
+\input{parte4-vms/cap-comparacao/falhas-supervisao}
+\input{parte4-vms/cap-comparacao/hot-code-loading}
+\input{parte4-vms/cap-comparacao/jit-vs-aot}
+\input{parte4-vms/cap-comparacao/tabela-resumo}
+\input{parte4-vms/cap-comparacao/aprofundar}
+\input{parte4-vms/cap-comparacao/desafios}

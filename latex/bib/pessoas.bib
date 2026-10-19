@@ -1,0 +1,314 @@
+% Quem fez o Java (Task 12b): o que as pessoas que construíram o Java
+% escreveram e disseram (Gosling, Bloch, Davidson, Goetz, Lindholm, Polese,
+% Reinhold, Saab, Sandoz, Schroer, Chander, VanCura), mais as páginas
+% oficiais usadas para a bio de uma linha de cada uma.
+%
+% Convenção de chaves: livro:<sobrenome><ano>, paper:<slug>, artigo:<slug>,
+% video:<slug>, doc:<slug>, bio:<pessoa>-<fonte>.
+% Todo registro tem keywords={livro|paper|artigo|video|doc|bio}, usado para
+% separar a bibliografia por tipo no apêndice (bio = página oficial de
+% perfil, impressa em "Perfis biográficos"), e langid.
+% Obra que já existe em outro .bib não se repete aqui: livro:bloch2017,
+% livro:goetz2006, video:goetz-lambda-hood, doc:jls25 e doc:jvms25 são
+% reutilizados (biber quebra com chave duplicada).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
+%
+% Verificação (2026-10-18/19): título, autor e data conferidos na própria
+% página. openjdk.org bloqueia acesso automatizado (403 do Akamai): os
+% campos Owner/Author(s) dos JEPs foram lidos no snapshot do Internet
+% Archive (snapshot de 2025 da página do JEP no web.archive.org); o url
+% registrado é o oficial. Design notes do Amber, Valhalla, Leyden e Babylon:
+% linha de autor e data no Markdown dos repositórios oficiais
+% github.com/openjdk/*-docs. Vídeos: título e canal no oEmbed do YouTube.
+% Nenhum dos livros abaixo tem edição em português confirmada.
+
+% ---- Livros ----
+% InformIT sem opção de compra (2026-10-19) para arnold2005, lindholm1999 e
+% lindholm2014: esgotado; a página fica como registro de catálogo.
+@book{livro:arnold2005,
+  author={Ken Arnold and James Gosling and David Holmes},
+  title={The Java Programming Language}, edition={4},
+  publisher={Addison-Wesley}, date={2005}, isbn={9780321349804},
+  url={https://www.informit.com/store/java-programming-language-9780321349804}, urldate={2026-10-19},
+  acesso={esgotado}, langid={english}, keywords={livro}}
+@book{livro:bloch2005,
+  author={Joshua Bloch and Neal Gafter},
+  title={Java Puzzlers: Traps, Pitfalls, and Corner Cases},
+  publisher={Addison-Wesley}, date={2005}, isbn={9780321336781},
+  url={https://www.informit.com/store/java-puzzlers-traps-pitfalls-and-corner-cases-9780321336781}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
+@book{livro:lindholm2014,
+  author={Tim Lindholm and Frank Yellin and Gilad Bracha and Alex Buckley},
+  title={The Java Virtual Machine Specification, Java SE 8 Edition},
+  publisher={Addison-Wesley}, date={2014}, isbn={9780133905908},
+  url={https://www.informit.com/store/java-virtual-machine-specification-java-se-8-edition-9780133905908}, urldate={2026-10-19},
+  acesso={esgotado}, urlgratis={https://docs.oracle.com/javase/specs/jvms/se8/html/index.html},
+  langid={english}, keywords={livro}}
+@book{livro:lindholm1999,
+  author={Tim Lindholm and Frank Yellin},
+  title={The Java Virtual Machine Specification}, edition={2},
+  publisher={Addison-Wesley}, date={1999}, isbn={9780201432947},
+  url={https://www.informit.com/store/java-virtual-machine-specification-9780201432947}, urldate={2026-10-19},
+  acesso={esgotado}, langid={english}, keywords={livro}}
+
+% ---- Papers ----
+@online{paper:java-language-environment,
+  author={James Gosling and Henry McGilton},
+  title={The Java Language Environment: A White Paper}, date={1996-05},
+  organization={Sun Microsystems},
+  url={https://www.oracle.com/java/technologies/language-environment.html}, urldate={2026-10-19},
+  acesso={aberto}, langid={english}, keywords={paper}}
+@article{paper:feel-of-java,
+  author={James Gosling}, title={The Feel of Java},
+  journaltitle={Computer}, volume={30}, number={6}, pages={53--57}, date={1997-06},
+  doi={10.1109/2.587548}, url={https://doi.org/10.1109/2.587548}, urldate={2026-10-19},
+  acesso={pago}, langid={english}, keywords={paper}}
+
+% ---- Design notes e especificações ----
+% state-of-lambda e lambda-translation não têm linha de autor no corpo:
+% estão no diretório pessoal cr.openjdk.org/~briangoetz, e a atribuição a
+% Goetz vem do local de hospedagem (dito no note).
+@online{doc:state-of-lambda, author={Brian Goetz},
+  title={State of the Lambda (Java SE 8 Edition)}, date={2013-09},
+  note={Hospedado em cr.openjdk.org/\textasciitilde briangoetz, sem byline},
+  url={https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:lambda-translation, author={Brian Goetz},
+  title={Translation of Lambda Expressions}, date={2012-04},
+  note={Hospedado em cr.openjdk.org/\textasciitilde briangoetz, sem byline},
+  url={https://cr.openjdk.org/~briangoetz/lambda/lambda-translation.html}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:beyond-records, author={Brian Goetz},
+  title={Data-Oriented Programming for Java: Beyond Records}, date={2026-01},
+  organization={OpenJDK, Project Amber},
+  url={https://github.com/openjdk/amber-docs/blob/master/site/design-notes/beyond-records.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:on-ramp, author={Brian Goetz}, title={Paving the On-Ramp}, date={2022-09},
+  organization={OpenJDK, Project Amber},
+  url={https://github.com/openjdk/amber-docs/blob/master/site/design-notes/on-ramp.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:state-of-valhalla, author={Brian Goetz},
+  title={State of Valhalla, Part 1: The Road to Valhalla}, date={2021-12},
+  organization={OpenJDK, Project Valhalla},
+  url={https://github.com/openjdk/valhalla-docs/blob/main/site/design-notes/state-of-valhalla/01-background.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:defense-of-erasure, author={Brian Goetz},
+  title={Background: How We Got the Generics We Have}, date={2020-06},
+  organization={OpenJDK, Project Valhalla},
+  url={https://github.com/openjdk/valhalla-docs/blob/main/site/design-notes/in-defense-of-erasure.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:sotms, author={Mark Reinhold},
+  title={The State of the Module System}, date={2016-03-08},
+  url={https://openjdk.org/projects/jigsaw/spec/sotms/}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:leyden-beginnings, author={Mark Reinhold},
+  title={Project Leyden: Beginnings}, date={2022-05-20},
+  organization={OpenJDK, Project Leyden},
+  url={https://github.com/openjdk/leyden-docs/blob/master/site/notes/01-beginnings.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:leyden-condensers, author={Brian Goetz and Mark Reinhold and Paul Sandoz},
+  title={Toward Condensers}, date={2023-07-31},
+  organization={OpenJDK, Project Leyden},
+  url={https://github.com/openjdk/leyden-docs/blob/master/site/notes/03-toward-condensers.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:babylon-code-models, author={Paul Sandoz}, title={Code Models}, date={2024-06},
+  organization={OpenJDK, Project Babylon}, note={Atualizado em dezembro de 2025},
+  url={https://github.com/openjdk/babylon-docs/blob/master/site/articles/code-models.md}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:ant-faq, author={{Apache Ant Project}},
+  title={Apache Ant: Frequently Asked Questions},
+  url={https://ant.apache.org/faq.html}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+@online{doc:jcp, author={{Java Community Process}},
+  title={Java Community Process: página inicial},
+  url={https://jcp.org/en/home/index}, urldate={2026-10-19},
+  langid={english}, keywords={doc}}
+
+% ---- JEPs (Owner/Author(s) lidos no snapshot do Wayback) ----
+@online{doc:jep3, author={{OpenJDK}}, title={JEP 3: JDK Release Process}, note={Owner: Mark Reinhold}, url={https://openjdk.org/jeps/3}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep126, author={{OpenJDK}}, title={JEP 126: Lambda Expressions \& Virtual Extension Methods}, note={Owner: Brian Goetz; Author: Joseph D. Darcy}, url={https://openjdk.org/jeps/126}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep193, author={{OpenJDK}}, title={JEP 193: Variable Handles}, note={Owner: Paul Sandoz; Author: Doug Lea}, url={https://openjdk.org/jeps/193}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep261, author={{OpenJDK}}, title={JEP 261: Module System}, note={Owner: Mark Reinhold; Authors: Alan Bateman, Alex Buckley, Jonathan Gibbons, Mark Reinhold}, url={https://openjdk.org/jeps/261}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep286, author={{OpenJDK}}, title={JEP 286: Local-Variable Type Inference}, note={Owner: Dan Smith; Author: Brian Goetz}, url={https://openjdk.org/jeps/286}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep338, author={{OpenJDK}}, title={JEP 338: Vector API (Incubator)}, note={Owner: Paul Sandoz; Authors: Vladimir Ivanov, Razvan Lupusoru, Paul Sandoz, Sandhya Viswanathan}, url={https://openjdk.org/jeps/338}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep403, author={{OpenJDK}}, title={JEP 403: Strongly Encapsulate JDK Internals}, note={Owner: Mark Reinhold; Authors: Alex Buckley, Mark Reinhold}, url={https://openjdk.org/jeps/403}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+@online{doc:jep484, author={{OpenJDK}}, title={JEP 484: Class-File API}, note={Owner: Adam Sotona; Author: Brian Goetz}, url={https://openjdk.org/jeps/484}, urldate={2026-10-19}, langid={english}, keywords={doc}}
+
+% ---- Artigos, blog posts e entrevistas escritas ----
+@online{artigo:dop-java, author={Brian Goetz}, title={Data-Oriented Programming in Java},
+  date={2022-06-20}, organization={InfoQ},
+  url={https://www.infoq.com/articles/data-oriented-programming-java/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:goetz-virtual-threads, author={Brian Goetz},
+  title={Virtual Threads: New Foundations for High-Scale Java Applications},
+  date={2022-09-23}, organization={InfoQ},
+  url={https://www.infoq.com/articles/java-virtual-threads/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:bumper-sticker-api, author={Joshua Bloch}, title={Bumper-Sticker API Design},
+  date={2008-09-22}, organization={InfoQ},
+  url={https://www.infoq.com/articles/API-Design-Joshua-Bloch}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:binary-search-broken, author={Joshua Bloch},
+  title={Extra, Extra -- Read All About It: Nearly All Binary Searches and Mergesorts are Broken},
+  date={2006-06-02}, organization={Google Research Blog},
+  url={https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:forward-faster, author={Mark Reinhold}, title={Moving Java Forward Faster},
+  date={2017-09-06}, url={https://mreinhold.org/blog/forward-faster}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:forward-even-faster, author={Mark Reinhold}, title={Moving Java Forward Even Faster},
+  date={2021-09-14}, url={https://mreinhold.org/blog/forward-even-faster}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:arrival-java21, author={Sharat Chander}, title={The Arrival of Java 21!},
+  date={2023-09-19}, organization={inside.java},
+  url={https://inside.java/2023/09/19/the-arrival-of-java-21/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:java30-faceoff, author={Sharat Chander},
+  title={Best of Java Feature Face-Off -- Celebrating 30 Years of Java},
+  date={2025-07-02}, organization={inside.java},
+  url={https://inside.java/2025/07/02/feature-faceoff-2025/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:polese-talks-java, author={Michael O'Connell}, title={Kim Polese talks Java},
+  date={1996-04-01}, organization={JavaWorld/InfoWorld}, note={Entrevista com Kim Polese},
+  url={https://www.infoworld.com/article/2169211/kim-polese-talks-java.html}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:lindholm-register, author={Joab Jackson},
+  title={Java was a three-day hotfix away from dying horribly on stage},
+  date={2026-07-18}, organization={The Register}, note={Entrevista com Tim Lindholm},
+  url={https://www.theregister.com/a/5274590}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:vancura-qa, author={John K. Waters}, title={Q\&A with Java Chair Heather VanCura},
+  date={2017-11-08}, organization={ADTmag},
+  url={https://adtmag.com/blogs/watersworks/2017/11/java-chair-qa.aspx}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:gosling-oral-history, author={James Gosling},
+  title={Oral History of James Gosling, Part 1 of 2}, date={2019-03-15},
+  organization={Computer History Museum},
+  note={Entrevistadores: Hansen Hsu e Marc Weber; transcrição, CHM X8971.2019},
+  url={https://archive.computerhistory.org/resources/access/text/2019/10/102781080-05-01-acc.pdf}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:infoworld-java-story, author={Paul Krill},
+  title={`The Java Story' recounts the rise, fall, and rise again of Java},
+  date={2026-07-21}, organization={InfoWorld},
+  url={https://www.infoworld.com/article/4199480/the-java-story-comes-to-youtube.html}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+@online{artigo:foojay-java-story, author={Dominika Tasarz},
+  title={The Java Story: A Film About All of Us}, date={2026-07-09}, organization={Foojay},
+  url={https://foojay.io/today/the-java-story-a-film-about-all-of-us/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo}}
+
+% ---- Vídeos e podcasts ----
+@online{video:java-story, author={{CultRepo}}, title={The Java Story: The Official Documentary},
+  date={2026-07-17}, note={YouTube, 1h14},
+  url={https://www.youtube.com/watch?v=ZqGSg4b_cZA}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:java30-livestream, author={{Java (Oracle)}}, title={Java's 30th Birthday},
+  date={2025-05-22}, note={Transmissão ao vivo; programação em dev.java},
+  url={https://www.youtube.com/watch?v=LHHPbI7sYv8}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:gosling-foojay-30, author={Frank Delporte and James Gosling},
+  title={Foojay Podcast \#71: Celebrating 30 Years of Java with James Gosling}, date={2025-05-05},
+  url={https://foojay.io/today/foojay-podcast-71/}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:bloch-api-design, author={Joshua Bloch},
+  title={How To Design A Good API and Why it Matters}, date={2007-01-24}, note={Google Tech Talks},
+  url={https://www.youtube.com/watch?v=aAb7hSCtvGw}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:bloch-effective-java-3e, author={Joshua Bloch},
+  title={Effective Java, Third Edition -- Keepin' it Effective}, date={2018-07-18},
+  note={QCon New York, InfoQ},
+  url={https://www.infoq.com/presentations/effective-java-third-edition}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:goetz-growing-java, author={Brian Goetz}, title={Growing the Java Language},
+  date={2025-08-21}, note={JVMLS 2025},
+  url={https://www.youtube.com/watch?v=Gz7Or9C0TpM}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:goetz-valhalla-refactor, author={Brian Goetz}, title={Valhalla -- Java's Epic Refactor},
+  date={2024-12-15}, note={Devoxx Belgium 2024},
+  url={https://www.youtube.com/watch?v=Dhn-JgZaBWo}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:goetz-fp-vs-oo, author={Brian Goetz}, title={FP vs OO: Choose Two},
+  date={2019-02-18}, note={Jfokus 2019},
+  url={https://www.youtube.com/watch?v=8GWZE2Y2O9E}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:reinhold-modules-one-lesson, author={Mark Reinhold}, title={Modules in One Lesson},
+  date={2017-05-17}, note={Devoxx},
+  url={https://www.youtube.com/watch?v=rFhhLXcOBsk}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:reinhold-unsafe, author={Mark Reinhold},
+  title={The Secret History and Tragic Fate of sun.misc.Unsafe}, date={2015-08-11}, note={JVMLS 2015},
+  url={https://www.youtube.com/watch?v=4HG0YQVy8UM}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:saab-rapid-innovation, author={Georges Saab}, title={Rapid Java Innovation},
+  date={2018-08-31}, note={GOTO 2018},
+  url={https://www.youtube.com/watch?v=cFEdh4d_bqs}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:saab-java-2024, author={Georges Saab and Chad Arimura},
+  title={Java in 2024 -- Constant evolution, delivered.}, date={2024-05-31}, note={Oracle DevLive New York},
+  url={https://www.youtube.com/watch?v=6OQaQtXAgrE}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:saab-podcast-43, author={Nicolai Parlog and Georges Saab},
+  title={Inside Java Podcast, Episode 43: Predictability or Innovation? Both!}, date={2025-12-26},
+  url={https://inside.java/2025/12/26/podcast-043/}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:sandoz-vector-api, author={Paul Sandoz and Sandhya Viswanathan},
+  title={Vector API: SIMD Programming in Java}, date={2021-03-30}, note={Oracle Developer Live},
+  url={https://www.youtube.com/watch?v=VYo3p4R66N8}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:sandoz-babylon, author={Paul Sandoz}, title={Project Babylon -- Code Reflection},
+  date={2024-08-13}, note={JVMLS 2024},
+  url={https://www.youtube.com/watch?v=6c0DB2kwF_Q}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:sandoz-java-ai, author={Paul Sandoz}, title={Java for AI},
+  date={2025-05-03}, note={JavaOne 2025},
+  url={https://www.youtube.com/watch?v=-XnyJad88Ss}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:chander-25th, author={Sharat Chander and Jim Grisanzio},
+  title={Sharat Chander on the Java Community and Technology and the Ongoing 25th Anniversary Celebrations},
+  date={2020-06-14},
+  url={https://www.youtube.com/watch?v=_Y24jgkmmvs}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+@online{video:vancura-productivity, author={Heather VanCura},
+  title={The Keys to Developer Productivity: Collaborate and Innovate}, date={2024-08-28},
+  note={QCon San Francisco, InfoQ},
+  url={https://www.infoq.com/presentations/java-developer-productivity}, urldate={2026-10-19},
+  langid={english}, keywords={video}}
+
+% ---- Perfis oficiais (fonte da bio de uma linha) ----
+@online{bio:gosling-chm, author={{Computer History Museum}}, title={James Gosling: 2019 Fellow},
+  url={https://computerhistory.org/profile/james-gosling/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:polese-chm, author={{Computer History Museum}}, title={Kim Polese},
+  url={https://computerhistory.org/profile/kim-polese/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:bloch-informit, author={{InformIT}}, title={Joshua Bloch (perfil de autor)},
+  url={https://www.informit.com/authors/bio/8B620CF7-C360-4EE1-9B55-C7F96E7F0D18}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:lindholm-informit, author={{InformIT}}, title={Tim Lindholm (perfil de autor)},
+  url={https://www.informit.com/authors/bio/cc16e893-4f87-46a2-b4c4-d4ff059666e9}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:davidson-ant, author={{Apache Ant Project}}, title={Apache Ant: Contributors},
+  url={https://ant.apache.org/contributors.html}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:goetz-inside, author={{inside.java}}, title={Brian Goetz, Java Language Architect},
+  url={https://inside.java/u/BrianGoetz/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:reinhold-inside, author={{inside.java}}, title={Mark Reinhold, Chief Architect of the Java Platform Group},
+  url={https://inside.java/u/MarkReinhold/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:saab-inside, author={{inside.java}}, title={Georges Saab},
+  url={https://inside.java/u/GeorgesSaab/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:sandoz-inside, author={{inside.java}}, title={Paul Sandoz, Architect},
+  url={https://inside.java/u/PaulSandoz/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:chander-inside, author={{inside.java}}, title={Sharat Chander, Oracle Alum},
+  url={https://inside.java/u/SharatChander/}, urldate={2026-10-19}, langid={english}, keywords={bio}}
+@online{bio:vancura-qcon, author={{QCon San Francisco}}, title={Heather VanCura (página de palestrante)},
+  url={https://qconsf.com/speakers/heathervancura}, urldate={2026-10-19}, langid={english}, keywords={bio}}

@@ -1,0 +1,86 @@
+\section{REST e Panache como adaptadores}
+\label{sec:panache-rest}
+
+\subsection*{O resource REST é um adaptador de entrada}
+
+Em \texttt{adaptador.entrada.rest}, o resource converte HTTP em chamada
+de caso de uso e o resultado em DTO. Ele não tem regra de negócio:
+
+\begin{lstlisting}[language=Java]
+package br.com.turma.pedidos.adaptador.entrada.rest;
+@Path("/pedidos")
+public class PedidoResource {
+    private final FecharPedido fecharPedido;
+    @Inject
+    PedidoResource(FecharPedido fecharPedido) { this.fecharPedido = fecharPedido; }
+
+    @POST @Path("/{id}/fechamento")
+    public PedidoDto fechar(@PathParam("id") String id) {
+        return PedidoDto.de(fecharPedido.executar(new PedidoId(id)));
+    }
+}
+\end{lstlisting}
+
+\paragraph{Em que thread isso roda.}
+O guia \citetitle{doc:quarkus-rest} diz que a thread depende da
+assinatura do método. Métodos que devolvem \texttt{Uni},
+\texttt{Multi}, \texttt{CompletionStage} ou \texttt{Publisher} são
+considerados não bloqueantes e rodam na thread de I/O; os demais rodam
+numa \emph{worker thread}. \texttt{@Blocking} e \texttt{@NonBlocking}
+mudam o padrão, e um método com \texttt{@Transactional} é tratado como
+bloqueante. O resource acima devolve um DTO comum, então roda numa worker
+thread, e o caso de uso pode bloquear em JDBC sem travar o servidor. O
+capítulo~\ref{cap:decisoes-quarkus} compara esse modelo com virtual
+threads e com o reativo.
+
+\subsection*{Panache: active record ou repository}
+
+O guia \citetitle{doc:quarkus-panache} oferece dois estilos:
+\begin{description}
+\item[Active record] A entidade estende \texttt{PanacheEntity} e as
+  consultas são métodos estáticos nela (\texttt{Pedido.findById(id)});
+  o guia chama isso de \enquote{the Panache Active Record way}.
+\item[Repository] Uma classe \texttt{@ApplicationScoped} implementa
+  \texttt{PanacheRepository<PedidoEntity>} e oferece os mesmos métodos;
+  estender \texttt{PanacheEntity} fica opcional.
+\end{description}
+
+O guia apresenta os dois sem recomendar um. Do ponto de vista da
+Dependency Rule, a diferença é grande:
+
+\begin{itemize}
+\item \textbf{Active record coloca persistência dentro da entidade.} Se
+  essa entidade for o seu \texttt{Pedido} de \texttt{dominio}, o círculo
+  de dentro passa a importar \texttt{io.quarkus.hibernate.orm.panache} e
+  \texttt{jakarta.persistence}, e uma regra de negócio pode chamar
+  \texttt{persist()} no meio de um cálculo. A regra quebra no lugar mais
+  central.
+\item \textbf{Repository cabe num adaptador.} \texttt{PedidoEntity} (JPA)
+  e \texttt{PedidoRepository} (Panache) ficam em
+  \texttt{adaptador.saida.persistencia}; \texttt{PedidosPanache}
+  implementa a porta \texttt{Pedidos} e converte entre
+  \texttt{PedidoEntity} e o record \texttt{Pedido}.
+\end{itemize}
+
+\paragraph{O custo honesto.}
+O mapeamento entidade$\leftrightarrow$domínio é código repetitivo, e
+para um serviço que é essencialmente CRUD ele não protege nada: não há
+regra de negócio para isolar. Nesse caso, active record é a escolha mais
+simples e não é \enquote{errado}; é uma decisão consciente de que o
+banco \emph{é} o modelo. Quando aparecer a primeira regra que não cabe
+num \texttt{UPDATE}, extraia o domínio. Registre a escolha num ADR para
+que o próximo dev saiba que foi intencional.
+
+\paragraph{Testabilidade, de novo.}
+O guia de Panache aponta mais uma diferença: com active record, o
+Mockito não consegue simular os métodos estáticos, e é preciso usar o
+\texttt{PanacheMock}; com repository, \enquote{you can use Mockito
+directly}. Com a porta \texttt{Pedidos} no meio, nem isso: o teste do
+caso de uso usa um fake em memória, como na Parte~I.
+
+\paragraph{O que o Panache faz no seu bytecode.}
+Os getters e setters das entidades com campos \texttt{public} são
+gerados no build (seção~\ref{sec:gizmo}). O guia descreve esse
+\emph{enhancement} para as entidades; os records do domínio não são
+entidades JPA, então continuam exatamente como o \texttt{javac} os
+gerou (seção~\ref{sec:records}).

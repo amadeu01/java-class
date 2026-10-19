@@ -1,0 +1,28 @@
+\section{Desafios práticos}
+
+\desafio{Crie um milhão de virtual threads que dormem um segundo cada e
+meça o heap com JFR. Depois, num shell Erlang, crie um milhão de
+processos que esperam uma mensagem e veja a memória com
+\texttt{erlang:memory()}. O que cada número inclui? Por que comparar os
+dois diretamente é enganoso?}
+
+\desafio{Escreva uma tarefa que faz conta sem bloquear (um laço de CPU)
+e rode, ao mesmo tempo, mais tarefas desse tipo do que núcleos, em
+virtual threads. Meça a latência de uma tarefa curta que chega no meio.
+Explique o resultado com a frase do JEP~444 sobre \emph{time sharing} e
+compare com o que a BEAM faria com reductions.}
+
+\desafio{Escreva um serviço Java em que uma thread altera dois campos de
+um objeto compartilhado e lança uma exceção entre as duas alterações.
+O que as outras threads veem? Redesenhe para que a falha não deixe estado
+pela metade, sem usar \texttt{synchronized}.}
+
+\desafio{Com um agente Java ou o depurador da IDE, redefina o corpo de um
+método durante a execução. Depois tente acrescentar um campo à classe.
+Qual erro aparece, e qual regra da JVM TI ele aplica?}
+
+\desafio{Monte, em Erlang ou Elixir, um supervisor \texttt{one\_for\_one}
+com um filho que quebra a cada mensagem. Encontre os valores de
+\texttt{intensity} e \texttt{period} que fazem o supervisor desistir.
+Qual seria o equivalente no seu serviço Quarkus: o circuit breaker, o
+\emph{liveness probe} ou nenhum dos dois?}

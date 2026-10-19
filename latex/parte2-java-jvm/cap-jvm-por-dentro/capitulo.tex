@@ -1,0 +1,23 @@
+\chapter{Como a JVM funciona por dentro}
+\label{cap:jvm-por-dentro}
+
+\proximasaulas
+
+O \texttt{javac} não gera código de máquina: gera bytecode, que a JVM
+carrega, verifica, interpreta e, nos trechos quentes, compila. A memória
+é gerenciada por um coletor de lixo que você escolhe, e o que uma thread
+enxerga do que outra escreveu é definido pelo modelo de memória da
+linguagem. Cada uma dessas peças muda uma decisão: quando medir, o que
+deixar \texttt{static}, que GC usar, onde sincronizar.
+
+As fontes primárias são a \citetitle{doc:jvms25} (que a partir daqui
+chamamos de JVMS), a \citetitle{doc:jls25} (JLS) e a documentação da
+HotSpot, a JVM do OpenJDK. O que é específico da HotSpot está marcado
+como tal: a especificação permite outras implementações.
+
+\input{parte2-java-jvm/cap-jvm-por-dentro/class-loading}
+\input{parte2-java-jvm/cap-jvm-por-dentro/interpretador-jit}
+\input{parte2-java-jvm/cap-jvm-por-dentro/gc}
+\input{parte2-java-jvm/cap-jvm-por-dentro/modelo-memoria}
+\input{parte2-java-jvm/cap-jvm-por-dentro/aprofundar}
+\input{parte2-java-jvm/cap-jvm-por-dentro/desafios}

@@ -1,0 +1,69 @@
+\section{Virtual threads}
+\label{sec:virtual-threads}
+
+O \citetitle{doc:jep444} tornou as virtual threads finais no JDK~21. Uma
+virtual thread é uma \texttt{java.lang.Thread} que não fica presa a uma
+thread do sistema operacional: quando ela bloqueia em I/O, a JVM a
+\termo{desmonta}{\emph{Unmount}: a virtual thread sai da
+\emph{carrier thread} (a thread de plataforma que a executa) e esta fica
+livre para rodar outra virtual thread.} e usa a mesma thread de
+plataforma para outra tarefa.
+
+\lstinputlisting[language=Java]{generated/source/ThreadsVirtuais.java}
+
+\inputbytecode{ThreadsVirtuais}
+
+\paragraph{Lendo a listagem.}
+Não há nenhuma instrução especial. O offset 0 é uma chamada estática
+comum a \texttt{Executors.newVirtualThreadPerTaskExecutor}, o offset 17
+é o \texttt{invokedynamic} de um lambda (que captura \texttt{tarefa},
+por isso o descritor \nolinkurl{(I)Ljava/util/concurrent/Callable;}) e os
+offsets 34--68 são o \texttt{try}-with-resources que fecha o executor (o
+\texttt{close()} espera as tarefas). Toda a diferença entre virtual e
+plataforma está no runtime do JDK, não no seu bytecode: o código da
+tarefa é o mesmo; o que muda é quem cria a thread que o executa.
+
+\paragraph{As decisões que isso muda.}
+A documentação da Oracle (\citetitle{doc:oracle-virtual-threads}) e o
+JEP~444 dão regras diretas:
+\begin{itemize}
+\item Virtual threads servem para \emph{escala} (muitas tarefas que passam
+  a maior parte do tempo esperando), não para velocidade: \enquote{Virtual
+  threads are not faster threads}. Para trabalho de CPU longo, não ajudam.
+\item Não faça pool de virtual threads. Uma por tarefa; para limitar
+  concorrência a um recurso escasso (conexões com um serviço), use um
+  \texttt{Semaphore}, não um pool de tamanho fixo.
+\item Cuidado com \texttt{ThreadLocal} usado como cache de objetos caros:
+  cada virtual thread roda uma só tarefa, então o cache nunca é
+  reaproveitado. Para passar contexto imutável, o
+  \citetitle{doc:jep506} (final no JDK~25) oferece \texttt{ScopedValue}.
+\end{itemize}
+
+\paragraph{Pinning e \texttt{synchronized}.}
+No JDK~21, uma virtual thread que bloqueia dentro de um bloco
+\texttt{synchronized} fica \termo{pinned}{Presa à carrier thread: não
+consegue desmontar enquanto bloqueia, e a carrier fica ocupada.}. O
+JEP~444 diz que isso não torna o programa incorreto, mas pode limitar a
+escala, e recomendava trocar \texttt{synchronized} por
+\texttt{ReentrantLock} em trechos frequentes que guardam I/O. O
+\citetitle{doc:jep491} (JDK~24) removeu quase todo esse pinning: a
+virtual thread agora desmonta mesmo dentro de \texttt{synchronized}. Ainda
+fica presa quando código nativo chama de volta Java e bloqueia, quando
+bloqueia carregando uma classe ou dentro de um inicializador
+\texttt{static} (\texttt{<clinit>}), e quando espera outra thread terminar
+de inicializar uma classe; o evento JFR \texttt{jdk.VirtualThreadPinned} continua existindo para esses
+casos. A seção~\ref{sec:sincronizacao} mostra o
+\texttt{monitorenter} por trás disso.
+
+Consequência prática: se o seu serviço roda em JDK~21, o conselho de
+trocar \texttt{synchronized} vale; em JDK~24 ou mais novo, não é mais
+motivo para refatorar.
+
+\paragraph{Ponte com Quarkus.}
+O guia \citetitle{doc:quarkus-virtual-threads} mostra a anotação
+\texttt{@RunOnVirtualThread}, que faz o Quarkus invocar o método anotado
+numa nova virtual thread, e exige Java~21 ou mais novo. O guia repete os
+pontos acima no contexto do Quarkus: em Java~24+, \texttt{synchronized}
+não causa mais pinning; uma computação longa monopoliza a carrier até
+terminar; e pool de objetos via \texttt{ThreadLocal} é contraproducente
+com virtual threads. A Parte~III volta a esse assunto.

@@ -1,0 +1,127 @@
+\section{Por instituição}
+A instituição é a que aparece na afiliação dos autores no próprio trabalho
+(folha de rosto, PDF, repositório ou registro do DOI). Obras com autores de
+várias instituições aparecem numa ou mais delas, com as demais entre
+parênteses. Obras sem afiliação na fonte
+consultada ficam no fim, sem instituição.
+
+% Títulos longos em linha corrida: sloppy evita linhas estouradas.
+\begingroup\sloppy
+\subsection{Universidades brasileiras}
+\begin{description}
+\item[USP (IME e ICMC)] \citetitle{paper:aniche-tdd-feedback-sbes-2012};
+  \citetitle{paper:aniche-tdd-class-design-jbcs-2015};
+  \citetitle{paper:aniche-tese-usp-2016};
+  \citetitle{paper:delamaro-proteum-im-1997} \pt;
+  \citetitle{paper:cruz-gc-jikes-usp} \pt.
+\item[Unicamp (Instituto de Computação)] \citetitle{paper:isamap-dbt};
+  \citetitle{paper:heuristica-gc-jvm-wso2008} \pt (um dos autores);
+  \citetitle{doc:unicamp-mc921} \pt.
+\item[UFMG (DCC)] \citetitle{paper:silva-why-we-refactor-2016} (com a Concordia
+  University);
+  \citetitle{paper:viggiato-microservices-practice-2018};
+  \citetitle{paper:jit-value-specialization}.
+\item[PUC-Rio] \citetitle{paper:lua50-implementation} (com o IMPA);
+  \citetitle{paper:hazan-maquina-registradores-java} \pt.
+\item[UFRGS] \citetitle{paper:neves-memoria-java-embarcado} \pt.
+\item[UFF] \citetitle{paper:almeida-mock-objects-sbqs-2023}.
+\item[UFRJ e UFJF] \citetitle{paper:heuristica-gc-jvm-wso2008} \pt.
+\item[UTFPR] \citetitle{paper:bissi-tdd-revisao-2016}.
+\end{description}
+
+\subsection{Universidades do exterior}
+Da lista pedida pela turma (Stanford, MIT, CMU, Yale, ETH, KTH, TU Delft),
+não encontramos trabalho de Yale sobre estes temas que pudéssemos
+confirmar.
+\begin{description}
+\item[Stanford University] \citetitle{paper:self-efficient-impl};
+  \citetitle{paper:self-pics}; \citetitle{paper:self-deoptimization} (com a
+  University of Washington); \citetitle{paper:self-type-feedback} (com o Sun Microsystems
+  Laboratories);
+  \citetitle{paper:holzle-thesis-adaptive-optimization};
+  \citetitle{paper:self-power-of-simplicity} (com o Xerox PARC);
+  \citetitle{doc:stanford-cs143}; \citetitle{doc:stanford-cs190}.
+\item[MIT] \citetitle{doc:mit-6031-testing}; \citetitle{doc:mit-6035-ocw}.
+\item[Carnegie Mellon University] \citetitle{paper:parnas-modules-1972};
+  \citetitle{paper:garlan-shaw-intro-softarch-1994};
+  \citetitle{paper:parry-flaky-survey-2022} (um dos autores);
+  \citetitle{paper:fucci-dissection-tdd-2017} (um dos autores);
+  \citetitle{doc:cmu-17313}; \citetitle{doc:cmu-15411}.
+\item[ETH Zürich] \citetitle{paper:pascal-p-code-generation}.
+\item[KTH (Estocolmo)] \citetitle{paper:armstrong-thesis-reliable-systems}.
+\item[TU Delft] \citetitle{paper:spadini-test-smells-2018};
+  \citetitle{paper:spadini-to-mock-2017};
+  \citetitle{paper:spadini-mock-objects-java-2019}.
+\item[University of Zurich] \citetitle{paper:eck-flaky-developers-2019};
+  \citetitle{paper:spadini-test-smells-2018};
+  \citetitle{paper:spadini-mock-objects-java-2019}.
+\item[Uppsala University] \citetitle{paper:zgc-deep-dive} (com a Oracle);
+  \citetitle{paper:hipe-x86}.
+\item[Johannes Kepler University Linz]
+  \citetitle{paper:escape-analysis-deoptimization};
+  \citetitle{paper:hotspot-client-compiler-java6} (com a Sun);
+  \citetitle{paper:graal-partial-escape-analysis};
+  \citetitle{paper:one-vm-to-rule-them-all};
+  \citetitle{paper:truffle-partial-evaluation};
+  \citetitle{paper:renaissance} (com USI Lugano e Charles University);
+  todos com o Oracle Labs, menos os dois primeiros.
+\item[Chalmers University of Technology]
+  \citetitle{paper:claessen-quickcheck-2000}.
+\item[University of Waterloo] \citetitle{paper:inozemtseva-coverage-2014};
+  \citetitle{paper:just-mutants-real-faults-2014} (com a University of
+  Washington e a University of Sheffield).
+\item[University of Illinois Urbana-Champaign]
+  \citetitle{paper:luo-flaky-tests-2014};
+  \citetitle{paper:java-memory-model} (com a University of Maryland).
+\item[University of Maryland] \citetitle{paper:manson-tese-jmm-2004}
+  (tese); \citetitle{paper:java-memory-model}.
+\item[University of Oulu] \citetitle{paper:fucci-dissection-tdd-2017}
+  (com a Universidad Politécnica de Madrid e a CMU);
+  \citetitle{paper:karac-what-we-know-tdd-2018} (com a Brunel University).
+\item[Australian National University e UT Austin]
+  \citetitle{paper:gc-myths-realities} (com a IBM);
+  \citetitle{paper:immix}; \citetitle{paper:dacapo} (com várias outras);
+  \citetitle{paper:dacapo-chopin} (ANU, com a University of Sydney).
+\item[Ghent University] \citetitle{paper:statistically-rigorous-java-perf}.
+\item[King's College London e Lancaster University]
+  \citetitle{paper:vm-warmup-hot-cold}.
+\item[Outras universidades] \citetitle{paper:jia-harman-mutation-survey-2011}
+  (UCL); \citetitle{paper:zhu-coverage-adequacy-1997} (Nanjing e Open
+  University); \citetitle{paper:rafique-tdd-metaanalise-2013} (Ryerson);
+  \citetitle{paper:jiang-load-testing-2015} (York e Queen's);
+  \citetitle{paper:desilva-erosion-survey-2012} (St Andrews);
+  \citetitle{paper:perry-wolf-foundations-1992} (Colorado Boulder, com a
+  AT\&T); \citetitle{paper:dragoni-microservices-2017} (DTU, Bologna,
+  Innopolis); \citetitle{paper:soldani-microservices-pains-gains-2018}
+  (Pisa, Tilburg e TU Eindhoven); \citetitle{paper:coles-pit-2016} (UCD e
+  Luxembourg, com a NCR); \citetitle{paper:aycock-history-jit} (Calgary);
+  \citetitle{paper:vm-showdown} (Trinity College Dublin e TU Wien);
+  \citetitle{paper:nagappan-tdd-industrial-2008} (North Carolina State, com
+  Microsoft e IBM); \citetitle{paper:garousi-test-smells-2018} (Wageningen
+  e Atilim).
+\end{description}
+
+\subsection{Indústria e laboratórios}
+\begin{description}
+\item[Sun Microsystems] \citetitle{paper:hotspot-server-compiler};
+  \citetitle{paper:g1-garbage-first}.
+\item[IBM Research] \citetitle{paper:jalapeno-adaptive-optimization};
+  \citetitle{paper:survey-adaptive-optimization-vms}.
+\item[Oracle Labs] \citetitle{paper:native-image-initialize-once}.
+\item[Red Hat] \citetitle{paper:shenandoah}.
+\item[Google] \citetitle{paper:petrovic-mutation-google-2018}.
+\item[Netflix] \citetitle{paper:basiri-chaos-engineering-2016}.
+\item[Mozilla] \citetitle{paper:eck-flaky-developers-2019} (com a
+  University of Zurich).
+\item[Microsoft Research] \citetitle{paper:clr-generics}.
+\item[Ericsson] \citetitle{paper:history-of-erlang}.
+\item[SICS (Estocolmo)] \citetitle{paper:beamjit}.
+\item[Xerox PARC] \citetitle{paper:smalltalk-80-deutsch-schiffman} (com o
+  Fairchild AI Lab).
+\end{description}
+
+\subsection{Sem instituição na fonte}
+Todas as obras desta lista têm afiliação na fonte consultada, exceto o
+livro \citetitle{livro:valente2020} \pt, edição do autor, cuja página não
+informa instituição.
+\endgroup

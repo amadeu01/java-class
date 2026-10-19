@@ -1,0 +1,185 @@
+% Java no blog da JetBrains e no JetBrains Guide (Task 12b).
+%
+% Convenção de chaves: artigo:jetbrains-<slug> (posts de blog.jetbrains.com),
+% curso:jetbrains-guide-<slug> (tutoriais gratuitos do JetBrains Guide).
+% Todo registro tem keywords={artigo|curso} (seção da bibliografia), mais
+% jetbrains e um tema (jb-testes, jb-moderno, jb-jvm, jb-limpo), usado no
+% apêndice "Quem fez o Java" para listar por tema, e langid.
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal; aqui sempre a página oficial e gratuita.
+%   acesso    obrigatório só em livro e paper (não há nenhum aqui).
+%   urlgratis, edicaopt, urlpt, doi, eprint: não usados neste arquivo.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
+%
+% Verificação (2026-10-18/19): blog.jetbrains.com fica atrás de um AWS WAF
+% que responde 403/202 a robôs. Título, autor e data foram lidos no snapshot
+% do Internet Archive (web.archive.org/web/2026/<url canônico>, ou 2025
+% quando o de 2026 falhou); o url registrado é o canônico. O lychee exclui
+% esse domínio (lychee.toml). O JetBrains Guide abre direto e é checado.
+% Datas só com ano e mês: a página mostra a data de atualização, e o mês
+% original vem do endereço do post.
+% Fora (2026-10-19): "String Templates in Java" (o recurso foi retirado:
+% JEP 465 Closed/Withdrawn), as duas "State of Developer Ecosystem" (pouco
+% Java), o anúncio do IntelliJ IDEA 2023.3 (nota de versão) e o Java
+% Annotated Monthly (resumo mensal datado).
+
+
+% ---- Testes ----
+@online{artigo:jetbrains-writing-tests-junit5,
+  author={Trisha Gee}, title={Writing Tests with JUnit 5},
+  date={2020-09-16}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2020/09/writing-tests-with-junit-5/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-testes}}
+@online{artigo:jetbrains-migrating-junit4-junit5,
+  author={Helen Scott}, title={Migrating from JUnit 4 to JUnit 5},
+  date={2020-08-20}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2020/08/migrating-from-junit-4-to-junit-5/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-testes}}
+@online{artigo:jetbrains-testcontainers-spring-boot,
+  author={Siva Katamreddy}, title={Testing Spring Boot Applications Using Testcontainers},
+  date={2024-12-16}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2024/12/testing-spring-boot-applications-using-testcontainers/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-testes}}
+@online{artigo:jetbrains-ai-agent-flaky-tests,
+  author={Igor Kulakov}, title={Teaching an AI Agent to Debug Flaky Tests},
+  date={2026-05-04}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2026/05/teaching-an-ai-agent-to-debug-flaky-tests/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-testes}}
+@online{curso:jetbrains-guide-writing-junit5-tests,
+  author={Helen Scott}, title={Writing JUnit 5 Tests (JetBrains Guide)},
+  date={2021-01-01}, organization={JetBrains},
+  url={https://www.jetbrains.com/guide/java/tutorials/writing-junit5-tests/}, urldate={2026-10-19},
+  langid={english}, keywords={curso,jetbrains,jb-testes}}
+@online{curso:jetbrains-guide-writing-tests-spock,
+  author={Trisha Gee}, title={Writing Tests with Spock (JetBrains Guide)},
+  date={2021-05-20}, organization={JetBrains},
+  url={https://www.jetbrains.com/guide/java/tutorials/writing-tests-with-spock/}, urldate={2026-10-19},
+  langid={english}, keywords={curso,jetbrains,jb-testes}}
+@online{curso:jetbrains-guide-testing-debugging,
+  author={{van Dijk}, Marit}, title={Testing and debugging (JetBrains Guide)},
+  date={2024-03-01}, organization={JetBrains},
+  url={https://www.jetbrains.com/guide/java/tutorials/reading-code/test-debug/}, urldate={2026-10-19},
+  langid={english}, keywords={curso,jetbrains,jb-testes}}
+
+% ---- Java moderno ----
+@online{artigo:jetbrains-pattern-matching-5-examples,
+  author={Mala Gupta}, title={Pattern Matching in Java -- 5 Examples for Busy Developers},
+  date={2023-02-06}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2023/02/pattern-matching-in-java-5-examples-for-busy-developers/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+@online{artigo:jetbrains-evolution-switch-java,
+  author={Mala Gupta}, title={Evolution of the Switch Construct in Java---Why Should you Care?},
+  date={2024-01-30}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2024/01/evolution-of-the-switch-construct-in-java-why-should-you-care/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+@online{artigo:jetbrains-project-loom-intellij,
+  author={{van Dijk}, Marit}, title={Project Loom in IntelliJ IDEA: Virtual Threads, Scoped Values, and Structured Concurrency},
+  date={2026-08-28}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2026/08/project-loom-in-intellij-idea-virtual-threads-scoped-values-and-structured-concurrency/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+@online{artigo:jetbrains-java-25-lts,
+  author={{van Dijk}, Marit}, title={Java 25 LTS and IntelliJ IDEA},
+  date={2025-09-16}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2025/09/java-25-lts-and-intellij-idea/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+@online{artigo:jetbrains-do-you-really-know-java,
+  author={Irina Mariasova}, title={Do You Really Know Java?},
+  date={2025-05-23}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2025/05/do-you-really-know-java/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+@online{artigo:jetbrains-java-still-relevant,
+  author={Irina Mariasova}, title={Is Java Still Relevant Nowadays?},
+  date={2024-07-26}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2024/07/is-java-still-relevant-nowadays/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-moderno}}
+
+% ---- JVM, depuração e profiling ----
+@online{artigo:jetbrains-thread-dumps-virtual-threads,
+  author={Igor Kulakov}, title={Thread Dumps and Project Loom (Virtual Threads)},
+  date={2025-12-23}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2025/12/thread-dumps-and-project-loom-virtual-threads/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-debugging-java-intellij,
+  author={{van Dijk}, Marit}, title={Debugging Java Code in IntelliJ IDEA},
+  date={2025-04-24}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2025/04/debugging-java-code-in-intellij-idea/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-sources-bytecode-debugging,
+  author={Igor Kulakov}, title={Sources, Bytecode, Debugging},
+  date={2025-05-26}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2025/05/sources-bytecode-debugging/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-println-debugging,
+  author={Igor Kulakov}, title={Println Debugging Done Right},
+  date={2026-08-06}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2026/08/println-debugging-done-right/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-debug-without-breakpoints,
+  author={Igor Kulakov}, title={Debugger Upskill: Debug Without Breakpoints},
+  date={2024-06-14}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2024/06/debugger-upskill-debug-without-breakpoints/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-intellij-profiler,
+  author={Igor Kulakov}, title={Profile Java and Kotlin Code with the IntelliJ Profiler},
+  date={2023-07}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2023/07/profile-on-the-fly-with-the-intellij-profiler/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-profiling-parrot-party,
+  author={Igor Kulakov}, title={Profiling Tutorial: Fixing the Parrot Party},
+  date={2022-01-31}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2022/01/fixing-the-parrot-party/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-get-started-profiling,
+  author={Igor Kulakov}, title={Get Started With Java Profiling in IntelliJ IDEA},
+  date={2021-05}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2021/05/get-started-with-profiling-in-intellij-idea/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+@online{artigo:jetbrains-5-profiling-features,
+  author={Irina Mariasova}, title={5 Best Features for Profiling Java Code in IntelliJ IDEA},
+  date={2021-10}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2021/10/5-best-features-for-profiling-java-code/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-jvm}}
+
+% ---- Código limpo, refatoração e Jakarta ----
+@online{curso:jetbrains-guide-javax-jakarta,
+  author={Helen Scott}, title={Migrating from the javax to jakarta namespace (JetBrains Guide)},
+  date={2024-11-12}, organization={JetBrains},
+  url={https://www.jetbrains.com/guide/java/tutorials/migrating-javax-jakarta/}, urldate={2026-10-19},
+  langid={english}, keywords={curso,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-java-best-practices,
+  author={Irina Mariasova}, title={Java Best Practices},
+  date={2024-02-24}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2024/02/java-best-practices/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-code-smells-null,
+  author={Trisha Gee}, title={Code Smells: Null},
+  date={2017-08-08}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2017/08/code-smells-null/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-code-smells-mutation,
+  author={Trisha Gee}, title={Code Smells: Mutation},
+  date={2017-08-29}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2017/08/code-smells-mutation/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-code-smells-if,
+  author={Trisha Gee}, title={Code Smells: If Statements},
+  date={2017-09-13}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2017/09/code-smells-if-statements/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-basic-refactorings,
+  author={Elena Kozlova}, title={Basic Refactorings in Action},
+  date={2021-04-14}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2021/04/basic-refactorings-in-action/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{artigo:jetbrains-3-ways-refactor,
+  author={Helen Scott}, title={3 Ways to Refactor Your Code in IntelliJ IDEA},
+  date={2020-12-15}, organization={JetBrains},
+  url={https://blog.jetbrains.com/idea/2020/12/3-ways-to-refactor-your-code-in-intellij-idea/}, urldate={2026-10-19},
+  langid={english}, keywords={artigo,jetbrains,jb-limpo}}
+@online{curso:jetbrains-guide-refactoring,
+  author={{van Dijk}, Marit}, title={Refactoring (JetBrains Guide)},
+  date={2024-03-01}, organization={JetBrains},
+  url={https://www.jetbrains.com/guide/java/tutorials/reading-code/refactor/}, urldate={2026-10-19},
+  langid={english}, keywords={curso,jetbrains,jb-limpo}}

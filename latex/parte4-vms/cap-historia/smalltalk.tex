@@ -1,0 +1,49 @@
+\section{Smalltalk-80: a VM especificada em livro}
+\label{sec:hist-smalltalk}
+
+\paragraph{Imagem e máquina virtual.}
+O \enquote{Blue Book}, \citetitle{livro:goldberg1983}
+\parencite{livro:goldberg1983}, dedica a quarta parte à implementação. O
+capítulo~26 separa dois componentes: a \emph{virtual image}, com todos
+os objetos do sistema, e a \emph{virtual machine}, que dá dinâmica a
+eles. A tarefa de quem implementa o Smalltalk-80 numa máquina nova é
+escrever a máquina virtual; a imagem é carregada nela.
+
+\paragraph{Bytecodes de pilha.}
+O mesmo capítulo descreve o caminho do código: o compilador traduz cada
+método para \enquote{sequences of eight-bit instructions called
+bytecodes}, que são instruções para um interpretador orientado a pilha.
+O exemplo do livro é o método \texttt{center} de \texttt{Rectangle}
+(\texttt{\^{}origin + corner / 2}), que vira seis bytecodes: empilha a
+primeira variável de instância, empilha a segunda, envia \texttt{+},
+empilha a constante 2, envia \texttt{/} e retorna o topo da pilha. Abaixo
+do interpretador fica a \emph{object memory}, que guarda os objetos; os
+capítulos~27 a~30 especificam interpretador e memória em detalhe.
+
+Compare com qualquer listagem \texttt{javap} da Parte~II: instruções de um
+byte, operandos na pilha, chamadas de método como instrução
+(\texttt{invokevirtual}) e um heap com coleta de lixo por baixo. A JVM
+não copiou o Smalltalk, mas a forma é a mesma.
+
+\paragraph{Inline caches.}
+O Smalltalk também foi onde a chamada de método ficou rápida.
+\textcite{paper:self-pics} contam a ideia, atribuída a
+\textcite{paper:smalltalk-80-deutsch-schiffman}: o tipo do receptor num
+ponto de chamada quase nunca muda, então o endereço do método encontrado
+pode ser guardado no próprio ponto de chamada, e o método chamado só
+confere se o tipo ainda é o mesmo. Esse
+\termo{inline cache}{Cache do resultado da busca de método guardado no
+próprio ponto de chamada, no código do chamador.} acerta 95\% das vezes em
+código Smalltalk, número que o paper reúne de três trabalhos anteriores
+(um deles o de Deutsch e Schiffman).
+
+\paragraph{O que isso explica na JVM.}
+\begin{itemize}
+\item O formato da VM: bytecode compacto de pilha, interpretador e
+  memória de objetos gerenciada. A seção~\ref{sec:javap-basico} é a
+  versão Java do capítulo~26 do Blue Book.
+\item As chamadas virtuais baratas. Quando a seção~\ref{sec:jit} fala de
+  pontos de chamada monomórficos e megamórficos, está falando de inline
+  caches e do que acontece quando eles não bastam, o problema que o Self
+  atacou em seguida.
+\end{itemize}

@@ -1,0 +1,93 @@
+\section{Gizmo e o bytecode que o Quarkus gera}
+\label{sec:gizmo}
+
+O código que as extensões geram (fábricas de beans, a classe principal,
+a reprodução dos recorders) é escrito direto em bytecode com o
+\termo{Gizmo}{Biblioteca de geração de bytecode do projeto Quarkus.}. O
+README do projeto (\citetitle{doc:gizmo}) o define como \enquote{A
+bytecode generation library} e diz que ele é muito usado pelo Quarkus; o
+guia de extensões o apresenta como \enquote{a convenient alternative to
+ASM, with a higher-level API}. Não há \texttt{.java} intermediário: o
+resultado é \texttt{.class}, o mesmo formato que o \texttt{javac} produz e
+que você aprendeu a ler no capítulo~\ref{cap:lendo-bytecode}.
+
+\subsection*{Como ver as classes geradas}
+
+Em dev mode e nos testes, as classes geradas e transformadas ficam só na
+memória de um class loader, diz o guia \citetitle{doc:quarkus-writing-extensions}. Para
+gravá-las em disco ele oferece:
+
+\small
+\begin{longtable}{@{}p{5.6cm} p{6.6cm}@{}}
+\toprule
+Propriedade & O que grava \\
+\midrule \endhead
+\texttt{quarkus.debug.\allowbreak generated-classes-dir} & Classes geradas, como os
+  metadados de beans \\
+\texttt{quarkus.debug.\allowbreak transformed-classes-dir} & Classes transformadas,
+  por exemplo entidades Panache \\
+\texttt{quarkus.debug.\allowbreak generated-sources-dir} & Arquivos ZIG, uma
+  representação textual do código gerado \\
+\texttt{quarkus.package.jar.\allowbreak decompiler.enabled} & Baixa o descompilador
+  Vineflower e grava o resultado no diretório \texttt{decompiled} da
+  saída do build; só funciona num build de produção normal (não em dev
+  mode nem em testes) e com o empacotamento \emph{fast-jar}, o padrão \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Com as classes em disco, \texttt{javap -c -p} funciona como em qualquer
+outra classe. Esta apostila não reproduz listagens de classes geradas
+pelo Quarkus: elas mudam entre versões e não são saída do nosso
+\texttt{examples/}. O desafio no fim do capítulo pede que você as gere no
+seu projeto.
+
+\subsection*{Por que gerar código em vez de usar reflexão}
+
+O exemplo abaixo é Java puro, compilado com o JDK~25 como o resto da
+apostila. Ele mostra as duas formas de um container colocar um
+\texttt{Repositorio} dentro de um \texttt{Servico}: por reflexão, num
+campo \texttt{private}, ou por uma atribuição comum, num campo
+\emph{package-private}, que é o que uma classe gerada no mesmo pacote
+consegue fazer.
+
+\lstinputlisting[language=Java]{generated/source/InjecaoSemReflexao.java}
+
+\inputbytecode{InjecaoSemReflexao}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item \texttt{porReflexao} faz três chamadas \texttt{invokevirtual}:
+  procura o campo pelo \emph{nome} (a string \texttt{"privado"} no
+  constant pool), desliga a checagem de acesso e escreve. O campo
+  escrito é um \emph{argumento} de método, não o operando de uma
+  instrução. Aqui o argumento é uma constante, e o Native Image consegue
+  resolvê-lo no build (seção~\ref{sec:reflexao-nativo}); um container
+  que descobre beans varrendo o classpath em runtime, porém, só conhece
+  os nomes durante a execução.
+\item \texttt{direto} é um único \texttt{putfield} cujo operando aponta
+  para o campo no constant pool. Qualquer ferramenta que lê o
+  \texttt{.class} (o verificador, o JIT, a análise estática do Native
+  Image) sabe qual campo é escrito sem executar nada.
+\end{itemize}
+
+\paragraph{A decisão que isso muda.}
+É exatamente o argumento do guia \citetitle{doc:quarkus-cdi-reference}:
+se a injeção precisa acessar um membro \texttt{private}, o Quarkus tem de
+usar reflexão; em executável nativo, todo membro acessado por reflexão
+precisa ser registrado. Por isso o guia recomenda não usar membros
+\texttt{private} em beans e preferir campos \emph{package-private} ou
+injeção pelo construtor. No nativo, o guia aponta o custo: esses registros
+de reflexão aumentam o executável (seção~\ref{sec:reflexao-nativo}). Para
+campos de injeção \texttt{private}, o padrão
+(\texttt{quarkus.arc.transform-private-injected-fields=true}) já reescreve o
+campo como \emph{package-private} no build, e a injeção fica livre de
+reflexão; construtores, inicializadores, observers, producers, disposers e
+métodos de interceptor \texttt{private} continuam exigindo reflexão.
+
+\paragraph{Panache, um caso de transformação.}
+Além de gerar classes novas, o Quarkus reescreve classes suas. O guia
+\citetitle{doc:quarkus-panache} recomenda campos \texttt{public} nas
+entidades e diz que o Panache gera os getters e setters que faltam,
+apoiado em \enquote{compile-time bytecode enhancements}. São essas
+classes que \texttt{quarkus.debug.transformed-classes-dir} grava.
