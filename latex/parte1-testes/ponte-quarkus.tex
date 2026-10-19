@@ -1,0 +1,88 @@
+\chapter{Ponte: testes em um projeto Quarkus}
+\label{cap:ponte-quarkus}
+
+Este capítulo liga o que vimos nas duas aulas ao Quarkus, que é o tema da
+Parte~III. Só entra aqui o que foi confirmado na documentação oficial em
+18/10/2026; o que não foi confirmado está marcado.
+
+\section{\texttt{@QuarkusTest}}
+
+Segundo o guia \citetitle{doc:quarkus-testing}, ao rodar um teste anotado
+com \texttt{@QuarkusTest} a aplicação é iniciada antes do teste: o Quarkus
+sobe uma vez antes do primeiro teste, todos os testes rodam, e ele é
+desligado no fim. Os testes são \emph{CDI beans} completos, então é
+possível injetar beans da aplicação neles.
+
+Por iniciar um servidor Quarkus para toda a execução, o guia restringe a
+mistura com outros tipos de teste. Já o \texttt{@QuarkusIntegrationTest}
+serve para executar e testar o artefato produzido pelo build, como caixa
+preta, com os mesmos recursos exceto a injeção nos testes.
+
+Na linguagem da aula 1: o \texttt{@QuarkusTest} é um teste de integração
+com o SUT inteiro de pé; use-o nas bordas e mantenha as regras de negócio
+em testes unitários rápidos.
+
+\section{Dev Services e Testcontainers}
+
+O guia \citetitle{doc:quarkus-dev-services} descreve o provisionamento
+automático de serviços não configurados nos modos de desenvolvimento e de
+teste. O Quarkus costuma iniciá-los usando o Testcontainers por baixo
+(\citetitle{doc:testcontainers}). Eles sobem quando você inclui uma
+extensão que os suporta e não configura conexão com um serviço externo.
+
+Dois pontos práticos do guia: a maioria exige um ambiente de contêineres
+(Docker ou Podman) e, para desligar todos os Dev Services, define-se
+\texttt{quarkus.devservices\allowbreak.enabled=false}. O guia de testes acrescenta que
+o \texttt{@QuarkusIntegrationTest} funciona com contêineres iniciados por
+Dev Services.
+
+\section{PIT em um projeto Quarkus}
+
+A documentação do PIT mostra a configuração em Maven: o plugin
+\texttt{pitest-maven} e o objetivo \texttt{mutationCoverage}, com
+\texttt{targetClasses} para limitar os pacotes (\citetitle{doc:pitest-maven}).
+\naoverificado{A integração específica do PIT com testes \texttt{@QuarkusTest}
+não foi encontrada em documentação oficial do Quarkus ou do PIT; teste no
+seu projeto antes de depender dela.}
+
+\section{SmallRye Fault Tolerance e Resilience4j}
+
+O Quarkus usa o SmallRye Fault Tolerance, que a documentação descreve como
+uma implementação da especificação Eclipse MicroProfile Fault Tolerance
+(\citetitle{doc:smallrye-fault-tolerance}), com uma API declarativa por
+anotações e uma API programática. O guia
+\citetitle{doc:quarkus-fault-tolerance} mostra \texttt{@Retry},
+\texttt{@Timeout}, \texttt{@Fallback} e \texttt{@CircuitBreaker}, e descreve
+o \emph{bulkhead} como o limite de execuções concorrentes.
+
+O \citetitle{doc:resilience4j} é uma biblioteca de tolerância a falhas
+pensada para programação funcional, com módulos de CircuitBreaker,
+Bulkhead, Retry, RateLimiter e TimeLimiter, usados como decoradores de
+lambdas e referências de método.
+
+Os dois cobrem padrões de resiliência da aula 2 (retry, circuit breaker,
+bulkhead). Nenhuma das duas documentações cita a outra,
+\naoverificado{então não afirmamos equivalência um a um entre as
+anotações do SmallRye e os módulos do Resilience4j.} O estilo é que
+muda: anotações em métodos de beans CDI de um lado, decoradores
+compostos no código do outro.
+
+\section{Gatling contra uma aplicação Quarkus}
+
+A documentação do Gatling descreve o SDK Java e, no modelo aberto,
+\texttt{injectOpen}; as assertions quebram a simulação por percentil e por
+taxa de falhas (\citetitle{doc:gatling-injection},
+\citetitle{doc:gatling-assertions}). O exemplo da documentação:
+
+\begin{lstlisting}[language=Java]
+setUp(scn.injectOpen(injectionProfile))
+  .assertions(
+    global().responseTime().percentile3().lt(1000),
+    global().failedRequests().percent().lte(5.0)
+  );
+\end{lstlisting}
+
+\naoverificado{Não encontramos guia oficial do Quarkus nem do Gatling sobre
+usar um contra o outro.} Na prática, o cenário de carga é escrito como
+em qualquer aplicação; a aula 2 recomenda rodar em homologação, com
+limiares que quebram o build.

@@ -1,0 +1,22 @@
+\section{Visão geral}
+
+Cada prática responde a uma pergunta que o teste unitário não responde:
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{3.2cm} p{3.4cm} p{3.2cm}@{}}
+\toprule
+Prática & Pergunta & Onde roda & Ferramenta principal \\
+\midrule
+Mutação & Meus testes detectam um bug? & No build (diff no PR, completo à
+noite) & PIT \\
+Carga & O sistema aguenta o volume no prazo? & Homologação, com limiares
+que quebram o build & Gatling \\
+Caos & O sistema continua de pé quando algo quebra? & Do teste de integração
+à produção & Chaos Monkey for Spring Boot, Toxiproxy \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+As ferramentas são \citetitle{doc:pitest}, \citetitle{doc:gatling},
+\citetitle{doc:chaos-monkey-spring} e \citetitle{doc:toxiproxy}.

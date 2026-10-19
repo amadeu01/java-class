@@ -1,0 +1,35 @@
+\section{Vocabulário: Fowler e os dublês}
+
+O vocabulário vem de Martin Fowler
+(\citetitle{artigo:testdouble}, \citetitle{artigo:mocks-arent-stubs}) e
+de \citeauthor{livro:meszaros2007}.
+
+\begin{itemize}
+\item \termo{SUT}{\emph{System Under Test}: o trecho de código que o teste
+  está exercitando.} (o objeto sob teste) e o \emph{colaborador} (o que o
+  SUT usa).
+\item \termo{Fixture}{O estado inicial conhecido de que o teste precisa
+  para rodar: objetos criados, dados carregados.}: o estado de partida do
+  teste.
+\item As quatro fases do teste: \emph{setup}, \emph{exercise},
+  \emph{verify}, \emph{teardown}.
+\end{itemize}
+
+Os cinco dublês de teste (\emph{test doubles}):
+
+\begin{description}
+\item[Dummy] preenche um parâmetro e nunca é de fato usado.
+\item[Stub]\termo{Stub}{Dublê que devolve respostas prontas às chamadas
+  feitas durante o teste.} devolve respostas prontas.
+\item[Fake] tem implementação funcional, mas simplificada (por exemplo um
+  repositório em memória).
+\item[Spy] registra como foi chamado, para o teste verificar
+  \emph{estado} depois.
+\item[Mock]\termo{Mock}{Dublê programado com as chamadas que espera
+  receber; o teste verifica o \emph{comportamento}.} verifica
+  \emph{comportamento}: se as chamadas esperadas aconteceram.
+\end{description}
+
+Verificar estado (spy) ou comportamento (mock) é uma escolha de projeto.
+Na prática do dojo: objetos reais sempre que possível, e dublês só nas
+bordas (banco, rede, relógio).

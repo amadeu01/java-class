@@ -1,0 +1,31 @@
+\section{Carga}
+
+Tipos de teste: carga, estresse, pico, resistência (\emph{soak}) e
+capacidade.
+
+Quatro sinais para observar:
+\begin{enumerate}
+\item \termo{vazão}{\emph{Throughput}: quantas requisições o sistema
+  atende por unidade de tempo.};
+\item latência em percentis (p95, p99; nunca só a média);
+\item taxa de erro;
+\item saturação.
+\end{enumerate}
+
+Prefira o modelo \emph{aberto} (taxa de chegadas) ao fechado, para não
+cair na \termo{omissão coordenada}{\emph{Coordinated omission}: o gerador
+de carga espera a resposta lenta antes de enviar a próxima requisição e,
+assim, deixa de registrar a espera que usuários reais sofreriam. Origem da
+expressão: Gil Tene.}. No Gatling, o modelo aberto usa \texttt{injectOpen}
+(por exemplo \texttt{constantUsersPerSec}) e o fechado, \texttt{injectClosed}
+(\citetitle{doc:gatling-injection}).
+
+Defina o critério antes de rodar. No Gatling, ele vira assertions que
+quebram o build, como um limite de percentil de tempo de resposta e de taxa
+de requisições com falha (\citetitle{doc:gatling-assertions};
+\citetitle{artigo:threshold-test}).
+
+Decida também o que fazer acima do limite: descartar com prioridade
+(\termo{load shedding}{Descartar requisições de menor prioridade quando o
+sistema está sobrecarregado, para proteger as importantes.}) é melhor do
+que cair inteiro; veja os posts do Netflix TechBlog na tabela de artigos.

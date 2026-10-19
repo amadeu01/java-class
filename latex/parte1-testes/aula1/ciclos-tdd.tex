@@ -1,0 +1,33 @@
+\section{Os ciclos do TDD}
+
+Segundo Uncle Bob (\citeauthor{artigo:cycles-tdd}, \citeyear{artigo:cycles-tdd},
+\citetitle{artigo:cycles-tdd}), o TDD acontece em quatro ciclos aninhados,
+cada um com seu próprio relógio.
+
+\begin{center}
+\small
+\begin{tabular}{@{}l l p{8cm}@{}}
+\toprule
+Ciclo & Relógio & O que fazer \\
+\midrule
+Nano & segundos & As três leis: só escrever código de produção com um teste
+falhando, só escrever teste suficiente para falhar, só escrever código
+suficiente para passar \\
+Micro & minutos & Vermelho, verde, refatorar \\
+Milli & $\sim$10 min & Testes cada vez mais específicos, código cada vez
+mais genérico \\
+Primário & $\sim$1 hora & Parar e olhar as fronteiras da arquitetura \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Os dois primeiros ciclos são os que você sente no dedo: as três leis
+mandam a cadência, e o ritmo vermelho, verde, refatorar fecha cada volta.
+O ciclo milli é o de generalização: a cada teste novo o teste fica mais
+específico e o código de produção, mais genérico. O ciclo primário é o
+momento de levantar a cabeça e olhar a arquitetura, por exemplo onde
+ficam as bordas do sistema.
+
+Uma extensão natural da ideia de ``código mais genérico'' é a
+\citetitle{artigo:tpp} (\citeauthor{artigo:tpp}, \citeyear{artigo:tpp}),
+indicada abaixo em \enquote{onde aprofundar}.

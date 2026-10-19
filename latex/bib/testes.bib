@@ -2,3 +2,81 @@
 % doc:<slug>, paper:<slug>.
 % Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
 % usado para separar a bibliografia por tipo no apêndice.
+
+% ---- Livros (Parte I) ----
+@book{livro:beck2002,
+  author={Kent Beck}, title={Test-Driven Development: By Example}, date={2002},
+  note={PT: TDD: Desenvolvimento Guiado por Testes}, langid={english}, keywords={livro}}
+@book{livro:martin2021,
+  author={Robert C. Martin}, title={Clean Craftsmanship}, date={2021},
+  langid={english}, keywords={livro}}
+@book{livro:martin2008,
+  author={Robert C. Martin}, title={Clean Code}, date={2008},
+  note={PT: Código Limpo}, langid={english}, keywords={livro}}
+@book{livro:martin2011,
+  author={Robert C. Martin}, title={The Clean Coder}, date={2011},
+  note={PT: O Codificador Limpo}, langid={english}, keywords={livro}}
+@book{livro:freeman2009,
+  author={Steve Freeman and Nat Pryce},
+  title={Growing Object-Oriented Software, Guided by Tests}, date={2009},
+  langid={english}, keywords={livro}}
+@book{livro:aniche2015,
+  author={Maurício Aniche}, title={Testes Automatizados de Software}, date={2015},
+  publisher={Casa do Código}, note={Edição em português (PT)},
+  langid={brazilian}, keywords={livro}}
+@book{livro:aniche2022,
+  author={Maurício Aniche}, title={Effective Software Testing}, date={2022},
+  langid={english}, keywords={livro}}
+% O .md não informa o ano de Langr, Hunt e Thomas; fica sem data.
+@book{livro:langr,
+  author={Jeff Langr and Andy Hunt and Dave Thomas},
+  title={Pragmatic Unit Testing in Java with JUnit},
+  langid={english}, keywords={livro}}
+@book{livro:khorikov2020,
+  author={Vladimir Khorikov},
+  title={Unit Testing: Principles, Practices, and Patterns}, date={2020},
+  langid={english}, keywords={livro}}
+@book{livro:meszaros2007,
+  author={Gerard Meszaros}, title={xUnit Test Patterns}, date={2007},
+  langid={english}, keywords={livro}}
+@book{livro:feathers2004,
+  author={Michael Feathers}, title={Working Effectively with Legacy Code},
+  date={2004}, langid={english}, keywords={livro}}
+@book{livro:adzic2011,
+  author={Gojko Adzic}, title={Specification by Example}, date={2011},
+  langid={english}, keywords={livro}}
+@book{livro:gregg2020,
+  author={Brendan Gregg}, title={Systems Performance}, edition={2},
+  date={2020}, langid={english}, keywords={livro}}
+@book{livro:nygard2018,
+  author={Michael Nygard}, title={Release It!}, edition={2}, date={2018},
+  langid={english}, keywords={livro}}
+@book{livro:rosenthal2020,
+  author={Casey Rosenthal and Nora Jones},
+  title={Chaos Engineering: System Resiliency in Practice}, date={2020},
+  langid={english}, keywords={livro}}
+@book{livro:forsgren2018,
+  author={Nicole Forsgren and Jez Humble and Gene Kim}, title={Accelerate},
+  date={2018}, langid={english}, keywords={livro}}
+
+% ---- Ferramentas (sites oficiais) ----
+@online{doc:junit5, author={{JUnit}}, title={JUnit 5}, url={https://junit.org/junit5/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:assertj, author={{AssertJ}}, title={AssertJ}, url={https://assertj.github.io/doc/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:mockito, author={{Mockito}}, title={Mockito}, url={https://site.mockito.org/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jqwik, author={{jqwik}}, title={jqwik}, url={https://jqwik.net/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:pitest, author={{PIT}}, title={PIT}, url={https://pitest.org/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:pact, author={{Pact}}, title={Pact}, url={https://docs.pact.io/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:spring-cloud-contract, author={{Spring}}, title={Spring Cloud Contract}, url={https://spring.io/projects/spring-cloud-contract}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:testcontainers, author={{Testcontainers}}, title={Testcontainers}, url={https://testcontainers.com/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:gatling, author={{Gatling}}, title={Gatling}, url={https://docs.gatling.io/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jmeter, author={{Apache}}, title={Apache JMeter}, url={https://jmeter.apache.org/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:k6, author={{Grafana Labs}}, title={k6}, url={https://k6.io/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:chaos-monkey-spring, author={{codecentric}}, title={Chaos Monkey for Spring Boot}, url={https://codecentric.github.io/chaos-monkey-spring-boot/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:toxiproxy, author={{Shopify}}, title={Toxiproxy}, url={https://github.com/Shopify/toxiproxy}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:netflix-chaosmonkey, author={{Netflix}}, title={Chaos Monkey (Netflix)}, url={https://github.com/Netflix/chaosmonkey}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:resilience4j, author={{Resilience4j}}, title={Resilience4j}, url={https://resilience4j.readme.io/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+
+% ---- Documentação oficial de configuração (verificada em 2026-10-18) ----
+@online{doc:pitest-maven, author={{PIT}}, title={PIT Maven quickstart}, url={https://pitest.org/quickstart/maven/}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:gatling-injection, author={{Gatling}}, title={Gatling: injection (open and closed workload models)}, url={https://docs.gatling.io/concepts/injection/}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:gatling-assertions, author={{Gatling}}, title={Gatling: assertions}, url={https://docs.gatling.io/concepts/assertions/}, urldate={2026-10-18}, langid={english}, keywords={doc}}

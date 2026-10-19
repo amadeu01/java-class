@@ -1,0 +1,21 @@
+\section{Caos}
+
+Engenharia do caos é experimento, não sabotagem. O roteiro:
+
+\begin{enumerate}
+\item definir o estado estável;
+\item formular uma hipótese;
+\item injetar uma falha real;
+\item tentar refutar a hipótese.
+\end{enumerate}
+
+Comece pequeno, limitando o \termo{raio de explosão}{\emph{Blast radius}:
+o tanto do sistema e dos usuários que um experimento pode afetar.}, e
+tenha uma condição de parada.
+
+O caos põe à prova os mecanismos de resiliência: \emph{timeout}, \emph{retry}
+com \emph{backoff}, \emph{circuit breaker} (\citetitle{artigo:circuitbreaker}),
+\emph{bulkhead} e \emph{fallback}. Para injetar falhas, a aula apresentou
+\citetitle{doc:chaos-monkey-spring} e \citetitle{doc:toxiproxy}; o
+\citetitle{doc:netflix-chaosmonkey} é a origem da ideia, e
+\citetitle{doc:resilience4j} cobre os padrões de resiliência em Java.
