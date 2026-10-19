@@ -19,3 +19,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Exemplos em Java com listagens `javap` geradas com o JDK 25.
 - CI que compila o PDF e verifica os links.
 - Site no GitHub Pages com o PDF, a fonte LaTeX, a lista de versões e este changelog, mais releases versionadas (`vX.Y.Z`).
+
+### Alterado
+
+- Revisão por pares multiagente aplicada: referências corrigidas (vídeos, edições, acesso aberto confirmado na editora), conteúdo técnico das Partes I a IV, terminologia (AOT, desotimização, steady state) e `check.sh` falhando com build falho ou desatualizado. Relatório em `docs/peer-review/2026-10-19.md`.
