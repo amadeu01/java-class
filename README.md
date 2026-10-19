@@ -19,6 +19,8 @@ O comando local de build é `scripts/build.sh` e requer Docker. O PDF sai em `la
 
 ## Publicar uma versão
 
+Antes de criar a tag, atualize o changelog: em `CHANGELOG.md`, renomeie `## [Não lançado]` para `## [X.Y.Z] - AAAA-MM-DD` e abra um novo `## [Não lançado]` vazio acima dele. Faça commit e merge na `main`. O job de release falha se o CHANGELOG não tiver uma seção para a versão.
+
 Um push de tag `vX.Y.Z` cria a release e publica o site no GitHub Pages. Para o deploy da tag passar, o ambiente `github-pages` (Settings > Environments) precisa permitir o branch `main` **e** tags `v*`; sem a regra de tag, o job `pages` falha por proteção de ambiente. Para conferir:
 
 ```sh
