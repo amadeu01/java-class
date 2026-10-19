@@ -174,3 +174,49 @@ Workflow (tool `Workflow`, opt-in explícito do Amadeu) com até 10 agentes, cad
 
 - [ ] **Step 1:** `gh pr ready`; atualizar corpo do PR com resumo das partes, link do artifact do PDF e resumo do peer review (termina com a linha de atribuição).
 - [ ] **Step 2:** `gh pr checks` todos verdes. **Não fazer merge**; informar o Amadeu que o merge na `main` dispara a Release `latest`.
+
+---
+
+## Adições aprovadas (2026-10-18)
+
+Ordem de execução: 5 → 11 → 6 → 7 → 8 → 12 → 9 → 10.
+
+### Task 11: GitHub Pages, releases versionadas e changelog
+
+**Files:**
+- Create: `CHANGELOG.md`, `scripts/build-site.sh`, `scripts/test-site.sh`, `scripts/package-latex.sh`, `site/template.html`, `site/estilo.css`
+- Modify: `.github/workflows/pdf.yml` (remover job `release` da tag `latest`; adicionar jobs `release` em tag e `pages`), `README.md` (link do site e das releases)
+
+**Interfaces:**
+- Consumes: artifact `apostila` (PDF) do job `pdf`; `latex/`, `examples/`, `scripts/`.
+- Produces:
+  - `scripts/package-latex.sh VERSAO` → `dist/apostila-latex-VERSAO.zip` via `git archive` de `latex/ examples/ scripts/ README.md LICENSE examples/LICENSE latexmkrc` (sem gerados).
+  - `scripts/build-site.sh` → `public/index.html`, `public/apostila.pdf`, `public/apostila-latex.zip`, `public/estilo.css`. Lê `CHANGELOG.md` (convertido com `pandoc`) e a lista de releases (`gh release list --json tagName,publishedAt` + assets); sem releases ainda, mostra só a versão em desenvolvimento.
+  - `scripts/test-site.sh` → exit 0 só se `public/index.html` existe, contém o título da apostila, links para `apostila.pdf` e `apostila-latex.zip`, a seção de changelog, e os arquivos linkados existem em `public/`.
+
+- [ ] **Step 1: Teste falhando.** `scripts/test-site.sh` antes de existir o build do site. Esperado: FAIL ("public/index.html não existe").
+- [ ] **Step 2:** `CHANGELOG.md` pt-BR (*Keep a Changelog*): seção `[Não lançado]` listando o que existe (Parte I, Parte II, CI, exemplos de bytecode). Escrever `package-latex.sh`, `build-site.sh`, `site/template.html` + `site/estilo.css` (cores e fonte coerentes com o PDF: azul dos títulos, sans nos títulos; responsivo; claro/escuro).
+- [ ] **Step 3:** rodar `scripts/build-site.sh && scripts/test-site.sh` localmente (pandoc via container `pandoc/core` se não houver local). Esperado: PASS. Abrir `public/index.html` renderizado (screenshot) e conferir.
+- [ ] **Step 4: CI.**
+  - job `release` (em `push` de tag `v*`, needs pdf): extrai a seção da versão do `CHANGELOG.md` como notas; `gh release create vX.Y.Z apostila-vX.Y.Z.pdf apostila-latex-vX.Y.Z.zip --notes-file ...`.
+  - job `pages` (em push na `main` e em tag `v*`, needs pdf e release quando houver): `build-site.sh`, `test-site.sh`, `actions/upload-pages-artifact`, `actions/deploy-pages`; `permissions: pages: write, id-token: write`; `concurrency: pages`.
+  - remover o job antigo que recriava a release `latest`.
+  - em PR: rodar `build-site.sh && test-site.sh` (sem deploy) para validar.
+- [ ] **Step 5:** habilitar Pages com origem "GitHub Actions": `gh api -X POST repos/amadeu01/java-class/pages -f build_type=workflow` (se já existir, `-X PUT`). Não criar tags.
+- [ ] **Step 6:** Commit `feat: GitHub Pages site, versioned releases and changelog`; push; CI verde (job de validação do site no PR).
+
+### Task 12: Pesquisa acadêmica na apostila
+
+**Files:**
+- Create: `latex/bib/academico.bib`, `latex/apendices/pesquisa-academica/{capitulo,por-tema,por-instituicao}.tex` (dividir se passar de 200 linhas)
+- Modify: `latex/preamble/pacotes.tex` (`\addbibresource{bib/academico.bib}`), arquivos "aprofundar" de cada capítulo (Partes I–IV), `latex/apendices/parte.tex`, `CHANGELOG.md`
+
+**Interfaces:**
+- Consumes: `.superpowers/sdd/2026-10-18-apostila-java/research-academic-testing-arch.md` e `research-academic-jvm-vms.md` (tabelas verificadas + BibTeX proposto).
+- Produces: chaves `paper:*`, `doc:*` com `keywords`, `langid`, `url`, `urldate`, `doi` quando houver.
+
+- [ ] **Step 1:** Reconferir uma amostra (≥ 20%) das URLs/DOIs da pesquisa com WebFetch; remover o que não confirmar.
+- [ ] **Step 2:** `academico.bib` sem chaves duplicadas com os outros `.bib` (se já existir a obra, reutilizar a chave existente).
+- [ ] **Step 3:** Em cada capítulo, subseção "Pesquisa acadêmica" dentro de "Onde aprofundar" com os itens que conectam, uma frase em pt-BR cada, marcando `\pt` para os em português.
+- [ ] **Step 4:** Apêndice "Pesquisa acadêmica": por tema e por instituição; "Recomendação de leitura" (top 5, ≥ 2 em pt-BR).
+- [ ] **Step 5:** `scripts/build.sh && scripts/check.sh` PASS; CI verde (lychee checa todas as URLs novas). Commit `feat: academic research references`.

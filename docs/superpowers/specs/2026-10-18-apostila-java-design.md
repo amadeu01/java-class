@@ -149,3 +149,16 @@ Achados confirmados são corrigidos; o que não puder ser confirmado é removido
 ## 10. Deixado para o builder
 
 - Lista final de tópicos de Java moderno, escolha exata de exemplos de bytecode, layout visual do PDF, divisão fina de seções, quais livros/artigos extras entram (desde que verificados), número e organização dos agentes de peer review.
+
+## 11. Adições aprovadas em 2026-10-18 (após o design inicial)
+
+### 11.1 GitHub Pages, releases versionadas e changelog
+- Cada tag `vX.Y.Z` gera uma GitHub Release com `apostila-vX.Y.Z.pdf` e `apostila-latex-vX.Y.Z.zip` (fonte LaTeX, exemplos Java e scripts de build). Substitui a release fixa `latest`.
+- `CHANGELOG.md` em pt-BR no formato *Keep a Changelog*, uma seção por versão; as notas da release vêm da seção da versão.
+- Site estático no GitHub Pages, gerado pela Action (sem Jekyll), com o visual da apostila: versão atual com botões de download (PDF e LaTeX), lista de todas as versões com downloads, e o changelog. Publicado a cada push na `main` e a cada tag; só entra no ar depois do merge.
+- Versões: `v0.1.0` com o que existir no merge; `v1.0.0` quando as quatro partes e o peer review estiverem prontos. Criar tags é decisão do Amadeu (nenhuma tag é criada sem pedido).
+
+### 11.2 Pesquisa acadêmica
+- Artigos, teses e material de curso de universidades de ponta (Stanford, MIT, CMU, Yale, ETH, KTH, TU Delft, USP, Unicamp, UFMG etc.), em inglês e pt-BR, sobre JVM, VMs, TDD, testes, e2e e arquitetura.
+- Só entra o que foi aberto e confirmado (título, autores, ano, venue), com DOI ou link aberto.
+- Cada item entra no "Onde aprofundar" do capítulo que conecta, e um apêndice "Pesquisa acadêmica" reúne tudo por tema e instituição.
