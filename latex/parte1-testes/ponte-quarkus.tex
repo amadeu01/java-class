@@ -13,16 +13,18 @@ sobe uma vez antes do primeiro teste, todos os testes rodam, e ele é
 desligado no fim. Os testes são \emph{CDI beans} completos, então é
 possível injetar beans da aplicação neles.
 
+\begin{sloppypar}
 O guia proíbe misturar \texttt{@QuarkusTest} com
-\texttt{@QuarkusDevModeTest}, \texttt{@QuarkusProdModeTest} ou
-\texttt{@QuarkusExtensionTest} na mesma execução e diz que, no momento,
-\texttt{@QuarkusTest} e \texttt{@QuarkusIntegrationTest} não devem rodar na
+\texttt{@Quarkus\-DevModeTest}, \texttt{@Quarkus\-ProdModeTest} ou
+\texttt{@Quarkus\-Extension\-Test} na mesma execução e diz que, no momento,
+\texttt{@QuarkusTest} e \texttt{@Quarkus\-Integration\-Test} não devem rodar na
 mesma execução (em Maven, recomenda o Surefire para o primeiro e o Failsafe
-para o segundo). O \texttt{@QuarkusIntegrationTest} serve para executar e
+para o segundo). O \texttt{@Quarkus\-Integration\-Test} serve para executar e
 testar o artefato produzido pelo build, como caixa preta, e o guia diz que
 ele tem os mesmos recursos e limitações do teste de executável nativo, cujo
 guia exclui a injeção nos testes; o guia não afirma explicitamente que essa
 exclusão vale para o modo JVM.
+\end{sloppypar}
 
 Na linguagem da aula 1: o \texttt{@QuarkusTest} é um teste de integração
 com o SUT inteiro de pé; use-o nas bordas e mantenha as regras de negócio

@@ -11,6 +11,22 @@ if [ ! -f "$log" ]; then
   echo "ERRO: $log não existe; rode scripts/build.sh antes."; exit 1
 fi
 
+# O último build tem de ter dado certo: sem erro TeX e com PDF gerado.
+if grep -qE '^! |^No pages of output|Emergency stop' "$log" || ! grep -q '^Output written on' "$log"; then
+  echo "ERRO: o último build falhou (veja $log); corrija e rode scripts/build.sh."; exit 1
+fi
+# E tem de ser mais novo que as fontes; o .blg, mais novo que os .bib.
+newer=$(find latex -path latex/build -prune -o \( -name '*.tex' -o -name '*.bib' -o -name '*.dbx' -o -name latexmkrc \) -newer "$log" -print)
+if [ -n "$newer" ]; then
+  echo "ERRO: $log é anterior às fontes; rode scripts/build.sh. Mais novos:"; echo "$newer" | sed 's/^/  /'; exit 1
+fi
+if [ -f "$blg" ]; then
+  newer=$(find latex/bib -name '*.bib' -newer "$blg" -print)
+  if [ -n "$newer" ]; then
+    echo "ERRO: $blg é anterior aos .bib; rode scripts/build.sh. Mais novos:"; echo "$newer" | sed 's/^/  /'; exit 1
+  fi
+fi
+
 out=$(grep -nE "(Citation|Reference) .*undefined|There were undefined (references|citations)|Label .* multiply defined" "$log")
 if [ -n "$out" ]; then
   echo "ERRO: citações/referências indefinidas em $log:"; echo "$out" | sed 's/^/  /'; fail=1
