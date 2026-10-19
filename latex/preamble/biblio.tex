@@ -76,10 +76,13 @@
     {\iffieldundef{urlpt}{\printfield{edicaopt} (sem loja da editora)}
       {\href{\thefield{urlpt}}{\printfield{edicaopt}}}}}}
 % Link aberto: urlgratis; senão url, arXiv ou DOI quando acesso é aberto
-% (ou ausente, como em vídeos e documentação); acesso pago: só o DOI.
+% (ou ausente, como em vídeos e documentação); acesso pago: o DOI, mais o
+% urlgratis quando há versão aberta em relatório técnico (outro documento).
 \newbibmacro{onde:gratis}{%
   \iffieldequalstr{acesso}{pago}
-    {\href{\ondedoibase\thefield{doi}}{acesso pago (DOI)}}
+    {\iffieldundef{urlgratis}{}%
+       {\href{\thefield{urlgratis}}{relatório técnico grátis}; }%
+     \href{\ondedoibase\thefield{doi}}{acesso pago (DOI)}}
   {\iffieldundef{urlgratis}
   {\ifboolexpr{test {\iffieldundef{acesso}} or test {\iffieldequalstr{acesso}{aberto}}}
     {\iffieldundef{url}
