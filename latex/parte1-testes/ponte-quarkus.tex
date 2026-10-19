@@ -13,10 +13,16 @@ sobe uma vez antes do primeiro teste, todos os testes rodam, e ele é
 desligado no fim. Os testes são \emph{CDI beans} completos, então é
 possível injetar beans da aplicação neles.
 
-Por iniciar um servidor Quarkus para toda a execução, o guia restringe a
-mistura com outros tipos de teste. Já o \texttt{@QuarkusIntegrationTest}
-serve para executar e testar o artefato produzido pelo build, como caixa
-preta, com os mesmos recursos exceto a injeção nos testes.
+O guia proíbe misturar \texttt{@QuarkusTest} com
+\texttt{@QuarkusDevModeTest}, \texttt{@QuarkusProdModeTest} ou
+\texttt{@QuarkusExtensionTest} na mesma execução e diz que, no momento,
+\texttt{@QuarkusTest} e \texttt{@QuarkusIntegrationTest} não devem rodar na
+mesma execução (em Maven, recomenda o Surefire para o primeiro e o Failsafe
+para o segundo). O \texttt{@QuarkusIntegrationTest} serve para executar e
+testar o artefato produzido pelo build, como caixa preta, e o guia diz que
+ele tem os mesmos recursos e limitações do teste de executável nativo, cujo
+guia exclui a injeção nos testes; o guia não afirma explicitamente que essa
+exclusão vale para o modo JVM.
 
 Na linguagem da aula 1: o \texttt{@QuarkusTest} é um teste de integração
 com o SUT inteiro de pé; use-o nas bordas e mantenha as regras de negócio
@@ -72,12 +78,12 @@ compostos no código do outro.
 A documentação do Gatling descreve o SDK Java e, no modelo aberto,
 \texttt{injectOpen}; as assertions quebram a simulação por percentil e por
 taxa de falhas (\citetitle{doc:gatling-injection},
-\citetitle{doc:gatling-assertions}). O exemplo da documentação:
+\citetitle{doc:gatling-assertions}). Um exemplo adaptado do formato mostrado na documentação (a página define \texttt{percentile4} como o percentil 99 por padrão, configurável em \texttt{gatling.conf}):
 
 \begin{lstlisting}[language=Java]
 setUp(scn.injectOpen(injectionProfile))
   .assertions(
-    global().responseTime().percentile3().lt(1000),
+    global().responseTime().percentile4().lt(1000),
     global().failedRequests().percent().lte(5.0)
   );
 \end{lstlisting}
