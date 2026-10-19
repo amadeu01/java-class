@@ -5,6 +5,8 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+## [0.1.0] - 2026-10-19
+
 ### Adicionado
 
 - Parte I, Testes: aulas 1 e 2 e a ponte para o Quarkus.
