@@ -32,7 +32,9 @@ disponível com a dependência \texttt{quarkus-junit-mockito}, e o
 \texttt{QuarkusMock}, com \texttt{installMockForType} para instalar um
 mock antes dos testes. Na arquitetura hexagonal, o candidato natural a
 mock é uma porta (\texttt{CobrancaGateway}), nunca uma classe de
-domínio.
+domínio. O \texttt{QuarkusMock} só funciona com beans de escopo normal;
+para o \texttt{FecharPedido} \texttt{@Singleton}, use \texttt{@InjectMock}
+com \texttt{@MockitoConfig(convertScopes = true)}.
 
 \paragraph{Cuidado com o custo de subir o Quarkus.}
 O mesmo guia diz que, nos exemplos dele, o Quarkus sobe uma vez para

@@ -57,7 +57,8 @@ A \enquote{1ª requisição} é o \emph{time to first request}: do comando
 de start até a primeira resposta com sucesso, não o \enquote{started
 in} do log (guia \citetitle{doc:quarkus-performance-measure}). Isso
 explica por que 4,4~s não contradiz o \enquote{sub-second startup} que o
-mesmo guia atribui ao modo JVM: na mesma página, o \emph{cold start} do
+guia \citetitle{doc:quarkus-building-native} atribui ao modo JVM: nessa
+página, o \emph{cold start} do
 modo JVM vai de cerca de 0,4~s (um REST pequeno) a cerca de 3~s (um CRUD
 grande), vindo de outros posts do blog, e a medição do perf-lab inclui
 subir o serviço completo e atender a primeira requisição.

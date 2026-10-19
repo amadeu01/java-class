@@ -40,7 +40,10 @@ O dev mode do Quarkus resolve o problema de outro jeito. O
 class loader} com as classes da aplicação, que \enquote{is recreated when
 the application is restarted}. Em vez de redefinir classes, o Quarkus
 descarta o class loader e cria outro: na prática, reinicia só a parte que
-mudou. A mesma página avisa que isso não tem efeito em builds de produção.
+mudou. A mesma página explica que em produção (pacote \emph{fast-jar}, o
+padrão) as classes são carregadas por outro class loader, o
+\texttt{RunnerClassLoader}; a arquitetura que recria o class loader vale
+para dev mode, testes e build.
 
 \paragraph{Native Image: nada novo depois do build.}
 No outro extremo está o executável nativo. A

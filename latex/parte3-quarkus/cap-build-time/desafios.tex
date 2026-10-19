@@ -6,10 +6,10 @@
 classe gerada para o seu bean e leia-a com \texttt{javap -c -p}. Que
 instruções aparecem onde você esperaria reflexão?}
 
-\desafio{Ative \texttt{-Dquarkus.debug.print-startup-times=true} e
-anote os cinco build steps mais lentos. Remova uma extensão que você não
-usa e compare. O que mudou no build e o que mudou no tempo até a
-primeira requisição?}
+\desafio{Inicie a aplicação com
+\texttt{-Dquarkus.debug.print-startup-times=true} e anote as cinco tarefas
+de startup mais lentas. Remova uma extensão que você não usa e compare. O
+que mudou no startup e no tempo até a primeira requisição?}
 
 \desafio{Mova uma classe com \texttt{@ApplicationScoped} para um módulo
 Maven separado, sem \texttt{beans.xml} e sem índice Jandex. O que
@@ -17,7 +17,8 @@ acontece na injeção? Conserte de duas formas diferentes, usando as
 fontes do índice listadas na seção~\ref{sec:jandex}, e explique qual
 você usaria num time.}
 
-\desafio{Troque, num bean seu, a injeção por campo \texttt{private} por
-injeção pelo construtor. Usando a listagem da seção~\ref{sec:gizmo},
-explique a um colega por que essa mudança importa mais no executável
-nativo do que no modo JVM.}
+\desafio{Num bean seu, declare um método observer (\texttt{@Observes})
+\texttt{private} e depois o torne \emph{package-private}. Usando a
+seção~\ref{sec:gizmo}, explique a um colega por que o \texttt{private}
+custa mais no executável nativo (registro de reflexão, binário maior) e
+por que, para campos injetados, o Quarkus já evita esse custo por padrão.}

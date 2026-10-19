@@ -25,9 +25,10 @@ Erlang, lida com \texttt{receive}.} (\citetitle{doc:erlang-processes}).
 Três números da documentação dão a escala:
 \begin{itemize}
 \item Um processo recém-criado ocupa 327 palavras de memória, das quais
-  233 são o heap inicial (que inclui a pilha). O guia avisa que o número
-  veio de uma execução no OTP~27 (erts-14.2.3) e pode variar entre
-  versões (\citetitle{doc:erlang-eff-processes}). Em máquina de 64 bits,
+  233 são o heap inicial (que inclui a pilha). O número vem da sessão de
+  exemplo do guia (\citetitle{doc:erlang-eff-processes}), cujo cabeçalho
+  mostra \enquote{Erlang/OTP 27 [erts-14.2.3]}; o guia não diz se ele muda
+  entre versões. Em máquina de 64 bits,
   uma palavra tem 8~bytes.
 \item O limite padrão de processos simultâneos de um nó é 1\,048\,576
   (opção \texttt{+P} do \citetitle{doc:erlang-erl}).
@@ -52,8 +53,9 @@ grosso modo, cada chamada de função gasta uma. O nome vem do Prolog, em
 que cada passo de execução é uma redução.} e, quando o processo gasta a
 sua cota, ele é suspenso e outro entra. O livro dá a cota: 4000
 reductions (\texttt{CONTEXT\_REDS} em \texttt{erl\_vm.h}); antes do
-OTP~20, eram 2000. Como em Erlang não há laço sem chamada de função, nenhum
-processo segura um scheduler para sempre.
+OTP~20, eram 2000. Como em Erlang não há laço sem chamada de função, um
+processo Erlang quase nunca segura um scheduler por muito tempo (as
+exceções estão logo abaixo).
 
 O JEP~444 diz o contrário para o Java: \enquote{The scheduler does not
 currently implement time sharing for virtual threads}. Uma virtual
@@ -63,7 +65,8 @@ o mesmo alerta que o guia do Quarkus repete
 
 \paragraph{Onde a BEAM também trava.}
 A preempção vale para código Erlang. Uma NIF (função nativa em C chamada
-pelo Erlang) roda fora dessa contagem; o \emph{BEAM Book} recomenda
+pelo Erlang) roda fora dessa contagem, e o livro avisa que algumas BIFs
+também podem demorar sem ceder o scheduler; o \emph{BEAM Book} recomenda
 mantê-las curtas \enquote{to avoid blocking the BEAM scheduler} e usar
 \emph{dirty schedulers} para operações longas. É o equivalente, na BEAM,
 do \emph{pinning} das virtual threads em código nativo

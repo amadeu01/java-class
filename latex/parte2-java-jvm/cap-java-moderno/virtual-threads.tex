@@ -48,8 +48,10 @@ escala, e recomendava trocar \texttt{synchronized} por
 \texttt{ReentrantLock} em trechos frequentes que guardam I/O. O
 \citetitle{doc:jep491} (JDK~24) removeu quase todo esse pinning: a
 virtual thread agora desmonta mesmo dentro de \texttt{synchronized}. Ainda
-fica presa quando código nativo chama de volta Java e bloqueia, e o
-evento JFR \texttt{jdk.VirtualThreadPinned} continua existindo para esses
+fica presa quando código nativo chama de volta Java e bloqueia, quando
+bloqueia carregando uma classe ou dentro de um inicializador
+\texttt{static} (\texttt{<clinit>}), e quando espera outra thread terminar
+de inicializar uma classe; o evento JFR \texttt{jdk.VirtualThreadPinned} continua existindo para esses
 casos. A seção~\ref{sec:sincronizacao} mostra o
 \texttt{monitorenter} por trás disso.
 

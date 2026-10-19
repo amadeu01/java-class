@@ -5,7 +5,7 @@ A HotSpot começa interpretando o bytecode. Enquanto o programa roda, ela
 mede onde o tempo é gasto e compila para código de máquina só o que é
 quente; a documentação da Oracle descreve o compilador como
 \emph{adaptativo} e diz que a maior parte do código, pouco usada, nem
-chega a ser compilada (\citetitle{doc:hotspot-perf}). Esse compilador é o
+chega a ser compilada (\citetitle{doc:jvm-overview}). Esse compilador é o
 \termo{JIT}{\emph{Just-in-time}: compila durante a execução, com
 informação sobre como o programa está de fato rodando.}.
 
@@ -52,16 +52,19 @@ parar as threads Java em pontos conhecidos, os
 conhecido pela JVM; as threads verificam periodicamente se devem parar
 ali.}. O código compilado tem verificações baratas (\emph{safepoint
 polls}) que quase nunca disparam
-(\citetitle{artigo:shipilev-safepoint}). O artigo lembra o problema de
-fundo: uma thread num laço longo pode demorar a chegar a um poll, e as
-outras esperam por ela. A opção \texttt{-Xlog:safepoint} registra os
+(\citetitle{artigo:shipilev-safepoint}). O artigo explica por que os
+polls existem: uma thread num laço ocupado pode nunca chamar a JVM por
+conta própria, e por isso a HotSpot usa um esquema cooperativo, em que a
+thread pergunta de tempos em tempos se deve parar num ponto de estado
+conhecido. A opção \texttt{-Xlog:safepoint} registra os
 safepoints no log da JVM.
 
 \paragraph{As decisões que isso muda.}
 \begin{itemize}
 \item \emph{Warm-up é real.} As primeiras requisições rodam interpretadas
   ou em C1. Shipilëv avisa que o aquecimento precisa ter o
-  mesmo perfil da produção; senão, a recompilação aparece depois, no
+  mesmo perfil da produção (\citetitle{artigo:shipilev-uncommon-traps});
+  senão, a recompilação aparece depois, no
   meio da medição. Teste de carga sem aquecimento mede o interpretador.
 \item \emph{Microbenchmark à mão engana.} Um \texttt{System.nanoTime()}
   em volta de um laço mede compilação, eliminação de código morto e
@@ -78,6 +81,8 @@ O manual do \texttt{java} documenta \texttt{-XX:+PrintCompilation}
 (imprime uma linha a cada método compilado), \texttt{-Xint} (só
 interpretador, para comparar), \texttt{-XX:-TieredCompilation} e, após
 \texttt{-XX:+UnlockDiagnosticVMOptions}, \texttt{-XX:+PrintInlining} e
-\texttt{-XX:+LogCompilation} (log em \texttt{hotspot.log}, que o
+\texttt{-XX:+LogCompilation} (log em \texttt{hotspot\_pid<pid>.log} no
+diretório atual; o manual do \texttt{java} ainda diz \texttt{hotspot.log},
+e \texttt{-XX:LogFile} escolhe outro nome), que o
 \citetitle{doc:jitwatch} visualiza). A seção~\ref{sec:ferramentas}
 reúne essas ferramentas.

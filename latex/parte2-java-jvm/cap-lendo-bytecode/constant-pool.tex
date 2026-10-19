@@ -4,7 +4,8 @@
 Todo \texttt{.class} tem um constant pool (JVMS §4.4): uma tabela com
 os nomes de classes, métodos e campos que o código referencia, as
 strings literais e as constantes numéricas. As instruções não contêm
-nomes, só índices nessa tabela; na carga, a JVM resolve os índices para
+nomes, só índices nessa tabela; na resolução (fase de linking, em geral
+de forma preguiçosa, no primeiro uso), a JVM troca os índices por
 referências concretas (seção~\ref{sec:class-loading}).
 
 \lstinputlisting[language=Java]{generated/source/PoolConstantes.java}

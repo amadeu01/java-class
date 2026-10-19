@@ -64,7 +64,10 @@ injetado e delega para a instância real, criada sob demanda.}: um bean
 é \texttt{final}, e o guia \citetitle{doc:quarkus-cdi-reference} explica
 que classes \texttt{final} não podem ser \enquote{proxiadas}, a não ser que
 o Quarkus transforme o bytecode removendo o \texttt{final}. Um caso de uso
-imutável e sem estado não ganha nada com o proxy.
+imutável e sem estado não ganha nada com o proxy. O preço, segundo o
+mesmo guia: um bean \texttt{@Singleton} não pode ser substituído por
+\texttt{QuarkusMock}; num \texttt{@QuarkusTest} use \texttt{@InjectMock}
+com \texttt{@MockitoConfig(convertScopes = true)}.
 
 \paragraph{Por que isso combina com o build time.}
 Toda a ligação é estática e visível no índice: o tipo da porta, o bean

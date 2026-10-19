@@ -13,8 +13,8 @@ que você aprendeu a ler no capítulo~\ref{cap:lendo-bytecode}.
 
 \subsection*{Como ver as classes geradas}
 
-As classes geradas e transformadas ficam só na memória de um class
-loader, diz o guia \citetitle{doc:quarkus-writing-extensions}. Para
+Em dev mode e nos testes, as classes geradas e transformadas ficam só na
+memória de um class loader, diz o guia \citetitle{doc:quarkus-writing-extensions}. Para
 gravá-las em disco ele oferece:
 
 \small
@@ -31,7 +31,7 @@ Propriedade & O que grava \\
 \texttt{quarkus.package.jar.\allowbreak decompiler.enabled} & Baixa o descompilador
   Vineflower e grava o resultado no diretório \texttt{decompiled} da
   saída do build; só funciona num build de produção normal (não em dev
-  mode nem em testes) \\
+  mode nem em testes) e com o empacotamento \emph{fast-jar}, o padrão \\
 \bottomrule
 \end{longtable}
 \normalsize
@@ -77,9 +77,13 @@ se a injeção precisa acessar um membro \texttt{private}, o Quarkus tem de
 usar reflexão; em executável nativo, todo membro acessado por reflexão
 precisa ser registrado. Por isso o guia recomenda não usar membros
 \texttt{private} em beans e preferir campos \emph{package-private} ou
-injeção pelo construtor. No modo JVM, o custo é desempenho; no nativo, é
-correção: um membro não registrado simplesmente não está lá
-(seção~\ref{sec:reflexao-nativo}).
+injeção pelo construtor. No nativo, o guia aponta o custo: esses registros
+de reflexão aumentam o executável (seção~\ref{sec:reflexao-nativo}). Para
+campos de injeção \texttt{private}, o padrão
+(\texttt{quarkus.arc.transform-private-injected-fields=true}) já reescreve o
+campo como \emph{package-private} no build, e a injeção fica livre de
+reflexão; construtores, inicializadores, observers, producers, disposers e
+métodos de interceptor \texttt{private} continuam exigindo reflexão.
 
 \paragraph{Panache, um caso de transformação.}
 Além de gerar classes novas, o Quarkus reescreve classes suas. O guia

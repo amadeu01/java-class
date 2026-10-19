@@ -7,10 +7,11 @@
 
 \paragraph{Lendo a listagem.}
 \begin{itemize}
-\item Offsets 26--27: caminho normal, \texttt{close()} e salto para o
-  fim.
-\item A \texttt{Exception table} diz: exceção entre os offsets 8 e 26
-  vai para 33. Ali a exceção principal é guardada (\texttt{astore\_1}) e
+\item Offsets 26--30: caminho normal, \texttt{close()} (27) e salto para
+  o fim (\texttt{goto 49}, offset 30).
+\item A \texttt{Exception table} diz: exceção nos offsets 8 a 25 (o
+  \texttt{to}~26 é exclusivo, e o \texttt{close()} em 27 fica fora) vai
+  para 33. Ali a exceção principal é guardada (\texttt{astore\_1}) e
   \texttt{close()} é chamado de novo.
 \item Se esse \texttt{close()} também lança, a segunda linha da tabela
   leva ao offset 41, que chama

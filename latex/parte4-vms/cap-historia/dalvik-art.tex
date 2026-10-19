@@ -17,9 +17,9 @@ traduziram bytecode JVM de pilha para um formato de registradores dentro
 de uma JVM interpretada (Sun J2ME CDC~1.0), com SPECjvm98 e Java Grande.
 Resultado, medido pelos autores (Trinity College Dublin e TU Wien, 2005):
 a versão de registradores executa, em média, mais de 47\% menos
-instruções da VM, com bytecode cerca de 25\% maior; num Pentium~4, roda
-em média 32,3\% mais rápido com despacho por \texttt{switch} em C e cerca
-de 26,5\% com \emph{threaded dispatch}. Note o que foi medido: um
+instruções da VM, com bytecode cerca de 25\% maior; num Pentium~4, leva
+em média 32,3\% menos tempo com despacho por \texttt{switch} em C e cerca
+de 26,5\% menos com \emph{threaded dispatch}. Note o que foi medido: um
 \emph{interpretador}. Num JIT, o bytecode é só a entrada do compilador,
 que gera código para os registradores da máquina real; o C2, por
 exemplo, faz alocação de registradores por coloração de grafos

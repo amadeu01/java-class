@@ -8,8 +8,10 @@ geram o código que será executado em runtime. Na documentação aparece
 também como \emph{build-time augmentation}.}, e o guia
 \citetitle{doc:quarkus-writing-extensions} dá a regra que orienta todas
 as extensões: \enquote{As much as possible favor doing work at build
-time}. O motivo vem logo depois: assim, os metadados são processados uma
-só vez, no build.
+time}. O motivo vem logo depois: quanto mais trabalho for feito ali,
+menores ficam as aplicações e mais rápido elas sobem. A introdução do
+mesmo guia acrescenta que os metadados são processados uma só vez, no
+build.
 
 \subsection*{Extensões em duas metades}
 
@@ -70,7 +72,9 @@ da máquina de build. O capítulo~\ref{cap:decisoes-quarkus} volta a isso.
 \subsection*{Vendo o build trabalhar}
 
 O guia lista duas opções úteis para curiosos:
-\texttt{-Dquarkus.debug.print-startup-times=true} imprime o tempo de cada
-build step, e \texttt{-Dquarkus.builder.graph-output=build.dot} grava o
+\texttt{-Dquarkus.debug.print-startup-times=true}, passado ao
+\emph{iniciar} a aplicação, imprime quanto cada tarefa de startup gravada
+por um recorder leva em runtime, e
+\texttt{-Dquarkus.builder.graph-output=build.dot}, passado no build, grava o
 grafo de dependências entre os passos. Rodar as duas uma vez num projeto
 seu é a forma mais rápida de entender o que cada extensão faz.

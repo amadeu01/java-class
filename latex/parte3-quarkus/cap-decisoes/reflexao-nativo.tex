@@ -38,9 +38,11 @@ O guia \citetitle{doc:quarkus-native-tips} traz os casos típicos:
   uma variável de ambiente guarda o valor que ela tinha na máquina de
   build. A saída é
   \texttt{--initialize-at-run-time=<pacote ou classe>}.
-\item[Membros \texttt{private} em beans] O guia
+\item[Membros \texttt{private} em beans] Não quebram, mas custam: o guia
   \citetitle{doc:quarkus-cdi-reference} explica que acessá-los exige
-  reflexão, e reflexão exige registro (seção~\ref{sec:gizmo}).
+  reflexão, e cada registro de reflexão aumenta o executável. Campos
+  injetados \texttt{private} já são reescritos como
+  \emph{package-private} por padrão (seção~\ref{sec:gizmo}).
 \item[Busca programática de beans] Um bean usado só via
   \texttt{CDI.current()} pode ter sido removido no build
   (seção~\ref{sec:jandex}).
@@ -53,9 +55,11 @@ O guia \citetitle{doc:quarkus-native-tips} traz os casos típicos:
   configuração, com \texttt{targets}, quando a classe é de uma
   biblioteca). O guia avisa que, por padrão, a anotação registra também
   classes aninhadas.
-\item Um arquivo \texttt{reflect-config.json} passado ao
-  \texttt{native-image} via \texttt{quarkus.native.additional-build-args},
-  para casos que a anotação não cobre.
+\item Um arquivo \texttt{reflect-config.json} em
+  \texttt{src/main/resources/META-INF/native-image/<group-id>/<artifact-id>/},
+  lido automaticamente pelo build nativo, para casos que a anotação não
+  cobre; o guia avisa que, nesse caminho, manter o arquivo atualizado entre
+  versões do Mandrel/GraalVM é responsabilidade sua.
 \item Dentro de extensões, build items como \texttt{ReflectiveClassBuildItem}
   (guia \citetitle{doc:quarkus-writing-extensions}). É por isso que
   bibliotecas com extensão Quarkus \enquote{simplesmente funcionam} no
