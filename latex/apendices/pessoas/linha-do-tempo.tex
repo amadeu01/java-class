@@ -1,0 +1,113 @@
+\section{Linha do tempo do documentário}
+\label{sec:linha-do-tempo}
+
+Resumo do \citetitle{video:java-story}, na ordem do filme. Os números entre
+parênteses são a minutagem do vídeo (\emph{hh:mm:ss} ou \emph{mm:ss}), para
+você pular direto para o trecho. Onde o filme é vago ou arredonda uma data,
+a nota \enquote{conferido} dá a data das fontes primárias; e cada fase
+aponta onde a apostila trata o assunto.
+
+\subsection{O nascimento do Oak (1990--1994)}
+\begin{description}
+\item[1990--1991] James Gosling e uma equipe pequena da Sun Microsystems
+  começam o \emph{Green Project}, para eletrônicos de consumo e TV
+  interativa. A linguagem se chama \textbf{Oak} (01:33--02:24).
+\item[1992--1994] O projeto perde as concorrências de TV a cabo e passa
+  por um período em que ninguém sabe se ele continua (02:32--03:46).
+\end{description}
+
+\subsection{A virada para a web (1994--1995)}
+\begin{description}
+\item[1994] Com o navegador Mosaic, a equipe vê na web o lugar da
+  linguagem e escreve o navegador HotJava para levar interatividade às
+  páginas (04:02--04:27).
+\item[1995] O Java é lançado com a promessa \termo{Write Once, Run
+  Anywhere}{\enquote{Escreva uma vez, rode em qualquer lugar}: o mesmo
+  \texttt{.class} roda em qualquer sistema que tenha uma JVM.}. O acordo
+  com a Netscape para pôr Java no navegador é o que populariza a linguagem
+  (06:34--06:57).
+\end{description}
+O \enquote{rode em qualquer lugar} é a JVM com o bytecode como contrato:
+o capítulo~\ref{cap:lendo-bytecode} mostra esse contrato por dentro.
+
+\subsection{Conflitos, padronização e ecossistema (1996--2006)}
+\begin{description}
+\item[1996--1998] A \enquote{guerra do Java} com a Microsoft, que acaba
+  nos tribunais porque a implementação para Windows quebrava a
+  compatibilidade (18:20--22:45). \emph{Conferido:} a Sun processou a
+  Microsoft em outubro de 1997, e o acordo saiu em janeiro de 2001.
+\item[1999] O filme fala da criação do \textbf{Java Community Process}
+  (JCP), que formaliza a evolução da linguagem com a indústria
+  (24:45--26:20). \emph{Conferido:} o JCP foi criado em 1998
+  (\citetitle{doc:jcp}); 1999 é o ano do J2EE~1.2, a primeira versão da
+  plataforma corporativa.
+\item[2000--2006] O Java domina o mercado corporativo com o J2EE. Surgem o
+  Apache Tomcat (28:59), o Spring e o Hibernate (33:15--35:10).
+  \emph{Conferido:} o Tomcat foi doado à Apache em 1999, o Hibernate é de
+  2001 e o Spring~1.0 é de março de 2004.
+\item[2006] A Sun anuncia que vai abrir o código do Java: nasce o
+  \textbf{OpenJDK} (36:07--38:31). \emph{Conferido:} o anúncio, com o
+  HotSpot e o \texttt{javac} sob GPL, é de novembro de 2006; o resto do
+  JDK saiu em maio de 2007.
+\end{description}
+
+\paragraph{Por que o J2EE quase fracassou.}
+O filme dá três motivos (31:46--33:16):
+\begin{itemize}
+\item \textbf{Complexidade.} O modelo de programação misturava Java e XML
+  e era descrito como doloroso. Muita gente sentia que as especificações
+  serviam mais para impor a tecnologia dos fornecedores do que para
+  facilitar aplicações simples (31:48--32:02).
+\item \textbf{Herança do CORBA.} Vários arquitetos do J2EE vinham do
+  CORBA, uma arquitetura anterior de objetos distribuídos, e desenharam a
+  plataforma para especialistas em sistemas distribuídos, não para o
+  desenvolvedor comum (32:05--32:44).
+\item \textbf{Projetos fracassando.} Tantos projetos corporativos falhavam
+  que houve um risco real de o Java no servidor acabar (33:06--33:16).
+\end{itemize}
+O Spring e o Hibernate, de código aberto e mais pragmáticos, simplificaram
+o desenvolvimento e mantiveram o Java relevante nas empresas
+(33:15--35:10). A lição vale para a Parte~III: o Quarkus é a mesma
+pergunta feita de novo, \enquote{quanto disso precisa acontecer em
+runtime?}, respondida com trabalho em build time
+(capítulo~\ref{cap:build-time}) e com uma arquitetura em que o framework
+fica na borda (seção~\ref{sec:circulos-quarkus}).
+
+\subsection{A era Oracle e a modernização (2010 em diante)}
+\begin{description}
+\item[2010] A Oracle compra a Sun. A comunidade se preocupa, mas a gestão
+  traz foco em estabilidade e evolução do ecossistema (42:28--46:52).
+  \emph{Conferido:} a compra foi concluída em janeiro de 2010.
+\item[2014] O \textbf{Java~8}, com lambdas, é tratado como um
+  renascimento que muda a imagem da linguagem (48:07--49:31). O
+  \texttt{invokedynamic} que os lambdas usam está na
+  seção~\ref{sec:invokedynamic}.
+\item[2017 em diante] Lançamentos a cada seis meses e inovação em
+  desempenho e concorrência, como o \textbf{Project Loom}
+  (52:23--01:00:00), mantendo o Java relevante para nuvem e IA
+  (01:08:44--01:11:29). \emph{Conferido:} Mark Reinhold propôs o ciclo de
+  seis meses em setembro de 2017 (\citetitle{artigo:forward-faster}), e o
+  primeiro lançamento nesse ritmo foi o JDK~10, em março de 2018.
+\end{description}
+
+\paragraph{Project Loom e virtual threads.}
+O filme dedica um trecho ao Loom (00:59:52--01:03:30):
+\begin{itemize}
+\item \textbf{O runtime troca, a API fica.} O Java mudou por dentro como o
+  runtime gerencia threads. Você continua usando \texttt{Thread} e
+  \texttt{ExecutorService}; quem decide se a tarefa roda numa
+  \emph{platform thread} (do sistema operacional) ou numa \emph{virtual
+  thread} (gerenciada pela JVM) é quem cria a thread (01:02:16--01:02:40).
+\item \textbf{Fim da obrigação do reativo.} Antes, para escalar, era
+  preciso programação reativa, descrita no filme como barroca e difícil
+  de depurar. Com virtual threads, o código volta a ser imperativo e
+  sequencial e continua escalando (01:02:43--01:03:00).
+\item \textbf{Programas produtivos.} Josh Long resume: o Java~8 deixou o
+  \emph{programador} mais produtivo; o Loom deixa o \emph{programa} mais
+  produtivo e escalável (01:03:10--01:03:30).
+\end{itemize}
+\emph{Conferido:} as virtual threads entraram como preview no JDK~19
+(2022) e ficaram finais no JDK~21, em setembro de 2023
+(\citetitle{doc:jep444}). O bytecode e as regras de uso estão na
+seção~\ref{sec:virtual-threads}; a escolha entre virtual threads e reativo
+no Quarkus, na seção~\ref{sec:vt-vs-reativo}.

@@ -5,6 +5,10 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+### Adicionado
+
+- Linha do tempo do documentário *The Java Story* no apêndice "Quem fez o Java": as fases do Oak ao Project Loom com a minutagem do vídeo, por que o J2EE quase fracassou, e as datas conferidas nas fontes primárias onde o filme arredonda (JCP em 1998, não 1999; OpenJDK completo em 2007; virtual threads finais no JDK 21).
+
 ## [0.1.0] - 2026-10-19
 
 ### Adicionado
