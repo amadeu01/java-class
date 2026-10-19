@@ -1,0 +1,64 @@
+\section{Carregamento, linking e inicialização}
+\label{sec:class-loading}
+
+O capítulo~5 da JVMS divide a vida de uma classe em três fases.
+
+\begin{description}
+\item[Carregamento (§5.3)] Um \termo{class loader}{Objeto que encontra os
+  bytes de uma classe e a define na JVM.} encontra os bytes da classe.
+  Há dois tipos: o \emph{bootstrap class loader}, da própria JVM, e os
+  definidos pelo usuário, subclasses de \texttt{ClassLoader}. Um loader
+  pode definir a classe ou delegar a outro.
+\item[Linking (§5.4)] \emph{Verificação} confere que o bytecode é
+  estruturalmente correto (falha: \texttt{VerifyError}).
+  \emph{Preparação} cria os campos \texttt{static} com valores padrão,
+  sem rodar código Java. \emph{Resolução} transforma referências
+  simbólicas do \termo{constant pool}{Tabela de constantes do
+  \texttt{.class}: nomes de classes, métodos, campos, strings e números.
+  Ver a seção~\ref{sec:constant-pool}.} em referências concretas; a
+  especificação permite fazer isso de forma preguiçosa, só quando a
+  referência é usada.
+\item[Inicialização (§5.5)] Roda o inicializador da classe
+  (\texttt{<clinit>}: atribuições a campos \texttt{static} e blocos
+  \texttt{static}). Acontece, por exemplo, na primeira execução de
+  \texttt{new}, \texttt{getstatic}, \texttt{putstatic} ou
+  \texttt{invokestatic} que referencia a classe.
+\end{description}
+
+\paragraph{O bug que isso explica.}
+Se o bloco \texttt{static} de uma classe lança uma exceção (uma
+configuração que não existe, um \texttt{Integer.parseInt} de variável de
+ambiente vazia), o primeiro uso recebe \texttt{ExceptionInInitializerError}
+com a causa original. A JVMS (§5.5, passos 11 e 12) manda marcar a classe
+como \emph{erroneous}; a partir daí, todo uso recebe
+\texttt{NoClassDefFoundError} (passo 5), que parece um problema de
+classpath e não é. Quando vir \texttt{NoClassDefFoundError} num serviço
+que funcionava, procure o primeiro \texttt{ExceptionInInitializerError}
+no log.
+
+\paragraph{A decisão que isso muda.}
+Inicialização \texttt{static} pesada (abrir conexão, ler arquivo) roda no
+primeiro uso, na thread que chegou primeiro, e transforma qualquer falha
+nesse par de erros. Prefira inicialização explícita, num componente com
+ciclo de vida (um bean), em que o erro aparece na subida.
+
+\paragraph{Startup e o cache AOT.}
+Carregar e ligar milhares de classes custa tempo a cada subida. O
+\citetitle{doc:jep483} (JDK~24) guarda classes já carregadas e ligadas
+num cache gerado por uma execução de treino; o \citetitle{doc:jep514}
+(JDK~25) reduz a criação do cache a um comando
+(\texttt{java -XX:AOTCacheOutput=app.aot \ldots}), e o
+\citetitle{doc:jep515} (JDK~25) guarda também perfis de métodos, para o
+JIT começar mais cedo. O JEP~483 informa, sem dizer quem mediu nem em que
+máquina, que o Spring PetClinic 3.2.0 subiu em 4,486~s no JDK~23 e em
+2,604~s no JDK~24 com o cache (42\% mais rápido). Trate como número do
+próprio projeto OpenJDK, não como garantia para o seu serviço.
+
+\paragraph{Ponte com Quarkus.}
+O guia \citetitle{doc:quarkus-class-loading} descreve uma hierarquia
+própria em dev mode: um \emph{Base Runtime ClassLoader} persistente para
+as dependências e um \emph{Runtime ClassLoader} para as classes da
+aplicação, recriado quando a aplicação reinicia; é isso que permite o
+live reload sem reiniciar a JVM. No pacote padrão de produção
+(\texttt{fast-jar}), um loader que indexa as classes em tempo de build;
+em executável nativo, classpath plano. A Parte~III volta a isso.

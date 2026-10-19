@@ -1,0 +1,21 @@
+\section{Desafios práticos}
+
+\desafio{Crie uma classe com um bloco \texttt{static} que lê uma
+variável de ambiente com \texttt{Integer.parseInt}. Rode sem a variável
+e chame a classe duas vezes, capturando a exceção. Quais exceções
+aparecem em cada chamada? Relacione com os passos da JVMS §5.5.}
+
+\desafio{Rode um programa seu com \texttt{-XX:+PrintCompilation} e
+procure linhas com \enquote{made not entrant}. Que método foi
+deoptimizado? Que mudança no fluxo de entrada poderia ter causado isso?}
+
+\desafio{Rode o mesmo teste de carga (Parte~I) com
+\texttt{-XX:+UseG1GC} e \texttt{-XX:+UseZGC}. Compare o p99 e o
+throughput, e anote versão do JDK, tamanho do heap e máquina: sem isso,
+o número não vale para mais ninguém.}
+
+\desafio{Escreva uma classe com um \texttt{int} compartilhado e duas
+threads que fazem \texttt{contador++} um milhão de vezes cada. Rode
+algumas vezes. Depois troque por \texttt{volatile} e, por fim, por
+\texttt{AtomicInteger}. Explique cada resultado usando o bytecode da
+seção~\ref{sec:sincronizacao}.}

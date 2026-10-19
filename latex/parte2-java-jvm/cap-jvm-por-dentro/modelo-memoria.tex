@@ -1,0 +1,40 @@
+\section{Modelo de memória}
+\label{sec:modelo-memoria}
+
+O capítulo~17 da JLS define o que uma thread pode ver das escritas de
+outra. O conceito central é a relação
+\termo{happens-before}{\enquote{Acontece antes}: se a escrita A
+happens-before a leitura B, B enxerga o efeito de A. Sem essa relação
+entre duas ações em threads diferentes, não há garantia de visibilidade
+nem de ordem.} (§17.4.5). Exemplos da própria JLS: a escrita num campo
+\texttt{volatile} happens-before toda leitura subsequente desse campo, e
+um \texttt{unlock} de um monitor happens-before todo \texttt{lock}
+subsequente do mesmo monitor. Campos \texttt{final} têm regras próprias
+de publicação segura (§17.5).
+
+Se um programa não tem \termo{data race}{Duas threads acessam a mesma
+variável, pelo menos uma escreve, e não há happens-before entre os
+acessos.}, ele se comporta como se fosse sequencial; com data races, uma
+leitura pode ver valores surpreendentes. O texto de Shipilëv
+(\citetitle{artigo:shipilev-jmm}) desenvolve essas consequências.
+
+\paragraph{O bug que o bytecode mostra.}
+Na listagem de \texttt{Sincronizacao} (seção~\ref{sec:sincronizacao}),
+\texttt{contador++} ocupa os offsets 6 a 11: \texttt{getfield} lê o
+campo, \texttt{iconst\_1} e \texttt{iadd} somam na pilha, e
+\texttt{putfield} grava. São três passos, não um.
+Entre o \texttt{getfield} e o \texttt{putfield}, outra thread pode ler o
+mesmo valor antigo; as duas gravam o mesmo resultado e um incremento se
+perde. \texttt{volatile} não resolve: ele garante visibilidade, mas o
+ler-somar-gravar continua sendo três passos. As opções corretas são
+\texttt{synchronized} (o que o exemplo faz), \texttt{AtomicInteger} ou
+\texttt{LongAdder}, ou não compartilhar o estado. É o tema do item 78
+do \citetitle{livro:bloch2017} (\enquote{Synchronize access to shared
+mutable data}).
+
+\paragraph{A decisão que isso muda.}
+Records e campos \texttt{final} não são só estilo: objetos imutáveis
+podem ser compartilhados entre threads sem lock (JLS §17.5 dá a garantia
+para os campos \texttt{final}). Num serviço web, a pergunta \enquote{este
+estado é compartilhado entre requisições?} vem antes de \enquote{qual
+lock usar?}. O \citetitle{livro:goetz2006} é a referência para o resto.

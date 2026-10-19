@@ -1,0 +1,72 @@
+\section{Sealed types e pattern matching}
+\label{sec:sealed-pattern}
+
+Três JEPs se juntam aqui. O \citetitle{doc:jep409} (final no JDK~17)
+deixa o autor de uma classe ou interface restringir quem pode
+estendê-la. O \citetitle{doc:jep394} (JDK~16) trouxe o
+\texttt{instanceof} com variável de padrão, e o \citetitle{doc:jep441}
+(JDK~21) levou os padrões ao \texttt{switch}, que desde o
+\citetitle{doc:jep361} (JDK~14) também pode ser expressão.
+
+\subsection*{Um \texttt{switch} exaustivo sobre um tipo selado}
+
+\lstinputlisting[language=Java]{generated/source/SealedForma.java}
+
+O \texttt{switch} de \texttt{area} não tem \texttt{default}, e compila
+porque o compilador sabe que \texttt{Forma} só admite \texttt{Circulo} e
+\texttt{Quadrado}. Essa informação está no \texttt{.class} da interface,
+no atributo \texttt{PermittedSubclasses} (JVMS~§4.7.31,
+\citetitle{doc:jvms25}):
+
+\inputbytecode{SealedForma_Forma}
+
+E o método \texttt{area}:
+
+\inputbytecode{SealedForma}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item Offsets 0--5: \texttt{Objects.requireNonNull} no seletor. Sem
+  \texttt{case null}, um seletor \texttt{null} lança
+  \texttt{NullPointerException}, \enquote{como antes}, nas palavras do
+  JEP~441.
+\item Offset 11: \texttt{invokedynamic typeSwitch} devolve o índice do
+  primeiro \texttt{case} que casa (0 para \texttt{Circulo}, 1 para
+  \texttt{Quadrado}), e o \texttt{lookupswitch} salta para ele.
+\item Offsets 44--53: o \texttt{default} que \emph{você não escreveu}.
+  O \texttt{javac} criou um que faz \texttt{new MatchException} e
+  \texttt{athrow}. O JEP~441 explica o motivo: com compilação separada,
+  uma nova implementação pode aparecer em tempo de execução, e então o
+  \texttt{switch} lança em vez de seguir em silêncio.
+\item Depois do salto, \texttt{checkcast} e a chamada ao accessor
+  (\texttt{raio()}, \texttt{lado()}): o \enquote{cast seguro} que o padrão
+  promete é um \texttt{checkcast} que já sabemos que passa.
+\end{itemize}
+
+\paragraph{A decisão que isso muda.}
+Quando o conjunto de variantes é fechado e conhecido (resultado de um
+pagamento: aprovado, recusado, pendente; comando de uma fila), modele com
+\texttt{sealed interface} e records, e trate com \texttt{switch} sem
+\texttt{default}. Se alguém acrescentar uma variante, todo
+\texttt{switch} que não a trata deixa de compilar: o erro aparece no
+build, não em produção. Um \texttt{default} \enquote{por segurança} joga
+fora essa garantia.
+
+\paragraph{O bug que isso explica.}
+Se a biblioteca que define \texttt{Forma} ganhar \texttt{Triangulo} e o
+seu código não for recompilado, o \texttt{default} sintético da listagem
+lança \texttt{MatchException}. Não é um bug do \texttt{switch}: é o
+sinal de que o binário está desatualizado em relação à hierarquia.
+
+\subsection*{Guardas e ordem dos \texttt{case}}
+\lstinputlisting[language=Java]{generated/source/PatternSwitch.java}
+
+\inputbytecode{PatternSwitch}
+
+Repare nos offsets 44--60. O \texttt{case Integer i when i > 10} entra
+no índice 0; se a guarda falha (\texttt{if\_icmpgt} não salta), o código
+grava \texttt{1} em \texttt{istore\_2} e volta ao offset 9, chamando
+\texttt{typeSwitch} de novo a partir do \texttt{case} seguinte. A ordem
+dos \texttt{case} é a ordem de teste: um \texttt{case Integer i} antes
+do \texttt{case Integer i when \ldots} tornaria o segundo inalcançável,
+e o \texttt{javac} recusa isso como erro de dominância.

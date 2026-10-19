@@ -1,0 +1,83 @@
+\section{Interpretador e JIT}
+\label{sec:jit}
+
+A HotSpot começa interpretando o bytecode. Enquanto o programa roda, ela
+mede onde o tempo é gasto e compila para código de máquina só o que é
+quente; a documentação da Oracle descreve o compilador como
+\emph{adaptativo} e diz que a maior parte do código, pouco usada, nem
+chega a ser compilada (\citetitle{doc:hotspot-perf}). Esse compilador é o
+\termo{JIT}{\emph{Just-in-time}: compila durante a execução, com
+informação sobre como o programa está de fato rodando.}.
+
+\paragraph{Tiered compilation.}
+Há dois compiladores, que o manual do comando \texttt{java}
+(\citetitle{doc:java-cmd}) chama de C1 e C2. Com
+\termo{tiered compilation}{Compilação em camadas: o método passa do
+interpretador para o C1 (rápido de compilar, com coleta de perfil) e,
+se continuar quente, para o C2 (mais lento de compilar, código mais
+otimizado).}, introduzida no Java SE~7 e ligada por padrão, o
+\emph{client compiler} (C1) gera versões que coletam perfil sobre si
+mesmas, e o \emph{server compiler} (C2) usa esse perfil para compilar de
+forma agressiva (\citetitle{doc:hotspot-perf}).
+
+\paragraph{Otimizações que dependem do perfil.}
+\begin{itemize}
+\item \emph{Inlining}: o corpo do método chamado é copiado no chamador.
+  É a porta para as outras otimizações, porque o compilador passa a
+  enxergar os dois métodos juntos.
+\item \termo{Escape analysis}{Análise que descobre se um objeto
+  \enquote{escapa} do método ou da thread que o criou.}: se o objeto não
+  escapa, o C2 pode eliminar a alocação (\emph{scalar replacement}) e os
+  locks sobre ele (\emph{lock elision}). A documentação da Oracle
+  ressalta que a HotSpot \emph{não} troca alocação no heap por alocação
+  na pilha (\citetitle{doc:hotspot-perf}).
+\item Especulação: o C2 compila só os caminhos que o perfil mostrou
+  vivos e deixa nos outros uma \termo{uncommon trap}{Ponto no código
+  compilado que devolve o controle ao runtime quando um caminho
+  considerado impossível acontece.}. Se o caminho raro acontece, o
+  código compilado é descartado (\emph{deoptimization}), o método volta
+  ao interpretador ou a uma camada inferior, ganha novo perfil e é
+  recompilado (\citetitle{artigo:shipilev-uncommon-traps}).
+\item Chamadas virtuais: num ponto de chamada que só viu um tipo, o
+  compilador pode \emph{devirtualizar}; com muitos tipos (megamórfico),
+  a chamada vai por um despacho mais lento. Shipilëv mede a diferença e
+  conclui que ela não justifica evitar chamadas virtuais
+  (\citetitle{artigo:shipilev-megamorphic}).
+\end{itemize}
+
+\paragraph{Safepoints.}
+Várias operações da JVM (algumas fases do GC, deoptimização) precisam
+parar as threads Java em pontos conhecidos, os
+\termo{safepoints}{Pontos do código em que o estado da thread é
+conhecido pela JVM; as threads verificam periodicamente se devem parar
+ali.}. O código compilado tem verificações baratas (\emph{safepoint
+polls}) que quase nunca disparam
+(\citetitle{artigo:shipilev-safepoint}). O artigo lembra o problema de
+fundo: uma thread num laço longo pode demorar a chegar a um poll, e as
+outras esperam por ela. A opção \texttt{-Xlog:safepoint} registra os
+safepoints no log da JVM.
+
+\paragraph{As decisões que isso muda.}
+\begin{itemize}
+\item \emph{Warm-up é real.} As primeiras requisições rodam interpretadas
+  ou em C1. Shipilëv avisa que o aquecimento precisa ter o
+  mesmo perfil da produção; senão, a recompilação aparece depois, no
+  meio da medição. Teste de carga sem aquecimento mede o interpretador.
+\item \emph{Microbenchmark à mão engana.} Um \texttt{System.nanoTime()}
+  em volta de um laço mede compilação, eliminação de código morto e
+  especulação. Use o \citetitle{doc:jmh}, cuja página pede que os
+  benchmarks sejam revisados por pares.
+\item \emph{Escreva código claro primeiro.} Métodos pequenos e objetos
+  temporários que não escapam são exatamente o que o C2 otimiza melhor;
+  o item 67 do \citetitle{livro:bloch2017} (\enquote{Optimize
+  judiciously}) chega à mesma conclusão por outro caminho.
+\end{itemize}
+
+\paragraph{Vendo o JIT trabalhar.}
+O manual do \texttt{java} documenta \texttt{-XX:+PrintCompilation}
+(imprime uma linha a cada método compilado), \texttt{-Xint} (só
+interpretador, para comparar), \texttt{-XX:-TieredCompilation} e, após
+\texttt{-XX:+UnlockDiagnosticVMOptions}, \texttt{-XX:+PrintInlining} e
+\texttt{-XX:+LogCompilation} (log em \texttt{hotspot.log}, que o
+\citetitle{doc:jitwatch} visualiza). A seção~\ref{sec:ferramentas}
+reúne essas ferramentas.

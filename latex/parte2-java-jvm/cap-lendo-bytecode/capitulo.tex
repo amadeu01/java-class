@@ -1,0 +1,28 @@
+\chapter{Lendo bytecode para entender bugs e decisões}
+\label{cap:lendo-bytecode}
+
+\proximasaulas
+
+Você não precisa escrever bytecode. Precisa conseguir \emph{ler} o
+suficiente para responder perguntas como: por que este \texttt{==} entre
+\texttt{Integer} deu \texttt{false}? Por que o \texttt{switch} lançou
+\texttt{NullPointerException}? Mudei uma constante e o outro módulo não
+viu, por quê? Cada seção deste capítulo segue o mesmo roteiro: o código,
+a listagem real do \texttt{javap} (JDK~25), a leitura das instruções que
+importam, o bug ou a decisão que elas explicam e, quando há ligação
+documentada, uma ponte com o Quarkus.
+
+O texto avisa quando o bytecode muda entre versões do JDK: a
+concatenação de strings via \texttt{invokedynamic} existe desde o JDK~9
+e o pattern matching em \texttt{switch} desde o JDK~21.
+
+\input{parte2-java-jvm/cap-lendo-bytecode/javap-basico}
+\input{parte2-java-jvm/cap-lendo-bytecode/constant-pool}
+\input{parte2-java-jvm/cap-lendo-bytecode/invokedynamic}
+\input{parte2-java-jvm/cap-lendo-bytecode/autoboxing}
+\input{parte2-java-jvm/cap-lendo-bytecode/switch}
+\input{parte2-java-jvm/cap-lendo-bytecode/try-with-resources}
+\input{parte2-java-jvm/cap-lendo-bytecode/sincronizacao}
+\input{parte2-java-jvm/cap-lendo-bytecode/ferramentas}
+\input{parte2-java-jvm/cap-lendo-bytecode/aprofundar}
+\input{parte2-java-jvm/cap-lendo-bytecode/desafios}

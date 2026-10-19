@@ -1,0 +1,40 @@
+\section{Autoboxing}
+\label{sec:autoboxing}
+
+\lstinputlisting[language=Java]{generated/source/Autoboxing.java}
+
+\inputbytecode{Autoboxing}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item Em \texttt{main}, cada \texttt{Integer a = 127} virou
+  \texttt{bipush 127} seguido de \texttt{invokestatic Integer.valueOf}.
+  O autoboxing é uma chamada de método que o compilador escreveu por
+  você.
+\item Em \texttt{iguais}, \texttt{a == b} virou \texttt{if\_acmpne}:
+  comparação de \emph{referências} (o prefixo \texttt{a}), não de
+  valores. Para comparar valores, o compilador teria gerado
+  \texttt{intValue} e \texttt{if\_icmpne}.
+\end{itemize}
+
+\paragraph{O bug que isso explica.}
+O programa imprime \texttt{true} e depois \texttt{false}. A JLS (§5.1.7)
+garante que o boxing de uma expressão constante entre $-128$ e $127$
+devolve sempre o mesmo objeto; fora dessa faixa, não há garantia, e na
+prática 128 gera dois objetos diferentes. O teste passa com valores
+pequenos e falha em produção com IDs maiores. Compare wrappers com
+\texttt{equals} (ou \texttt{Objects.equals}), nunca com \texttt{==}.
+
+O caminho inverso tem outro risco. Em \texttt{lambda\$dobro\$0}
+(seção~\ref{sec:invokedynamic}), \texttt{x * 2} começa com
+\texttt{invokevirtual Integer.intValue}. Se \texttt{x} for \texttt{null},
+essa chamada lança \texttt{NullPointerException} numa linha que não tem
+nenhuma chamada de método visível no código-fonte.
+
+\paragraph{A decisão que isso muda.}
+Os itens 6 e 61 do \citetitle{livro:bloch2017} (\enquote{Avoid creating
+unnecessary objects} e \enquote{Prefer primitive types to boxed
+primitives}) ganham uma explicação concreta: cada \texttt{valueOf} pode
+alocar. Em código quente, prefira \texttt{int}, \texttt{IntStream} e
+coleções de primitivos; deixe wrappers para onde \texttt{null} tem
+significado (campo opcional de um JSON, coluna anulável).

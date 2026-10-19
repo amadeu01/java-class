@@ -2,3 +2,63 @@
 % doc:<slug>, paper:<slug>.
 % Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
 % usado para separar a bibliografia por tipo no apêndice.
+
+% ---- Livros (Parte II), verificados em 2026-10-18 ----
+@book{livro:oaks2020,
+  author={Scott Oaks}, title={Java Performance}, edition={2}, publisher={O'Reilly},
+  date={2020}, langid={english}, keywords={livro}}
+@book{livro:evans2018,
+  author={Benjamin J. Evans and James Gough and Chris Newland}, title={Optimizing Java},
+  publisher={O'Reilly}, date={2018}, langid={english}, keywords={livro}}
+
+% ---- Especificação, JEPs e guias oficiais da JVM ----
+@online{doc:jvms25, author={{Oracle}}, title={The Java Virtual Machine Specification, Java SE 25 Edition}, url={https://docs.oracle.com/javase/specs/jvms/se25/html/index.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:hotspot-perf, author={{Oracle}}, title={Java HotSpot Virtual Machine Performance Enhancements (Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/vm/java-hotspot-virtual-machine-performance-enhancements.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:gc-collectors, author={{Oracle}}, title={Available Collectors (HotSpot GC Tuning Guide, Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/gctuning/available-collectors.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep248, author={{OpenJDK}}, title={JEP 248: Make G1 the Default Garbage Collector}, url={https://openjdk.org/jeps/248}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep377, author={{OpenJDK}}, title={JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)}, url={https://openjdk.org/jeps/377}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep439, author={{OpenJDK}}, title={JEP 439: Generational ZGC}, url={https://openjdk.org/jeps/439}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep474, author={{OpenJDK}}, title={JEP 474: ZGC: Generational Mode by Default}, url={https://openjdk.org/jeps/474}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep490, author={{OpenJDK}}, title={JEP 490: ZGC: Remove the Non-Generational Mode}, url={https://openjdk.org/jeps/490}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep379, author={{OpenJDK}}, title={JEP 379: Shenandoah: A Low-Pause-Time Garbage Collector (Production)}, url={https://openjdk.org/jeps/379}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:shenandoah, author={{OpenJDK}}, title={Project Shenandoah}, url={https://openjdk.org/projects/shenandoah/}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep371, author={{OpenJDK}}, title={JEP 371: Hidden Classes}, url={https://openjdk.org/jeps/371}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep483, author={{OpenJDK}}, title={JEP 483: Ahead-of-Time Class Loading \& Linking}, url={https://openjdk.org/jeps/483}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep514, author={{OpenJDK}}, title={JEP 514: Ahead-of-Time Command-Line Ergonomics}, url={https://openjdk.org/jeps/514}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep515, author={{OpenJDK}}, title={JEP 515: Ahead-of-Time Method Profiling}, url={https://openjdk.org/jeps/515}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep328, author={{OpenJDK}}, title={JEP 328: Flight Recorder}, url={https://openjdk.org/jeps/328}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+
+% ---- Ferramentas (páginas oficiais) ----
+@online{doc:javap, author={{Oracle}}, title={javap (Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/docs/specs/man/javap.html}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:java-cmd, author={{Oracle}}, title={java (Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jcmd, author={{Oracle}}, title={jcmd (Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/docs/specs/man/jcmd.html}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jfr-tool, author={{Oracle}}, title={jfr (Java SE 25)}, url={https://docs.oracle.com/en/java/javase/25/docs/specs/man/jfr.html}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jmc, author={{OpenJDK}}, title={JDK Mission Control}, url={https://openjdk.org/projects/jmc/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jitwatch, author={{JITWatch}}, title={JITWatch}, url={https://github.com/AdoptOpenJDK/jitwatch}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:async-profiler, author={{async-profiler}}, title={async-profiler}, url={https://github.com/async-profiler/async-profiler}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+@online{doc:jmh, author={{OpenJDK}}, title={JMH}, url={https://github.com/openjdk/jmh}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}
+
+% ---- Artigos ----
+@online{artigo:shipilev-jmm,
+  author={Aleksey Shipilëv}, title={Java Memory Model Pragmatics (transcript)},
+  url={https://shipilev.net/blog/2014/jmm-pragmatics/}, urldate={2026-10-18},
+  langid={english}, keywords={artigo}}
+@online{artigo:shipilev-megamorphic,
+  author={Aleksey Shipilëv}, title={JVM Anatomy Quark \#16: Megamorphic Virtual Calls},
+  url={https://shipilev.net/jvm/anatomy-quarks/16-megamorphic-virtual-calls/}, urldate={2026-10-18},
+  langid={english}, keywords={artigo}}
+@online{artigo:shipilev-safepoint,
+  author={Aleksey Shipilëv}, title={JVM Anatomy Quark \#22: Safepoint Polls},
+  url={https://shipilev.net/jvm/anatomy-quarks/22-safepoint-polls/}, urldate={2026-10-18},
+  langid={english}, keywords={artigo}}
+@online{artigo:shipilev-uncommon-traps,
+  author={Aleksey Shipilëv}, title={JVM Anatomy Quark \#29: Uncommon Traps},
+  url={https://shipilev.net/jvm/anatomy-quarks/29-uncommon-traps/}, urldate={2026-10-18},
+  langid={english}, keywords={artigo}}
+
+% ---- Pontes com Quarkus e GraalVM (documentação oficial) ----
+@online{doc:quarkus-cdi-reference, author={{Quarkus}}, title={Contexts and Dependency Injection (reference guide)}, url={https://quarkus.io/guides/cdi-reference}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:quarkus-native-tips, author={{Quarkus}}, title={Tips for writing native applications}, url={https://quarkus.io/guides/writing-native-applications-tips}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:quarkus-virtual-threads, author={{Quarkus}}, title={Virtual Thread support reference}, url={https://quarkus.io/guides/virtual-threads}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:quarkus-class-loading, author={{Quarkus}}, title={Class Loading Reference}, url={https://quarkus.io/guides/class-loading-reference}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:graalvm-compat, author={{GraalVM}}, title={Native Image Compatibility Guide}, url={https://www.graalvm.org/latest/reference-manual/native-image/metadata/Compatibility/}, urldate={2026-10-18}, langid={english}, keywords={doc}}

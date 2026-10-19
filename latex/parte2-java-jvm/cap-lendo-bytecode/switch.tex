@@ -1,0 +1,39 @@
+\section{\texttt{switch} sobre \texttt{String}}
+\label{sec:switch}
+
+\lstinputlisting[language=Java]{generated/source/SwitchStrings.java}
+
+\inputbytecode{SwitchStrings}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item Offset 5: \texttt{String.hashCode()}. O \texttt{switch} sobre
+  \texttt{String} começa calculando o hash.
+\item Offset 8: \texttt{lookupswitch} sobre os hashes de
+  \texttt{"vermelho"} e \texttt{"verde"}. A JVMS (§3.10) explica a
+  escolha: \texttt{tableswitch} quando os casos são densos (um índice
+  numa tabela), \texttt{lookupswitch} quando são esparsos (busca numa
+  lista ordenada), como valores de hash.
+\item Offsets 36--60: hash igual não basta, porque duas strings
+  diferentes podem ter o mesmo hash. Cada ramo confirma com
+  \texttt{equals} e grava um índice (0, 1) na variável local 2.
+\item Offset 62: um \emph{segundo} \texttt{lookupswitch}, agora sobre o
+  índice, leva ao código de cada \texttt{case}.
+\end{itemize}
+
+\paragraph{O bug que isso explica.}
+Se \texttt{cor} for \texttt{null}, o offset 5 chama \texttt{hashCode()}
+numa referência nula e lança \texttt{NullPointerException}, antes de
+qualquer \texttt{case} ou \texttt{default}. A JLS (§14.11.3) define esse
+comportamento; o \texttt{default} não pega \texttt{null}. A partir do
+JDK~21 dá para escrever \texttt{case null} (\citetitle{doc:jep441}); no
+\texttt{switch} com padrões, o \texttt{javac} chama
+\texttt{Objects.requireNonNull} no seletor quando não há
+\texttt{case null}, como vimos na seção~\ref{sec:sealed-pattern}.
+
+\paragraph{A decisão que isso muda.}
+\texttt{switch} sobre \texttt{String} vindo de fora (parâmetro HTTP,
+campo de JSON) precisa tratar \texttt{null} antes, ou usar
+\texttt{case null}. Se os valores formam um conjunto fechado, um
+\texttt{enum} é melhor: erro de digitação vira erro de compilação, e o
+\texttt{switch} sobre \texttt{enum} não depende de \texttt{hashCode}.

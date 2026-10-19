@@ -2,3 +2,44 @@
 % doc:<slug>, paper:<slug>.
 % Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
 % usado para separar a bibliografia por tipo no apêndice.
+
+% ---- Livros (Parte II), verificados em 2026-10-18 ----
+% Clean Code (livro:martin2008) e The Clean Coder (livro:martin2011) estão em testes.bib.
+@book{livro:deitel2017,
+  author={Paul Deitel and Harvey Deitel}, title={Java: How to Program, Early Objects},
+  edition={11}, publisher={Pearson}, date={2017},
+  note={PT: Java: Como Programar, 10ª ed., Pearson, 2017},
+  langid={english}, keywords={livro}}
+@book{livro:martin2017,
+  author={Robert C. Martin},
+  title={Clean Architecture: A Craftsman's Guide to Software Structure and Design},
+  publisher={Pearson}, date={2017},
+  note={PT: Arquitetura Limpa, Alta Books, 2019}, langid={english}, keywords={livro}}
+@book{livro:bloch2017,
+  author={Joshua Bloch}, title={Effective Java}, edition={3},
+  publisher={Addison-Wesley}, date={2017},
+  note={PT: Java Efetivo, Alta Books, 2019}, langid={english}, keywords={livro}}
+@book{livro:goetz2006,
+  author={Brian Goetz and Tim Peierls and Joshua Bloch and Joseph Bowbeer and David Holmes and Doug Lea},
+  title={Java Concurrency in Practice}, publisher={Addison-Wesley}, date={2006},
+  langid={english}, keywords={livro}}
+
+% ---- Especificação e JEPs de linguagem (openjdk.org, Oracle) ----
+@online{doc:jls25, author={{Oracle}}, title={The Java Language Specification, Java SE 25 Edition}, url={https://docs.oracle.com/javase/specs/jls/se25/html/index.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep361, author={{OpenJDK}}, title={JEP 361: Switch Expressions}, url={https://openjdk.org/jeps/361}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep394, author={{OpenJDK}}, title={JEP 394: Pattern Matching for instanceof}, url={https://openjdk.org/jeps/394}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep395, author={{OpenJDK}}, title={JEP 395: Records}, url={https://openjdk.org/jeps/395}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep409, author={{OpenJDK}}, title={JEP 409: Sealed Classes}, url={https://openjdk.org/jeps/409}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep440, author={{OpenJDK}}, title={JEP 440: Record Patterns}, url={https://openjdk.org/jeps/440}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep441, author={{OpenJDK}}, title={JEP 441: Pattern Matching for switch}, url={https://openjdk.org/jeps/441}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep444, author={{OpenJDK}}, title={JEP 444: Virtual Threads}, url={https://openjdk.org/jeps/444}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep491, author={{OpenJDK}}, title={JEP 491: Synchronize Virtual Threads without Pinning}, url={https://openjdk.org/jeps/491}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep506, author={{OpenJDK}}, title={JEP 506: Scoped Values}, url={https://openjdk.org/jeps/506}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:jep280, author={{OpenJDK}}, title={JEP 280: Indify String Concatenation}, url={https://openjdk.org/jeps/280}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+@online{doc:oracle-virtual-threads, author={{Oracle}}, title={Virtual Threads (Java SE 25 Core Libraries)}, url={https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}
+
+% ---- Vídeos ----
+@online{video:goetz-lambda-hood,
+  author={Brian Goetz}, title={Lambda: A Peek Under the Hood}, date={2014},
+  url={https://www.infoq.com/presentations/lambda-invokedynamic}, urldate={2026-10-18},
+  note={Philly ETE 2014, InfoQ}, langid={english}, keywords={video}}

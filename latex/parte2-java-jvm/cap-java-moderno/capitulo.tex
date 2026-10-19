@@ -1,0 +1,39 @@
+\chapter{Java moderno que muda decisões}
+\label{cap:java-moderno}
+
+\proximasaulas
+
+A turma já programa em Java. Este capítulo não é um tour de novidades:
+escolhemos só os recursos que mudam como você modela dados, trata casos
+e escreve código concorrente. Para cada um, indicamos a versão do JDK em
+que ele ficou final, conforme o JEP que o entregou, e mostramos o que o
+\texttt{javac} gera, porque o bytecode explica as regras que parecem
+arbitrárias (por que o \texttt{switch} lança \texttt{NullPointerException},
+por que um \texttt{record} não precisa de Lombok).
+
+Todas as listagens de bytecode desta parte são saída real do
+\texttt{javap} do JDK~25 sobre os exemplos de \texttt{examples/}. Se o
+\texttt{javap} for novidade, o capítulo~\ref{cap:lendo-bytecode} ensina a
+ler essas listagens; volte aqui depois.
+
+\begin{longtable}{@{}p{4.6cm} p{2cm} p{6cm}@{}}
+\toprule
+Recurso & Final no & JEP \\
+\midrule \endhead
+Switch expressions & JDK 14 & \citetitle{doc:jep361} \\
+Pattern matching em \texttt{instanceof} & JDK 16 & \citetitle{doc:jep394} \\
+Records & JDK 16 & \citetitle{doc:jep395} \\
+Sealed classes & JDK 17 & \citetitle{doc:jep409} \\
+Record patterns & JDK 21 & \citetitle{doc:jep440} \\
+Pattern matching em \texttt{switch} & JDK 21 & \citetitle{doc:jep441} \\
+Virtual threads & JDK 21 & \citetitle{doc:jep444} \\
+\texttt{synchronized} sem pinning & JDK 24 & \citetitle{doc:jep491} \\
+Scoped values & JDK 25 & \citetitle{doc:jep506} \\
+\bottomrule
+\end{longtable}
+
+\input{parte2-java-jvm/cap-java-moderno/records}
+\input{parte2-java-jvm/cap-java-moderno/sealed-pattern}
+\input{parte2-java-jvm/cap-java-moderno/virtual-threads}
+\input{parte2-java-jvm/cap-java-moderno/aprofundar}
+\input{parte2-java-jvm/cap-java-moderno/desafios}

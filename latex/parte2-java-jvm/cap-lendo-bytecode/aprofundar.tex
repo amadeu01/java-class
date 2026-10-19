@@ -1,0 +1,42 @@
+\section{Onde aprofundar}
+
+\subsection*{Especificações}
+A \citetitle{doc:jvms25}: capítulo~3 (como o \texttt{javac} compila
+\texttt{switch}, \texttt{synchronized} e exceções), capítulo~4 (formato
+do \texttt{.class} e constant pool) e capítulo~6 (cada instrução). A
+\citetitle{doc:jls25}: §5.1.7 (boxing), §13.4.9 (constantes e
+compatibilidade binária), §14.11 (\texttt{switch}) e §14.20.3
+(\texttt{try}-with-resources).
+
+\subsection*{Livros}
+\small
+\begin{longtable}{@{}p{1.8cm} p{4.4cm} p{2.6cm} p{4cm}@{}}
+\toprule
+Tema & Livro & Autor(es), ano & Por que ler \\
+\midrule \endhead
+Java & \citetitle{livro:bloch2017}, 3ª ed. \pt{} \emph{Java Efetivo}
+  & \citeauthor{livro:bloch2017}, \citeyear{livro:bloch2017}
+  & Itens 6, 9, 61, 63 e 78, citados neste capítulo \\
+Desempenho & \citetitle{livro:evans2018} & \citeauthor{livro:evans2018},
+  \citeyear{livro:evans2018} & JIT e ferramentas de diagnóstico \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Vídeos}
+\small
+\begin{longtable}{@{}p{1.8cm} p{7.2cm} p{3.4cm}@{}}
+\toprule
+Tema & Vídeo & Quem \\
+\midrule \endhead
+Lambdas & \citetitle{video:goetz-lambda-hood} (Philly ETE 2014, InfoQ)
+  & \citeauthor{video:goetz-lambda-hood}, arquiteto da linguagem Java \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Ferramentas e documentação}
+\citetitle{doc:javap}, \citetitle{doc:java-cmd}, \citetitle{doc:jcmd},
+\citetitle{doc:jfr-tool}, \citetitle{doc:jmc}, \citetitle{doc:jitwatch},
+\citetitle{doc:async-profiler} e \citetitle{doc:jmh}. Para as pontes:
+\citetitle{doc:graalvm-compat} e \citetitle{doc:quarkus-native-tips}.

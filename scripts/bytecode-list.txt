@@ -8,3 +8,7 @@ Sincronizacao -c -p
 PatternSwitch -c -p
 RecordExemplo -c -p
 RecordExemplo$Ponto -c -p
+SealedForma -c -p
+PoolConstantes -v -p
+ThreadsVirtuais -c -p
+SealedForma$Forma -v

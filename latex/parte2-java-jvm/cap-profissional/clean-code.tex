@@ -1,0 +1,42 @@
+\section{\emph{Clean Code} e \emph{Effective Java}: o código}
+
+O \citetitle{livro:martin2008} trata do código em si: nomes (cap.~2),
+funções (cap.~3), comentários (cap.~4), tratamento de erros (cap.~7),
+testes (cap.~9), classes (cap.~10), concorrência (cap.~13) e um catálogo
+de \termo{code smells}{\enquote{Cheiros} de código: sinais de que algo
+está mal estruturado, mesmo que funcione.} (cap.~17). O
+\citetitle{livro:bloch2017} complementa com conselhos específicos de
+Java, organizados em itens numerados. Vários deles ganham explicação
+concreta no bytecode desta parte:
+
+\small
+\begin{longtable}{@{}p{5.6cm} p{6.6cm}@{}}
+\toprule
+Item do \emph{Effective Java} (3ª ed.) & Onde o bytecode mostra \\
+\midrule \endhead
+6. Avoid creating unnecessary objects & Autoboxing escondido,
+  seção~\ref{sec:autoboxing} \\
+9. Prefer try-with-resources to try-finally & \texttt{addSuppressed}
+  gerado pelo \texttt{javac}, seção~\ref{sec:twr} \\
+42. Prefer lambdas to anonymous classes & \texttt{invokedynamic} em vez
+  de uma classe a mais no JAR, seção~\ref{sec:invokedynamic} \\
+61. Prefer primitive types to boxed primitives & \texttt{==} entre
+  \texttt{Integer}, seção~\ref{sec:autoboxing} \\
+63. Beware the performance of string concatenation & Concatenação via
+  \texttt{invokedynamic}, seção~\ref{sec:invokedynamic} \\
+67. Optimize judiciously & JIT, warm-up e medição,
+  capítulo~\ref{cap:jvm-por-dentro} \\
+78. Synchronize access to shared mutable data & \texttt{contador++} são
+  três instruções, seção~\ref{sec:modelo-memoria} \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Código limpo e desempenho não brigam (quase nunca).}
+A JVM otimiza o código que roda muito, no momento em que ele roda
+(capítulo~\ref{cap:jvm-por-dentro}). Métodos pequenos, que o
+\emph{Clean Code} recomenda, são candidatos naturais a
+\termo{inlining}{Otimização do JIT que copia o corpo do método chamado
+para dentro do chamador, eliminando a chamada.}. Antes de sacrificar
+legibilidade por desempenho, meça; o item 67 do \emph{Effective Java}
+diz o mesmo.

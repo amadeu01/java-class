@@ -1,0 +1,60 @@
+\section{Records: dados como dados}
+\label{sec:records}
+
+O \citetitle{doc:jep395} tornou os records finais no JDK~16, depois de
+duas rodadas de \termo{preview}{Recurso entregue para experimentação, que
+exige a opção \texttt{-{}-enable-preview} e pode mudar antes de ficar
+final.} (JDK~14 e 15). Um record declara um carregador de dados imutável:
+o construtor, os \termo{accessors}{Métodos de leitura; num record, têm o
+mesmo nome do componente, \texttt{x()} e não \texttt{getX()}.},
+\texttt{equals}, \texttt{hashCode} e \texttt{toString} são derivados dos
+componentes declarados.
+
+\lstinputlisting[language=Java]{generated/source/RecordExemplo.java}
+
+O que o \texttt{javac} gerou para \texttt{Ponto}:
+
+\inputbytecode{RecordExemplo_Ponto}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item \texttt{final class \ldots\ extends java.lang.Record}: o record não
+  pode ser estendido e herda de \texttt{Record}, não de \texttt{Object}
+  diretamente.
+\item \texttt{private final int x} e \texttt{y}: os campos são
+  \texttt{final}; o construtor só faz \texttt{putfield} uma vez em cada.
+\item \texttt{x()} e \texttt{y()} são um \texttt{getfield} e um
+  \texttt{ireturn}: não há custo escondido.
+\item \texttt{toString}, \texttt{hashCode} e \texttt{equals} não têm
+  corpo gerado pelo compilador: cada um é um único
+  \texttt{invokedynamic}. Com \texttt{javap -v} (desafio no fim do
+  capítulo) aparece o método de \termo{bootstrap}{Método chamado uma única
+  vez, na primeira execução de um \texttt{invokedynamic}, para decidir que
+  código aquele ponto de chamada vai executar. Ver a
+  seção~\ref{sec:invokedynamic}.}
+  \texttt{java.lang.runtime.ObjectMethods.bootstrap}, que recebe os nomes
+  \texttt{"x;y"} e referências aos dois campos. A implementação fica no
+  JDK, não no seu \texttt{.class}.
+\end{itemize}
+
+\paragraph{A decisão que isso muda.}
+Para DTOs, eventos, chaves de mapa e respostas de API, o record substitui
+a classe com getters, \texttt{equals} e \texttt{hashCode} escritos à mão
+(ou gerados por Lombok). O \texttt{equals} deixa de ficar desatualizado
+quando alguém acrescenta um campo e esquece de atualizá-lo, porque ele é
+derivado da lista de componentes. Isso segue o conselho do
+\citetitle{livro:bloch2017} no item 17, \enquote{Minimize mutability}.
+
+\paragraph{O bug que o bytecode não impede.}
+O \texttt{final} vale para o campo, não para o objeto apontado. Um
+\texttt{record Pedido(List<Item> itens)} guarda a referência à lista
+recebida: quem tiver essa lista ainda pode alterá-la, e o
+\texttt{hashCode} do pedido muda junto. Se a imutabilidade importa, copie
+no construtor compacto (\texttt{itens = List.copyOf(itens);}).
+
+\subsection*{Record patterns}
+O \citetitle{doc:jep440} (final no JDK~21) permite desmontar um record
+no próprio padrão: \texttt{if (o instanceof Ponto(int x, int y))} testa o
+tipo e extrai os componentes de uma vez. Combinado com
+\texttt{switch} e sealed types (próxima seção), isso substitui boa parte
+dos \texttt{Visitor} e das cadeias de \texttt{instanceof} com cast.

@@ -1,0 +1,35 @@
+\section{\texttt{try}-with-resources}
+\label{sec:twr}
+
+\lstinputlisting[language=Java]{generated/source/TryWithResources.java}
+
+\inputbytecode{TryWithResources}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item Offsets 26--27: caminho normal, \texttt{close()} e salto para o
+  fim.
+\item A \texttt{Exception table} diz: exceção entre os offsets 8 e 26
+  vai para 33. Ali a exceção principal é guardada (\texttt{astore\_1}) e
+  \texttt{close()} é chamado de novo.
+\item Se esse \texttt{close()} também lança, a segunda linha da tabela
+  leva ao offset 41, que chama
+  \texttt{Throwable.addSuppressed}: a exceção do \texttt{close()} é
+  pendurada na principal, que é relançada (\texttt{athrow}, offset 48).
+\end{itemize}
+
+É a tradução que a JLS (§14.20.3.1) especifica, com a variável
+\texttt{\#primaryExc} e \texttt{addSuppressed}. Compare com
+\texttt{ThreadsVirtuais} (seção~\ref{sec:virtual-threads}): lá o recurso
+vem de uma chamada de método e o \texttt{javac} gerou \texttt{ifnull}
+antes de cada \texttt{close()}, como a JLS pede; aqui o recurso vem de
+um \texttt{new}, que nunca é \texttt{null}, e o teste não aparece.
+
+\paragraph{O bug que isso explica.}
+Com \texttt{try}/\texttt{finally} escrito à mão, uma exceção no
+\texttt{close()} substitui a exceção original, e o log mostra
+\enquote{erro ao fechar conexão} em vez da causa real. O
+\texttt{try}-with-resources preserva a causa e anexa a outra como
+\emph{suppressed}: procure \texttt{Suppressed:} no stack trace. É o
+argumento do item 9 do \citetitle{livro:bloch2017} (\enquote{Prefer
+try-with-resources to try-finally}).

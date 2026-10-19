@@ -1,0 +1,62 @@
+\section{Coleta de lixo}
+\label{sec:gc}
+
+Em Java você aloca e o \termo{garbage collector}{Coletor de lixo (GC):
+componente da JVM que descobre quais objetos não são mais alcançáveis e
+recupera a memória deles.} recupera. A escolha do coletor é uma troca
+entre três coisas: \emph{throughput} (fração do tempo gasta no seu
+código), latência (duração das pausas) e memória. O guia de GC da Oracle
+para o JDK~25 (\citetitle{doc:gc-collectors}) descreve os coletores da
+HotSpot assim:
+
+\small
+\begin{longtable}{@{}p{1.8cm} p{3.2cm} p{7.2cm}@{}}
+\toprule
+Coletor & Opção & Segundo a documentação \\
+\midrule \endhead
+Serial & \texttt{-XX:+UseSerialGC} & Uma thread faz todo o trabalho de
+  GC; indicado para dados pequenos (até cerca de 100~MB) ou uma CPU \\
+Parallel & \texttt{-XX:+UseParallelGC} & Como o Serial, mas com várias
+  threads; para quando throughput máximo importa e pausas de um segundo
+  ou mais são aceitáveis \\
+G1 & \texttt{-XX:+UseG1GC} & Majoritariamente concorrente; busca cumprir
+  uma meta de pausa com alta probabilidade mantendo bom throughput. É o
+  padrão (\citetitle{doc:jep248}, JDK~9) \\
+ZGC & \texttt{-XX:+UseZGC} & Baixa latência, pausas independentes do
+  tamanho do heap; o guia fala em pausas máximas abaixo de um
+  milissegundo, ao custo de algum throughput \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{A evolução do ZGC.}
+O ZGC ficou pronto para produção no \citetitle{doc:jep377} (JDK~15).
+O \citetitle{doc:jep439} (JDK~21) acrescentou o modo geracional, o
+\citetitle{doc:jep474} (JDK~23) o tornou padrão e o
+\citetitle{doc:jep490} (JDK~24) removeu o modo não geracional. Em JDK~25,
+\texttt{-XX:+UseZGC} é sempre o ZGC geracional; quem ainda passa
+\texttt{ZGenerational} recebe aviso de opção obsoleta.
+
+\paragraph{Shenandoah.}
+O \citetitle{doc:jep379} (JDK~15) tornou o Shenandoah um coletor de
+produção no OpenJDK; a página do projeto (\citetitle{doc:shenandoah}) o
+descreve como um coletor de pausas ultrabaixas que faz mais trabalho
+concorrente com o programa. Ele não aparece no guia de GC da Oracle
+citado acima: confirme se a distribuição de JDK que você usa o inclui
+antes de planejar com ele.
+
+\paragraph{A decisão que isso muda.}
+O guia da Oracle recomenda começar sem escolher nada: deixe a JVM
+escolher, ajuste o tamanho do heap e só então troque de coletor, se o
+requisito não for atendido. Na prática:
+\begin{itemize}
+\item API com requisito de latência (p99) apertado: compare G1 e ZGC
+  medindo o p99 no teste de carga da Parte~I, não a média.
+\item Job batch que só precisa terminar rápido: Parallel é candidato.
+\item Container pequeno, com pouca memória e uma CPU: Serial é o que o
+  guia indica para esse perfil.
+\end{itemize}
+Antes de trocar de GC, confira se o problema não é alocação demais: o
+autoboxing da seção~\ref{sec:autoboxing} é um jeito comum de criar
+objetos sem perceber. O JFR (seção~\ref{sec:ferramentas}) mostra pausas
+e alocação por método.

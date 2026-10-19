@@ -1,0 +1,36 @@
+\section{\emph{Clean Architecture}: onde fica o framework}
+
+O \citetitle{livro:martin2017} organiza-se em princípios de design
+(SOLID, caps.~7 a 11), princípios de componentes (caps.~12 a 14) e
+arquitetura (caps.~15 a 29). Dois capítulos importam para quem usa
+Quarkus todo dia:
+
+\begin{description}
+\item[The Clean Architecture (cap.~22)] Apresenta a \emph{Dependency
+  Rule}: as dependências do código-fonte apontam para dentro, das
+  camadas de detalhe (web, banco, framework) para as regras de negócio,
+  nunca o contrário.
+\item[Frameworks Are Details (cap.~32)] O framework é um detalhe; o
+  livro fala de um \enquote{casamento assimétrico} (\emph{asymmetric
+  marriage}) em que você se compromete com o framework e ele não se
+  compromete com você.
+\end{description}
+
+\paragraph{Ponte com Quarkus.}
+O Quarkus faz muito trabalho em tempo de build: o guia
+\citetitle{doc:quarkus-cdi-reference} diz que ele usa uma descoberta de
+beans simplificada e tenta remover beans, interceptors e decorators não
+usados durante o build. Isso funciona porque as anotações estão nas
+classes que o Quarkus analisa. Uma leitura da Dependency Rule para um
+projeto Quarkus: anotações de framework (\texttt{@ApplicationScoped},
+\texttt{@Path}, \texttt{@Inject}) ficam nos adaptadores e na camada de
+aplicação; as regras de negócio continuam sendo classes e records
+comuns, testáveis com JUnit puro, como na Parte~I. Essa divisão é
+uma aplicação do livro, não uma regra do Quarkus.
+
+O mesmo guia traz uma recomendação que só faz sentido sabendo como a JVM
+acessa membros: no Quarkus, se a injeção de dependência precisa acessar
+um membro \texttt{private}, tem de usar reflexão, e em executável nativo
+todo membro usado por reflexão precisa ser registrado. Por isso o guia
+desencoraja membros \texttt{private} em beans e sugere campos de
+injeção \emph{package-private} ou injeção pelo construtor.

@@ -1,0 +1,57 @@
+\section{O básico do \texttt{javap}}
+\label{sec:javap-basico}
+
+O \texttt{javap} vem com o JDK e desmonta arquivos \texttt{.class}
+(\citetitle{doc:javap}). As opções que usamos:
+
+\begin{description}
+\item[\texttt{-c}] imprime as instruções de bytecode de cada método;
+\item[\texttt{-p}] mostra também membros privados (sem ela, o método
+  sintético de um lambda some);
+\item[\texttt{-v}] informação adicional: versão do \texttt{.class},
+  constant pool, atributos, tamanho da pilha;
+\item[\texttt{-l}] tabelas de linhas e variáveis locais (exige compilar
+  com \texttt{-g}).
+\end{description}
+
+Uso típico: \texttt{javap -c -p -cp target/classes com.exemplo.MinhaClasse}.
+
+\paragraph{Uma máquina de pilha.}
+A JVM não tem registradores visíveis: cada chamada de método ganha um
+\emph{frame} com um vetor de variáveis locais e uma pilha de operandos
+(JVMS §2.6). As instruções empilham, operam no topo da pilha e
+desempilham. Num método de instância, a variável local 0 é
+\texttt{this}; os parâmetros vêm em seguida.
+
+\lstinputlisting[language=Java]{generated/source/ConcatenacaoStrings.java}
+
+\inputbytecode{ConcatenacaoStrings}
+
+\paragraph{Lendo a listagem.}
+\begin{itemize}
+\item O construtor que você não escreveu: \texttt{aload\_0} empilha
+  \texttt{this}, \texttt{invokespecial} chama
+  \texttt{Object.<init>}, \texttt{return}.
+\item O prefixo da instrução diz o tipo: \texttt{a} para referência
+  (\texttt{aload}, \texttt{areturn}), \texttt{i} para \texttt{int}
+  (\texttt{iload}, \texttt{ireturn}). Em \texttt{saudacao}, que é
+  \texttt{static}, \texttt{aload\_0} é \texttt{nome} e \texttt{iload\_1}
+  é \texttt{idade}.
+\item \texttt{\#7}, \texttt{\#11}: índices no constant pool. O
+  comentário à direita é o \texttt{javap} resolvendo o índice para você.
+\item \nolinkurl{(Ljava/lang/String;I)Ljava/lang/String;} é um
+  \emph{descritor} de método (JVMS §4.3): entre parênteses os parâmetros
+  (\texttt{L\ldots;} é uma classe, \texttt{I} é \texttt{int}), depois o
+  retorno (\texttt{V} é \texttt{void}, \texttt{Z} é \texttt{boolean}).
+\item Em \texttt{main}: \texttt{getstatic} pega \texttt{System.out},
+  \texttt{ldc} empilha a string \texttt{"Ana"} do constant pool,
+  \texttt{bipush 30} empilha o inteiro, \texttt{invokestatic} chama
+  \texttt{saudacao} e \texttt{invokevirtual} chama \texttt{println}.
+\end{itemize}
+
+\paragraph{As cinco instruções de chamada.}
+\texttt{invokestatic} (método estático), \texttt{invokevirtual} (método
+de instância, com despacho pelo tipo real), \texttt{invokeinterface}
+(método de interface), \texttt{invokespecial} (construtores e
+chamadas via \texttt{super}, entre outros casos) e \texttt{invokedynamic}, que a
+seção~\ref{sec:invokedynamic} explica.

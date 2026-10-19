@@ -1,0 +1,32 @@
+\section{Onde aprofundar}
+
+Os títulos marcados com \pt têm edição em português.
+
+\subsection*{Livros}
+\small
+\begin{longtable}{@{}p{1.8cm} p{4.4cm} p{2.6cm} p{4cm}@{}}
+\toprule
+Tema & Livro & Autor(es), ano & Por que ler \\
+\midrule \endhead
+Linguagem & \citetitle{livro:deitel2017}, 11ª ed. \pt{} \emph{Java: Como
+  Programar}, 10ª ed. & \citeauthor{livro:deitel2017},
+  \citeyear{livro:deitel2017} & Livro-texto para revisar a linguagem de
+  ponta a ponta \\
+Boas práticas & \citetitle{livro:bloch2017}, 3ª ed. \pt{} \emph{Java
+  Efetivo} & \citeauthor{livro:bloch2017}, \citeyear{livro:bloch2017} &
+  Itens 17 (imutabilidade) e 42 (lambdas); referência para decidir como
+  escrever Java \\
+Concorrência & \citetitle{livro:goetz2006} & \citeauthor{livro:goetz2006},
+  \citeyear{livro:goetz2006} & Base de concorrência que continua valendo
+  com virtual threads \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+As edições citadas do Deitel e do \emph{Effective Java} são anteriores a
+records, sealed types e virtual threads; para esses recursos, a fonte
+primária são os JEPs da tabela do início do capítulo.
+
+\subsection*{Ferramentas e documentação}
+\citetitle{doc:oracle-virtual-threads}, \citetitle{doc:jls25} e os JEPs
+citados. Para conferir o bytecode: \citetitle{doc:javap}.

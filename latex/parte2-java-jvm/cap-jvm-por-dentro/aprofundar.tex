@@ -1,0 +1,36 @@
+\section{Onde aprofundar}
+
+\subsection*{Livros}
+\small
+\begin{longtable}{@{}p{1.8cm} p{4.4cm} p{2.6cm} p{4cm}@{}}
+\toprule
+Tema & Livro & Autor(es), ano & Por que ler \\
+\midrule \endhead
+Desempenho & \citetitle{livro:oaks2020}, 2ª ed. & \citeauthor{livro:oaks2020},
+  \citeyear{livro:oaks2020} & JIT, GC, memória, threads e metodologia de
+  teste de desempenho, com foco em Java~8 e 11 \\
+Desempenho & \citetitle{livro:evans2018} & \citeauthor{livro:evans2018},
+  \citeyear{livro:evans2018} & Abordagem quantitativa: logs de GC, JIT,
+  ferramentas e os perigos dos microbenchmarks \\
+Concorrência & \citetitle{livro:goetz2006} & \citeauthor{livro:goetz2006},
+  \citeyear{livro:goetz2006} & Visibilidade, publicação segura e
+  utilitários de \texttt{java.util.concurrent} \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Os dois livros de desempenho são anteriores ao ZGC geracional e ao cache
+AOT; use-os pelos conceitos e confira opções e padrões nos JEPs e na
+documentação do JDK~25.
+
+\subsection*{Artigos}
+Da série \emph{JVM Anatomy Quarks}, de Aleksey Shipilëv:
+\citetitle{artigo:shipilev-uncommon-traps},
+\citetitle{artigo:shipilev-megamorphic} e
+\citetitle{artigo:shipilev-safepoint}. Sobre o modelo de memória:
+\citetitle{artigo:shipilev-jmm}.
+
+\subsection*{Documentação}
+\citetitle{doc:jvms25} (cap.~5), \citetitle{doc:jls25} (cap.~17),
+\citetitle{doc:hotspot-perf}, \citetitle{doc:gc-collectors} e
+\citetitle{doc:java-cmd}.

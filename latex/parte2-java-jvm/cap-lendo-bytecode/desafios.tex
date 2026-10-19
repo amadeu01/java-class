@@ -1,0 +1,28 @@
+\section{Desafios práticos}
+
+\desafio{Rode \texttt{javap -c -p} numa classe sua que use lambda e ache
+o \texttt{invokedynamic} e o método \texttt{lambda\$\ldots}. Troque o
+lambda por uma referência de método (\texttt{Integer::sum}, por exemplo):
+o método sintético continua existindo?}
+
+\desafio{Compile o mesmo \texttt{"a" + x} com \texttt{-{}-release 8} (o JDK~25 avisa que a opção está obsoleta) e com
+\texttt{-{}-release 25} e compare as listagens. Onde foi parar o
+\texttt{StringBuilder}?}
+
+\desafio{Crie duas classes em projetos separados: uma com
+\texttt{public static final int LIMITE = 10}, outra que imprime
+\texttt{LIMITE}. Mude o valor, recompile só a primeira e rode a segunda.
+Depois troque a constante por um método \texttt{limite()} e repita.}
+
+\desafio{Escreva um método \texttt{synchronized} e um bloco
+\texttt{synchronized(this)} e compare \texttt{javap -c} e
+\texttt{javap -v} dos dois. Onde está o lock em cada caso?}
+
+\desafio{Grave 60 segundos de um serviço seu com
+\texttt{jcmd <pid> JFR.start duration=60s filename=app.jfr} e rode
+\texttt{jfr summary app.jfr}. Quais eventos aparecem mais? Abra o
+arquivo no JMC e ache o método que mais aloca.}
+
+\desafio{Procure no seu projeto um \texttt{==} entre \texttt{Integer},
+\texttt{Long} ou outro wrapper. Escreva um teste que falhe por causa dele
+antes de corrigir.}
