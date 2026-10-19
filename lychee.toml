@@ -21,6 +21,10 @@ exclude = [
   # verificado via Wayback e manualmente no peer review. O JetBrains Guide
   # (www.jetbrains.com/guide) abre normalmente e continua sendo checado.
   '^https://blog\.jetbrains\.com/',
+  # Repositório de teses da USP estoura o tempo a partir dos runners do GitHub;
+  # links conferidos manualmente no peer review (ambas as entradas também têm
+  # DOI quando disponível).
+  '^https://teses\.usp\.br/',
 ]
 
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam
