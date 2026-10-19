@@ -35,7 +35,7 @@ em \texttt{dominio}.
 \paragraph{Traces.}
 O guia \citetitle{doc:quarkus-opentelemetry} diz que, com a dependência
 adicionada, a extensão gera dados de tracing por padrão e os exporta em
-lote por OTLP/gRPC para \texttt{http://localhost:4317}. Métricas e logs
+lote por OTLP/gRPC para a porta 4317 de \texttt{localhost}. Métricas e logs
 via OpenTelemetry são \emph{tech preview} e vêm desligados; ligam-se em
 build time com \texttt{quarkus.otel.metrics.enabled=true} e
 \texttt{quarkus.otel.logs.enabled=true}.
