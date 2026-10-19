@@ -59,9 +59,12 @@ consegue fazer.
 \begin{itemize}
 \item \texttt{porReflexao} faz três chamadas \texttt{invokevirtual}:
   procura o campo pelo \emph{nome} (a string \texttt{"privado"} no
-  constant pool), desliga a checagem de acesso e escreve. O bytecode não
-  diz qual campo será escrito: o alvo é um dado (uma string passada a um
-  método), não o operando de uma instrução.
+  constant pool), desliga a checagem de acesso e escreve. O campo
+  escrito é um \emph{argumento} de método, não o operando de uma
+  instrução. Aqui o argumento é uma constante, e o Native Image consegue
+  resolvê-lo no build (seção~\ref{sec:reflexao-nativo}); um container
+  que descobre beans varrendo o classpath em runtime, porém, só conhece
+  os nomes durante a execução.
 \item \texttt{direto} é um único \texttt{putfield} cujo operando aponta
   para o campo no constant pool. Qualquer ferramenta que lê o
   \texttt{.class} (o verificador, o JIT, a análise estática do Native

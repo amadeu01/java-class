@@ -2,12 +2,20 @@
 \label{sec:reflexao-nativo}
 
 No modo JVM, reflexão custa mais que uma chamada direta; no nativo,
-reflexão não declarada é um bug. A análise estática só enxerga o que é
-alcançável pelo código
-(seção~\ref{sec:gizmo}: \texttt{putfield} é visível, \texttt{Field.set}
-com um nome em string não é), e o que não foi alcançado não entra no
-binário. O \citetitle{doc:graalvm-compat} lista os recursos dinâmicos
-que exigem metadados no build.
+reflexão não declarada é um bug. A análise estática só inclui o que é
+alcançável, e o que não foi alcançado não entra no binário. A página
+\citetitle{doc:graalvm-metadata} explica onde está a fronteira: o Native
+Image \enquote{will compute reachability at build time given that all
+the call arguments are constant}, e prefere essa forma de fornecer
+metadados. É o caso de \texttt{porReflexao} na seção~\ref{sec:gizmo},
+que usa a constante \texttt{"privado"}. O problema real são nomes que
+só existem em runtime, como os de um container que varre o classpath ao
+subir. A mesma página diz ainda que, para ler ou escrever campos por
+reflexão, os nomes dos campos precisam estar nos metadados; sem isso,
+\texttt{Field.get} e \texttt{Field.set} lançam
+\texttt{MissingReflectionRegistrationError}. O
+\citetitle{doc:graalvm-compat} lista os recursos dinâmicos que exigem
+metadados no build.
 
 \subsection*{O que costuma quebrar}
 
@@ -65,7 +73,8 @@ O guia \citetitle{doc:quarkus-native-tips} traz os casos típicos:
   extensão.
 \item[O que medir] Rode a suíte de \texttt{@QuarkusIntegrationTest}
   contra o executável nativo no CI (seção~\ref{sec:testes-camadas}):
-  é o único teste que mostra reflexão faltando. No modo JVM, o JFR e um
+  é o teste que mostra reflexão faltando antes da produção (o
+  \emph{tracing agent} do GraalVM é outro caminho, não coberto aqui). No modo JVM, o JFR e um
   profiler (seção~\ref{sec:ferramentas}) mostram se
   \texttt{Method.invoke} ou \texttt{Field.get} aparece no caminho quente.
 \end{description}

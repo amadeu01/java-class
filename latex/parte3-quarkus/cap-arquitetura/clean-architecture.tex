@@ -39,7 +39,14 @@ Extensões Quarkus são dependências de build, não pacotes seus: entram no
 \texttt{config}. Uma forma de conferir é olhar os \texttt{import} de
 \texttt{dominio} e \texttt{aplicacao}: se aparecer \texttt{io.quarkus},
 \texttt{jakarta.persistence} ou \texttt{jakarta.ws.rs}, a regra foi
-quebrada.
+quebrada. Os adaptadores, por sua vez, importam exatamente esses
+pacotes: um resource com \texttt{@Path} ou uma entidade com
+\texttt{@Entity} junta, na mesma classe, os dois círculos de fora. O
+\citetitle{livro:martin2017} descreve o círculo externo como, em geral,
+pouco código além da \emph{cola} que fala com o círculo seguinte, e as
+anotações são essa cola. Aceitamos a fusão porque a seta continua
+apontando para dentro: o que a regra precisa proteger são os dois
+círculos internos, e eles não importam nada do framework.
 
 \paragraph{E a injeção de dependência?}
 A pergunta honesta é se \texttt{@ApplicationScoped} e \texttt{@Inject}

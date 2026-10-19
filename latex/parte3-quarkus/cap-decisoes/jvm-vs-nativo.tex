@@ -27,11 +27,18 @@ O que muda em relação à Parte~II:
 
 O guia \citetitle{doc:quarkus-building-native} publica a tabela abaixo,
 atribuída ao benchmark \emph{tuned} do perf-lab do Quarkus de
-21/04/2026: Quarkus~3.34.3, JDK~25.0.2, GraalVM~25.0.2 (CE), 4~CPUs,
-\texttt{-Xmx512m}. A aplicação é a do repositório
-\citetitle{doc:quarkus-perf-comparison}: um serviço REST com JPA/Hibernate
-sobre PostgreSQL; os resultados ficam em
-\citetitle{doc:quarkus-benchmarks}. \textbf{Números do fornecedor.}
+21/04/2026: Quarkus~3.34.3, JDK~25.0.2, GraalVM~25.0.2-graalce, 4~CPUs,
+\texttt{-Xmx512m}. A linha nativa leva o rótulo \enquote{Mandrel},
+embora a configuração cite o GraalVM CE; a página não explica a
+diferença. O guia não nomeia a aplicação. Os resultados dessa data
+ficam em
+\url{https://github.com/quarkusio/benchmarks/tree/main/results/spring-quarkus-perf-comparison/2026-04-21_09-26-13},
+o que aponta para o repositório \citetitle{doc:quarkus-perf-comparison}:
+um serviço REST completo, com JPA/Hibernate sobre PostgreSQL e, na
+estratégia \emph{tuned}, métricas e OpenTelemetry. No comando de exemplo
+do repositório, a aplicação fica em quatro núcleos fixos
+(\texttt{--cpus-app 0,1,2,3}), separada do banco e do gerador de carga.
+\textbf{Números do fornecedor.}
 
 \small
 \begin{longtable}{@{}p{4cm} p{2.4cm} p{3.6cm} p{1.8cm}@{}}
@@ -46,6 +53,15 @@ Nativo (Mandrel) & 581~ms & 5\,411~tps ($\approx$59\% abaixo) & 95~MiB \\
 \end{longtable}
 \normalsize
 
+A \enquote{1ª requisição} é o \emph{time to first request}: do comando
+de start até a primeira resposta com sucesso, não o \enquote{started
+in} do log (guia \citetitle{doc:quarkus-performance-measure}). Isso
+explica por que 4,4~s não contradiz o \enquote{sub-second startup} que o
+mesmo guia atribui ao modo JVM: na mesma página, o \emph{cold start} do
+modo JVM vai de cerca de 0,4~s (um REST pequeno) a cerca de 3~s (um CRUD
+grande), vindo de outros posts do blog, e a medição do perf-lab inclui
+subir o serviço completo e atender a primeira requisição.
+
 Leia a tabela com a Parte~II na cabeça. O nativo ganha em tempo até a
 primeira requisição e em memória; o JVM ganha em throughput de pico, que
 é onde o JIT, compilando os métodos quentes com o perfil da execução
@@ -56,7 +72,7 @@ do Projeto Leyden, a mesma família de recursos dos JEPs~483 e 514
 guia estima o build nativo em 3 a 10 minutos e 4 a 8~GB de RAM na
 máquina de build. Tamanhos de imagem e tempos de \emph{cold start} da
 página vêm de outros posts do blog, com outras condições; por isso não
-estão na tabela.
+entram na tabela.
 
 \subsection*{A decisão}
 
