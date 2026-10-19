@@ -2,6 +2,12 @@
 accept = ["200", "429"]
 timeout = 30
 max_retries = 3
-# Nenhuma exclusão por enquanto. Se youtube.com gerar falso positivo
-# (bloqueio de bot), adicionar aqui e documentar o motivo:
-# exclude = ['^https://(www\.)?youtube\.com/']
+
+# Exclusões por domínio: o blog da Netflix (e o espelho no Medium) responde 403
+# a IPs de CI (bloqueio de bot) embora as páginas existam. Esses links são
+# verificados manualmente na etapa de peer review. 403 NÃO é aceito globalmente.
+exclude = [
+  '^https://netflixtechblog\.com/',
+  '^https://netflixtechblog\.medium\.com/',
+  '^https://techblog\.netflix\.com/',
+]
