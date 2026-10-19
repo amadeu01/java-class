@@ -1,0 +1,8 @@
+latex/generated/
+latex/build/
+*.aux
+*.log
+*.pdf
+examples/**/target/
+out/
+.superpowers/
