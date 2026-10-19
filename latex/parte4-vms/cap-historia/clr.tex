@@ -33,8 +33,12 @@ sugerem que quem usa generics não paga sobrecusto por isso.
 
 \paragraph{O que isso explica na JVM.}
 \begin{itemize}
-\item Por que não existe \texttt{new T[]} nem \texttt{instanceof
-  List<String>} em Java: a informação foi apagada antes de chegar à VM.
+\item Por que não existe \texttt{new T[]} nem
+  \texttt{obj instanceof List<String>} com \texttt{obj} declarado como
+  \texttt{Object}: a informação foi apagada antes de chegar à VM (a JLS,
+  §15.20.2, exige que a expressão seja \emph{checked cast compatible} com
+  o tipo testado, e a conversão de \texttt{Object} para
+  \texttt{List<String>} não é verificável em runtime).
 \item Por que \texttt{List<Integer>} guarda objetos \texttt{Integer} e
   não \texttt{int}: com erasure, a VM só vê \texttt{Object}, e o
   autoboxing da seção~\ref{sec:autoboxing} é o preço. Uma VM que conhece

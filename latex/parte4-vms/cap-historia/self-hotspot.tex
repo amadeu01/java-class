@@ -70,7 +70,7 @@ that was first implemented for the SELF language}.
   implementador (seção~\ref{sec:class-loading}).
 \item Por que o nativo pode perder em throughput de pico, como na
   medição do Quarkus (seção~\ref{sec:jvm-vs-nativo}), embora o paper do
-  Native Image fale em preservar o desempenho de pico: sem perfil da
-  execução real e sem desotimização, o compilador só pode apostar no que
-  prova no build (seção~\ref{sec:vms-jit-aot}).
+  Native Image fale em preservar o desempenho de pico: sem perfil
+  coletado em produção (no máximo o de um treino, via PGO) e sem
+  desotimização, o compilador só pode apostar no que decide no build (seção~\ref{sec:vms-jit-aot}).
 \end{itemize}

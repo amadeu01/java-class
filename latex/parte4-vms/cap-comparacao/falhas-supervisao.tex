@@ -36,7 +36,10 @@ monitoring its child processes}, e supervisores supervisionam outros
 supervisores, formando uma
 \termo{supervision tree}{Árvore de supervisão: supervisores cujos filhos
 são processos de trabalho ou outros supervisores.}. A página lista três
-estratégias de reinício:
+estratégias principais de reinício\footnote{A página também descreve
+\texttt{simple\_one\_for\_one}, um \texttt{one\_for\_one} simplificado em
+que todos os filhos são instâncias, adicionadas dinamicamente, do mesmo
+processo.}:
 \begin{description}
 \item[\texttt{one\_for\_one}] só o filho que terminou é reiniciado;
 \item[\texttt{one\_for\_all}] os outros filhos também são terminados e

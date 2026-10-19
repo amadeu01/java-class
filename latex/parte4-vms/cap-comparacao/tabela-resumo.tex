@@ -18,7 +18,7 @@ Modelo de concorrência & Threads de plataforma (do SO) e virtual
   §2.5.3) & Processos leves, sem memória compartilhada, mensagens
   copiadas para a mailbox; preempção por reductions
   (\citetitle{doc:erlang-processes};
-  \citetitle{doc:erlang-eff-processes}; \citetitle{doc:beam-book}) &
+  \citetitle{doc:erlang-eff-processes}; \citetitle{livro:stenman}) &
   O da HotSpot, na qual a GraalVM se baseia
   (\citetitle{doc:graalvm-java}); no Native Image, as mesmas APIs Java
   \\
@@ -35,8 +35,9 @@ Tratamento de falha & Exceção não tratada termina a thread; o estado no
   (seção~\ref{sec:resiliencia-quarkus}) & \emph{Let it crash}: links,
   sinais de saída e árvores de supervisão com limite de reinícios
   (\citetitle{paper:armstrong-thesis-reliable-systems};
-  \citetitle{doc:erlang-supervisor}) & Igual à HotSpot nos dois modos
-  (é a mesma linguagem) \\
+  \citetitle{doc:erlang-supervisor}) & Igual à HotSpot nos dois modos:
+  é a mesma linguagem Java (\citetitle{doc:jls25}, §11.3;
+  \citetitle{doc:graalvm-java}) \\
 \addlinespace
 Carga de código & Class loading dinâmico
   (seção~\ref{sec:class-loading}); redefinição só de corpos de métodos
@@ -60,9 +61,10 @@ Startup e memória & Quarkus em modo JVM: 4417~ms até a 1ª requisição,
   palavras por processo novo (OTP~27, \citetitle{doc:erlang-eff-processes}).
   Não achamos medição publicada de startup e RSS de um serviço
   comparável ao do Quarkus & Native: 581~ms e 95~MiB na mesma medição
-  do Quarkus (fornecedor). O paper do Native Image fala em startup
-  \enquote{up to two orders of magnitude} melhor que a HotSpot (Oracle
-  Labs, fornecedor, 2019) \\
+  do Quarkus (fornecedor; seção~\ref{sec:jvm-vs-nativo}). O paper do
+  Native Image fala em startup \enquote{up to two orders of magnitude}
+  melhor que a HotSpot (\citetitle{paper:native-image-initialize-once};
+  Oracle Labs, fornecedor, 2019) \\
 \bottomrule
 \end{longtable}
 \normalsize

@@ -117,8 +117,10 @@ Parte~IV acrescenta o porquê de cada lado:
   custo: o trabalho foi feito no build e o processo começa com o heap
   pronto (seção~\ref{sec:vms-jit-aot}).
 \item[O nativo perde] quando o serviço vive muito e o throughput de pico
-  importa: sem perfil e sem desotimização, não há a especulação herdada
-  do Self (seção~\ref{sec:hist-self}); e quando o código depende de
+  importa: sem re-perfilar em runtime e sem desotimização, não há a
+  especulação adaptativa herdada do Self (seção~\ref{sec:hist-self}); o
+  PGO do Oracle GraalVM ajuda, mas com o perfil de um treino
+  (seção~\ref{sec:vms-jit-aot}); e quando o código depende de
   carregar classes em runtime, porque o mundo é fechado
   (seção~\ref{sec:vms-hot-code}).
 \item[Confira o GC] O Serial GC é o padrão do Native Image, e o G1 só

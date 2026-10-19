@@ -39,9 +39,17 @@ descrevem o processo: uma aplicação iterativa de análise de
 com um compilador otimizador. Código de inicialização pode rodar no
 build, e a execução começa com um heap já populado, o \emph{image heap}
 (seção~\ref{sec:jvm-vs-nativo}); é por isso que o trabalho que o Quarkus
-adianta para o build (capítulo~\ref{cap:build-time}) rende tanto no nativo. Sem perfil de
-execução e sem class loading, não há o que especular em runtime; a
-seção~\ref{sec:jvm-vs-nativo} mostrou o efeito no throughput de pico.
+adianta para o build (capítulo~\ref{cap:build-time}) rende tanto no nativo. Em runtime não
+há class loading, nem perfil coletado durante a execução, nem
+desotimização de volta para um interpretador: o que o compilador
+especula precisa ser decidido no build. O Oracle GraalVM (não a Community
+Edition) oferece \termo{PGO}{\emph{Profile-Guided Optimization}:
+compilação AOT guiada por um perfil coletado antes, numa execução de
+treino.}: gera-se um binário instrumentado com \texttt{--pgo-instrument},
+roda-se uma carga representativa, que grava um perfil \texttt{.iprof}, e
+recompila-se com \texttt{--pgo} (\citetitle{doc:graalvm-pgo}). O perfil
+vem do treino, não da produção. A seção~\ref{sec:jvm-vs-nativo} mostrou o
+efeito no throughput de pico.
 
 \paragraph{BEAM: JIT sem especulação.}
 O JIT da BEAM, o BeamAsm, faz outra coisa. A documentação diz que ele
@@ -63,5 +71,6 @@ nativo existe desde a carga e a troca a quente de módulos
 \item[Na carga, sem perfil] BeamAsm: o código nativo existe desde a
   carga do módulo, com otimização local por instrução.
 \item[No build] Native Image: startup rápido e memória menor, ao custo
-  do mundo fechado e de compilar sem ver a execução real.
+  do mundo fechado e de compilar sem perfil da produção (no máximo, com o
+  perfil de uma execução de treino, via PGO).
 \end{description}
