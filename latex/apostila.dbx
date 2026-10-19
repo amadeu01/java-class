@@ -1,0 +1,6 @@
+% Data model da apostila: campos de "onde comprar ou baixar".
+% Carregado por biblatex com a opção datamodel=apostila (preamble/pacotes.tex).
+% Convenção documentada no cabeçalho de cada bib/*.bib.
+\DeclareDatamodelFields[type=field, datatype=uri]{urlpt, urlgratis}
+\DeclareDatamodelFields[type=field, datatype=literal]{edicaopt, acesso}
+\DeclareDatamodelEntryfields{urlpt, urlgratis, edicaopt, acesso}

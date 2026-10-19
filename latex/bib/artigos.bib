@@ -1,7 +1,24 @@
 % Convenção de chaves: livro:<sobrenome><ano>, artigo:<slug>, video:<slug>,
-% doc:<slug>, paper:<slug>.
-% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
-% usado para separar a bibliografia por tipo no apêndice.
+% doc:<slug>, paper:<slug>, curso:<slug>, comunidade:<slug>.
+% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper|curso|comunidade},
+% usado para separar a bibliografia por tipo no apêndice, e langid
+% (brazilian = original em português, marcado (PT) no apêndice).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
 
 % ---- Artigos e blog posts (Parte I) ----
 @online{artigo:cycles-tdd, author={Robert C. Martin}, title={The Cycles of TDD}, date={2014}, url={https://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
@@ -21,6 +38,6 @@
 @online{artigo:service-level-load-shedding, author={{Netflix TechBlog}}, title={Enhancing Netflix Reliability with Service-Level Prioritized Load Shedding}, date={2024}, url={https://netflixtechblog.com/enhancing-netflix-reliability-with-service-level-prioritized-load-shedding-e735e6ce8f7d}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
 @online{artigo:principles-of-chaos, author={{Netflix e comunidade}}, title={Principles of Chaos Engineering}, url={https://principlesofchaos.org/}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
 @online{artigo:simian-army, author={{Netflix TechBlog}}, title={The Netflix Simian Army}, date={2011}, url={https://techblog.netflix.com/2011/07/netflix-simian-army.html}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
-@online{paper:chap, author={Basiri and others}, title={Automating chaos experiments in production}, date={2019}, url={https://arxiv.org/pdf/1905.04648}, urldate={2026-10-18}, note={Artigo sobre o ChAP, Netflix}, langid={english}, keywords={paper}}
+@online{paper:chap, author={Basiri and others}, title={Automating chaos experiments in production}, date={2019}, eprint={1905.04648}, eprinttype={arxiv}, url={https://arxiv.org/abs/1905.04648}, urldate={2026-10-19}, acesso={aberto}, note={Artigo sobre o ChAP, Netflix}, langid={english}, keywords={paper}}
 @online{artigo:circuitbreaker, author={Martin Fowler}, title={CircuitBreaker}, date={2014}, url={https://martinfowler.com/bliki/CircuitBreaker.html}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
 @online{artigo:dora, author={{Google Cloud / DORA}}, title={DORA: pesquisa e métricas}, url={https://dora.dev/}, urldate={2026-10-18}, langid={english}, keywords={artigo}}

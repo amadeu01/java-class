@@ -1,28 +1,56 @@
 % Convenção de chaves: livro:<sobrenome><ano>, artigo:<slug>, video:<slug>,
-% doc:<slug>, paper:<slug>.
-% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
-% usado para separar a bibliografia por tipo no apêndice.
+% doc:<slug>, paper:<slug>, curso:<slug>, comunidade:<slug>.
+% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper|curso|comunidade},
+% usado para separar a bibliografia por tipo no apêndice, e langid
+% (brazilian = original em português, marcado (PT) no apêndice).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
 
-% ---- Livros (Parte II), verificados em 2026-10-18 ----
+% ---- Livros (Parte II), verificados em 2026-10-18; links em 2026-10-19 ----
+% deitel2017: a Pearson Brasil não tem loja própria ativa (2026-10-19); a
+% edição PT fica sem urlpt.
 % Clean Code (livro:martin2008) e The Clean Coder (livro:martin2011) estão em testes.bib.
 @book{livro:deitel2017,
   author={Paul Deitel and Harvey Deitel}, title={Java: How to Program, Early Objects},
-  edition={11}, publisher={Pearson}, date={2017},
-  note={PT: Java: Como Programar, 10ª ed., Pearson, 2017},
+  edition={11}, publisher={Pearson}, date={2017}, isbn={9780134743356},
+  url={https://www.informit.com/store/java-how-to-program-early-objects-9780134743356}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Java: Como Programar, 10ª ed., Pearson},
   langid={english}, keywords={livro}}
 @book{livro:martin2017,
   author={Robert C. Martin},
   title={Clean Architecture: A Craftsman's Guide to Software Structure and Design},
-  publisher={Pearson}, date={2017},
-  note={PT: Arquitetura Limpa, Alta Books, 2019}, langid={english}, keywords={livro}}
+  publisher={Pearson}, date={2017}, isbn={9780134494166},
+  url={https://www.informit.com/store/clean-architecture-a-craftsmans-guide-to-software-structure-9780134494166}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Arquitetura Limpa, Alta Books},
+  urlpt={https://altabooks.com.br/produto/arquitetura-limpa/},
+  langid={english}, keywords={livro}}
 @book{livro:bloch2017,
   author={Joshua Bloch}, title={Effective Java}, edition={3},
-  publisher={Addison-Wesley}, date={2017},
-  note={PT: Java Efetivo, Alta Books, 2019}, langid={english}, keywords={livro}}
+  publisher={Addison-Wesley}, date={2017}, isbn={9780134685991},
+  url={https://www.informit.com/store/effective-java-9780134685991}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Java Efetivo, 3ª ed., Alta Books},
+  urlpt={https://altabooks.com.br/produto/java-efetivo/},
+  langid={english}, keywords={livro}}
 @book{livro:goetz2006,
   author={Brian Goetz and Tim Peierls and Joshua Bloch and Joseph Bowbeer and David Holmes and Doug Lea},
   title={Java Concurrency in Practice}, publisher={Addison-Wesley}, date={2006},
-  langid={english}, keywords={livro}}
+  isbn={9780321349606},
+  url={https://www.informit.com/store/java-concurrency-in-practice-9780321349606}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 
 % ---- Especificação e JEPs de linguagem (openjdk.org, Oracle) ----
 @online{doc:jls25, author={{Oracle}}, title={The Java Language Specification, Java SE 25 Edition}, url={https://docs.oracle.com/javase/specs/jls/se25/html/index.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}

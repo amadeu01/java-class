@@ -1,7 +1,24 @@
 % Convenção de chaves: livro:<sobrenome><ano>, artigo:<slug>, video:<slug>,
-% doc:<slug>, paper:<slug>.
-% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
-% usado para separar a bibliografia por tipo no apêndice.
+% doc:<slug>, paper:<slug>, curso:<slug>, comunidade:<slug>.
+% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper|curso|comunidade},
+% usado para separar a bibliografia por tipo no apêndice, e langid
+% (brazilian = original em português, marcado (PT) no apêndice).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
 
 % ---- Ponte Parte I -> Quarkus (verificado em 2026-10-18) ----
 @online{doc:quarkus-testing, author={{Quarkus}}, title={Testing your application}, url={https://quarkus.io/guides/getting-started-testing}, urldate={2026-10-18}, langid={english}, keywords={doc}}
@@ -16,12 +33,14 @@
   author={Martin Štefanko and Jan Martiška}, title={Quarkus in Action},
   publisher={Manning}, date={2025}, isbn={9781633438958},
   url={https://www.manning.com/books/quarkus-in-action}, urldate={2026-10-18},
+  acesso={compra},
   langid={english}, keywords={livro}}
 @book{livro:clingan2021,
   author={John Clingan and Ken Finnigan},
   title={Kubernetes Native Microservices with Quarkus and MicroProfile},
   publisher={Manning}, date={2021}, isbn={9781617298653},
   url={https://www.manning.com/books/kubernetes-native-microservices-with-quarkus-and-microprofile}, urldate={2026-10-18},
+  acesso={compra},
   langid={english}, keywords={livro}}
 @online{artigo:cockburn-hexagonal, author={Alistair Cockburn}, title={The Hexagonal (Ports \& Adapters) Architecture}, date={2005-09-04}, url={https://alistair.cockburn.us/hexagonal-architecture/}, urldate={2026-10-18}, langid={english}, keywords={artigo}}
 @online{video:quarkus-insights, author={{Quarkus}}, title={Quarkus Insights (podcast em vídeo semanal)}, url={https://quarkus.io/insights/}, urldate={2026-10-18}, langid={english}, keywords={video}}

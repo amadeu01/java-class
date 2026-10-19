@@ -33,5 +33,18 @@ if [ -n "$out" ]; then
   echo "ERRO: \\todo encontrado:"; echo "$out" | sed 's/^/  /'; fail=1
 fi
 
+# Onde comprar/baixar: todo livro e paper tem acesso={compra|aberto|pago|esgotado}
+# e um link (url, urlgratis ou doi). Convenção no cabeçalho dos .bib.
+out=$(perl -0777 -ne '
+  for my $e (split /\n(?=@)/) {
+    next unless $e =~ /^@\w+\{([^,]+),/; my $k = $1;
+    next unless $e =~ /keywords=\{(livro|paper)\}/;
+    if ($e !~ /\bacesso=\{(compra|aberto|pago|esgotado)\}/) { print "  $ARGV: $k sem acesso válido\n" }
+    elsif ($e !~ /\b(url|urlgratis|doi)=\{/) { print "  $ARGV: $k sem url/urlgratis/doi\n" }
+  }' latex/bib/*.bib)
+if [ -n "$out" ]; then
+  echo "ERRO: referências sem onde comprar/baixar:"; echo "$out"; fail=1
+fi
+
 [ "$fail" -eq 0 ] && echo "check.sh: OK"
 exit "$fail"

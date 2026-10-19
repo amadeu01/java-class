@@ -1,15 +1,36 @@
 % Convenção de chaves: livro:<sobrenome><ano>, artigo:<slug>, video:<slug>,
-% doc:<slug>, paper:<slug>.
-% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
-% usado para separar a bibliografia por tipo no apêndice.
+% doc:<slug>, paper:<slug>, curso:<slug>, comunidade:<slug>.
+% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper|curso|comunidade},
+% usado para separar a bibliografia por tipo no apêndice, e langid
+% (brazilian = original em português, marcado (PT) no apêndice).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
 
 % ---- Livros (Parte II), verificados em 2026-10-18 ----
+% O'Reilly bloqueia robôs (lychee.toml): páginas conferidas no índice de busca
+% em 2026-10-19 (título, autores, ano, ISBN no URL).
 @book{livro:oaks2020,
   author={Scott Oaks}, title={Java Performance}, edition={2}, publisher={O'Reilly},
-  date={2020}, langid={english}, keywords={livro}}
+  date={2020}, url={https://www.oreilly.com/library/view/java-performance-2nd/9781492056102/},
+  urldate={2026-10-19}, acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:evans2018,
   author={Benjamin J. Evans and James Gough and Chris Newland}, title={Optimizing Java},
-  publisher={O'Reilly}, date={2018}, langid={english}, keywords={livro}}
+  publisher={O'Reilly}, date={2018}, url={https://www.oreilly.com/library/view/-/9781492039259/},
+  urldate={2026-10-19}, acesso={compra}, langid={english}, keywords={livro}}
 
 % ---- Especificação, JEPs e guias oficiais da JVM ----
 @online{doc:jvms25, author={{Oracle}}, title={The Java Virtual Machine Specification, Java SE 25 Edition}, url={https://docs.oracle.com/javase/specs/jvms/se25/html/index.html}, urldate={2026-10-18}, langid={english}, keywords={doc}}

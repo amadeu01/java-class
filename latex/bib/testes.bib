@@ -1,63 +1,136 @@
 % Convenção de chaves: livro:<sobrenome><ano>, artigo:<slug>, video:<slug>,
-% doc:<slug>, paper:<slug>.
-% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper},
-% usado para separar a bibliografia por tipo no apêndice.
+% doc:<slug>, paper:<slug>, curso:<slug>, comunidade:<slug>.
+% Todo registro tem keywords={livro|artigo|video|ferramenta|doc|paper|curso|comunidade},
+% usado para separar a bibliografia por tipo no apêndice, e langid
+% (brazilian = original em português, marcado (PT) no apêndice).
+%
+% Onde comprar ou baixar (campos novos em latex/apostila.dbx; o apêndice
+% "Onde achar conteúdo" e a bibliografia são gerados a partir deles):
+%   url       link principal: página de venda da editora (acesso=compra),
+%             cópia oficial gratuita (acesso=aberto) ou registro de
+%             catálogo (acesso=esgotado).
+%   acesso    obrigatório em livro e paper: compra | aberto | pago | esgotado.
+%             pago = sem cópia aberta; só o doi. Sem acesso = aberto (url).
+%   urlgratis cópia gratuita legal adicional, quando url não é gratuito.
+%   edicaopt  edição brasileira: "Título, Editora" (texto).
+%   urlpt     página da editora brasileira onde se compra a edição PT.
+%   doi       DOI; um url https://doi.org/... é usado só pelo link check
+%             e não é impresso (sourcemap em preamble/biblio.tex).
+%   eprint + eprinttype={arxiv}: preprint no arXiv; o url do arXiv fica
+%             para o link check e também não é impresso.
+% Nunca links não oficiais. Todo link novo é aberto antes de entrar.
 
 % ---- Livros (Parte I) ----
+% beck2002: a edição PT (Bookman) não aparece na loja do Grupo A em 2026-10-19.
+% url = página de venda da editora, aberta em 2026-10-19. InformIT é a loja
+% da Pearson (Addison-Wesley, Prentice Hall).
 @book{livro:beck2002,
   author={Kent Beck}, title={Test-Driven Development: By Example}, date={2002},
-  note={PT: TDD: Desenvolvimento Guiado por Testes}, langid={english}, keywords={livro}}
+  publisher={Addison-Wesley}, isbn={9780321146533},
+  url={https://www.informit.com/store/test-driven-development-by-example-9780321146533}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={TDD: Desenvolvimento Guiado por Testes, Bookman},
+  langid={english}, keywords={livro}}
 @book{livro:martin2021,
   author={Robert C. Martin}, title={Clean Craftsmanship}, date={2021},
+  publisher={Addison-Wesley}, isbn={9780136915713},
+  url={https://www.informit.com/store/clean-craftsmanship-disciplines-standards-and-ethics-9780136915713}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Craftsmanship Limpo, Alta Books},
+  urlpt={https://altabooks.com.br/produto/craftsmanship-limpo/},
   langid={english}, keywords={livro}}
 @book{livro:martin2008,
   author={Robert C. Martin}, title={Clean Code}, date={2008},
-  note={PT: Código Limpo}, langid={english}, keywords={livro}}
+  publisher={Prentice Hall}, isbn={9780132350884},
+  url={https://www.informit.com/store/clean-code-a-handbook-of-agile-software-craftsmanship-9780132350884}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Código Limpo, Alta Books},
+  urlpt={https://altabooks.com.br/produto/codigo-limpo/},
+  langid={english}, keywords={livro}}
 @book{livro:martin2011,
   author={Robert C. Martin}, title={The Clean Coder}, date={2011},
-  note={PT: O Codificador Limpo}, langid={english}, keywords={livro}}
+  publisher={Prentice Hall}, isbn={9780137081073},
+  url={https://www.informit.com/store/clean-coder-a-code-of-conduct-for-professional-programmers-9780137081073}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={O Codificador Limpo, Alta Books},
+  urlpt={https://altabooks.com.br/produto/o-codificador-limpo/},
+  langid={english}, keywords={livro}}
 @book{livro:freeman2009,
   author={Steve Freeman and Nat Pryce},
   title={Growing Object-Oriented Software, Guided by Tests}, date={2009},
-  langid={english}, keywords={livro}}
+  publisher={Addison-Wesley}, isbn={9780321503626},
+  url={https://www.informit.com/store/growing-object-oriented-software-guided-by-tests-9780321503626}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:aniche2015,
   author={Maurício Aniche}, title={Testes Automatizados de Software}, date={2015},
-  publisher={Casa do Código}, note={Edição em português (PT)},
-  langid={brazilian}, keywords={livro}}
+  publisher={Casa do Código},
+  url={https://www.casadocodigo.com.br/products/livro-testes-de-software}, urldate={2026-10-19},
+  acesso={compra}, langid={brazilian}, keywords={livro}}
 @book{livro:aniche2022,
   author={Maurício Aniche}, title={Effective Software Testing}, date={2022},
-  langid={english}, keywords={livro}}
-% O .md não informa o ano de Langr, Hunt e Thomas; fica sem data.
+  publisher={Manning},
+  url={https://www.manning.com/books/effective-software-testing}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
+% O .md não informa o ano nem a edição de Langr, Hunt e Thomas; fica sem data.
+% O link é a edição à venda hoje (3ª, 2024, só de Jeff Langr).
 @book{livro:langr,
   author={Jeff Langr and Andy Hunt and Dave Thomas},
-  title={Pragmatic Unit Testing in Java with JUnit},
+  title={Pragmatic Unit Testing in Java with JUnit}, publisher={Pragmatic Bookshelf},
+  url={https://pragprog.com/titles/utj3/pragmatic-unit-testing-in-java-with-junit-third-edition/}, urldate={2026-10-19},
+  acesso={compra}, note={Link para a 3ª edição (2024), de Jeff Langr},
   langid={english}, keywords={livro}}
 @book{livro:khorikov2020,
   author={Vladimir Khorikov},
   title={Unit Testing: Principles, Practices, and Patterns}, date={2020},
-  langid={english}, keywords={livro}}
+  publisher={Manning},
+  url={https://www.manning.com/books/unit-testing}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:meszaros2007,
   author={Gerard Meszaros}, title={xUnit Test Patterns}, date={2007},
-  langid={english}, keywords={livro}}
+  publisher={Addison-Wesley}, isbn={9780131495050},
+  url={https://www.informit.com/store/xunit-test-patterns-refactoring-test-code-9780131495050}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:feathers2004,
   author={Michael Feathers}, title={Working Effectively with Legacy Code},
-  date={2004}, langid={english}, keywords={livro}}
+  date={2004}, publisher={Prentice Hall}, isbn={9780131177055},
+  url={https://www.informit.com/store/working-effectively-with-legacy-code-9780131177055}, urldate={2026-10-19},
+  acesso={compra}, edicaopt={Trabalho Eficaz com Código Legado, Bookman},
+  urlpt={https://loja.grupoa.com.br/trabalho-eficaz-com-codigo-legado-9788582600320-p991779},
+  langid={english}, keywords={livro}}
 @book{livro:adzic2011,
   author={Gojko Adzic}, title={Specification by Example}, date={2011},
-  langid={english}, keywords={livro}}
+  publisher={Manning},
+  url={https://www.manning.com/books/specification-by-example}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:gregg2020,
   author={Brendan Gregg}, title={Systems Performance}, edition={2},
-  date={2020}, langid={english}, keywords={livro}}
+  date={2020}, publisher={Addison-Wesley}, isbn={9780136820154},
+  url={https://www.informit.com/store/systems-performance-9780136820154}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:nygard2018,
   author={Michael Nygard}, title={Release It!}, edition={2}, date={2018},
-  langid={english}, keywords={livro}}
+  publisher={Pragmatic Bookshelf},
+  url={https://pragprog.com/titles/mnee2/release-it-second-edition/}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
+% O'Reilly bloqueia robôs (lychee.toml): página conferida no índice de busca.
 @book{livro:rosenthal2020,
   author={Casey Rosenthal and Nora Jones},
   title={Chaos Engineering: System Resiliency in Practice}, date={2020},
-  langid={english}, keywords={livro}}
+  publisher={O'Reilly},
+  url={https://www.oreilly.com/library/view/chaos-engineering/9781492043850/}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
 @book{livro:forsgren2018,
   author={Nicole Forsgren and Jez Humble and Gene Kim}, title={Accelerate},
-  date={2018}, langid={english}, keywords={livro}}
+  date={2018}, publisher={IT Revolution},
+  url={https://itrevolution.com/product/accelerate/}, urldate={2026-10-19},
+  acesso={compra}, langid={english}, keywords={livro}}
+
+% Livro brasileiro de engenharia de software, com versão HTML gratuita do
+% autor (uso pessoal) e edição impressa independente (sem editora; a loja é
+% a indicada na página do livro).
+@book{livro:valente2020,
+  author={Marco Tulio Valente},
+  title={Engenharia de Software Moderna: Princípios e Práticas para Desenvolvimento de Software com Produtividade},
+  date={2020}, publisher={Edição do autor}, isbn={9786500019506},
+  url={https://loja.umlivro.com.br/engenharia-de-software-moderna-4778188/p}, urldate={2026-10-19},
+  urlgratis={https://engsoftmoderna.info/}, acesso={compra},
+  note={Cap.~8: Testes}, langid={brazilian}, keywords={livro}}
 
 % ---- Ferramentas (sites oficiais) ----
 @online{doc:junit5, author={{JUnit}}, title={JUnit 5}, url={https://junit.org/junit5/}, urldate={2026-10-18}, langid={english}, keywords={ferramenta}}

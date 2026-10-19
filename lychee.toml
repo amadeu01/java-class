@@ -13,6 +13,10 @@ exclude = [
   # O'Reilly responde 403 a acesso automatizado; a página do livro foi
   # conferida pelo índice de busca (título, autores, edição de 2016).
   '^https://www\.oreilly\.com/',
+  # Loja do Grupo A (Bookman, edições PT): responde 403 "Loja em manutenção"
+  # a clientes que não são navegador; com navegador a página abre (conferida
+  # em 2026-10-19). Verificado manualmente no peer review.
+  '^https://loja\.grupoa\.com\.br/',
 ]
 
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam

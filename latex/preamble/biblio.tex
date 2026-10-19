@@ -1,0 +1,101 @@
+% Bibliografia: "onde comprar ou baixar" a partir dos campos de apostila.dbx
+% (url, acesso, urlgratis, edicaopt, urlpt, doi, eprint). Convenção no
+% cabeçalho de cada bib/*.bib.
+
+% url que é só o DOI ou o arXiv fica no .bib para o link check (lychee),
+% mas não é impresso: o DOI e o eprint já aparecem com link.
+\DeclareSourcemap{\maps[datatype=bibtex]{
+  \map{\step[fieldsource=url, match=\regexp{\Ahttps://doi\.org/}, final]
+       \step[fieldset=url, null]}
+  \map{\step[fieldsource=eprinttype, match=\regexp{\Aarxiv\Z}, final]
+       \step[fieldset=url, null]}
+}}
+
+% Texto do campo acesso.
+\newcommand*{\acessotexto}[1]{%
+  \ifstrequal{#1}{compra}{à venda na editora}{%
+  \ifstrequal{#1}{aberto}{acesso aberto}{%
+  \ifstrequal{#1}{pago}{acesso pago}{%
+  \ifstrequal{#1}{esgotado}{esgotado}{#1}}}}}
+\DeclareFieldFormat{acesso}{\acessotexto{#1}}
+\DeclareFieldFormat{urlpt}{\url{#1}}
+\DeclareFieldFormat{urlgratis}{\url{#1}}
+
+% No fim de cada registro da bibliografia: acesso, edição PT, leitura grátis.
+\renewbibmacro*{finentry}{%
+  \iffieldequalstr{langid}{brazilian}{\setunit{\addspace}\printtext{\pt}}{}%
+  \iffieldundef{acesso}{}{\setunit{\addperiod\space}%
+    \printtext{\mkbibemph{\printfield{acesso}}}}%
+  \iffieldundef{edicaopt}{}{\setunit{\addperiod\space}%
+    \printtext{Edição PT: \printfield{edicaopt}}%
+    \iffieldundef{urlpt}{\setunit{\addspace}\printtext{(sem loja da editora)}}
+      {\setunit{\addcomma\space}\printfield{urlpt}}}%
+  \iffieldundef{urlgratis}{}{\setunit{\addperiod\space}%
+    \printtext{Leitura gratuita: \printfield{urlgratis}}}%
+  \finentry}
+
+% ---- Listas "Onde achar conteúdo" (\printbiblist{ondeachar}) ----
+% Uma linha por registro, colunas geradas dos campos; nada de URL à mão.
+\DeclareBiblistFilter{ondeachar}{\filter[type=field, filter=title]}
+\newtoggle{ondecompacto}% papers, vídeos, artigos, cursos: só Obra e Link
+\newcommand*{\ondecel}[2]{\parbox[t]{#1\linewidth}{\raggedright#2}}
+\newcommand*{\ondelinhas}[4]{% Obra | Comprar | Edição PT | Download gratuito
+  \iftoggle{ondecompacto}%
+    {\ondecel{.74}{#1}\hfill\ondecel{.24}{#4}}%
+    {\ondecel{.37}{#1}\hfill\ondecel{.17}{#2}\hfill
+     \ondecel{.24}{#3}\hfill\ondecel{.18}{#4}}}
+\defbibenvironment{ondeachar}
+  {\list{}{\setlength{\leftmargin}{0pt}\setlength{\itemindent}{0pt}%
+     \setlength{\itemsep}{4pt}\setlength{\parsep}{0pt}}\small}
+  {\endlist}
+  {\item\relax}
+% Cabeçalho das colunas, impresso antes de cada lista.
+\newcommand{\ondecabecalho}{\par\noindent\begingroup\small\bfseries
+  \iftoggle{ondecompacto}{\ondelinhas{Obra}{}{}{Link}}%
+    {\ondelinhas{Obra}{Comprar}{Edição PT}{Download gratuito}}%
+  \par\endgroup\nobreak\vspace{2pt}\hrule\nobreak\vspace{3pt}}
+
+\newbibmacro{onde:obra}{%
+  \mkbibemph{\printfield[noformat]{title}}%
+  \iffieldequalstr{langid}{brazilian}{\addspace\pt}{}%
+  \ifnameundef{labelname}{}{\newline\printnames{labelname}}%
+  \iffieldundef{year}{}{\addcomma\space\printfield{year}}}
+\newbibmacro{onde:comprar}{%
+  \iffieldequalstr{acesso}{compra}
+    {\href{\thefield{url}}{\iflistundef{publisher}{editora}{\printlist{publisher}}}}
+  {\iffieldequalstr{acesso}{esgotado}
+    {esgotado\iffieldundef{url}{}{ (\href{\thefield{url}}{catálogo})}}
+    {---}}}
+\newbibmacro{onde:pt}{%
+  \iffieldequalstr{langid}{brazilian}{original em português}
+  {\iffieldundef{edicaopt}{---}
+    {\iffieldundef{urlpt}{\printfield{edicaopt} (sem loja da editora)}
+      {\href{\thefield{urlpt}}{\printfield{edicaopt}}}}}}
+% Link aberto: urlgratis; senão url, arXiv ou DOI quando acesso é aberto
+% (ou ausente, como em vídeos e documentação); acesso pago: só o DOI.
+\newbibmacro{onde:gratis}{%
+  \iffieldequalstr{acesso}{pago}
+    {\href{https://doi.org/\thefield{doi}}{acesso pago (DOI)}}
+  {\iffieldundef{urlgratis}
+  {\ifboolexpr{test {\iffieldundef{acesso}} or test {\iffieldequalstr{acesso}{aberto}}}
+    {\iffieldundef{url}
+      {\iffieldequalstr{eprinttype}{arxiv}
+        {\href{https://arxiv.org/abs/\thefield{eprint}}{arXiv}}
+        {\iffieldundef{doi}{---}{\href{https://doi.org/\thefield{doi}}{DOI}}}}
+      {\href{\thefield{url}}{\ifkeyword{video}{assistir}{abrir}}}}
+    {---}}
+  {\href{\thefield{urlgratis}}{ler grátis}}}}
+\DeclareBibliographyDriver{ondeachar}{%
+  \ondelinhas{\usebibmacro{onde:obra}}{\usebibmacro{onde:comprar}}%
+    {\usebibmacro{onde:pt}}{\usebibmacro{onde:gratis}}}
+% Uso: \ondeachar{livro}  ou  \ondeachar*{video}  (* = compacto)
+\NewDocumentCommand{\ondeachar}{s m}{%
+  \IfBooleanTF{#1}{\toggletrue{ondecompacto}}{\togglefalse{ondecompacto}}%
+  \ondecabecalho
+  \printbiblist[keyword=#2, heading=none, sorting=nyt]{ondeachar}}
+
+% URLs longas quebram em qualquer caractere na bibliografia (evita overfull).
+\appto{\bibsetup}{\sloppy}
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
