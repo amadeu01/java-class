@@ -1,0 +1,6 @@
+# lualatex + biber; saída em build/apostila.pdf
+$pdf_mode = 4;
+$out_dir = 'build';
+$jobname = 'apostila';
+$bibtex_use = 2;
+$max_repeat = 6;

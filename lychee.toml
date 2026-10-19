@@ -1,0 +1,7 @@
+# Configuração do lychee (job `links` do CI).
+accept = ["200", "429"]
+timeout = 30
+max_retries = 3
+# Nenhuma exclusão por enquanto. Se youtube.com gerar falso positivo
+# (bloqueio de bot), adicionar aqui e documentar o motivo:
+# exclude = ['^https://(www\.)?youtube\.com/']

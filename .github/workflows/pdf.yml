@@ -1,0 +1,71 @@
+name: pdf
+on:
+  push:
+  pull_request:
+
+jobs:
+  bytecode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Gerar listagens javap (se o script existir)
+        run: |
+          if [ -x scripts/gen-bytecode.sh ]; then scripts/gen-bytecode.sh; else echo "gen-bytecode.sh ausente; pulando"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: generated
+          path: latex/generated
+          if-no-files-found: ignore
+
+  pdf:
+    needs: bytecode
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: generated
+          path: latex/generated
+      - name: Compilar
+        working-directory: latex
+        run: latexmk -interaction=nonstopmode -halt-on-error main.tex
+      - name: Checar
+        run: scripts/check.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apostila
+          path: latex/build/apostila.pdf
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --config lychee.toml --no-progress 'latex/**/*.tex' 'latex/bib/*.bib'
+          fail: true
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: pdf
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: apostila
+      - name: Recriar release latest
+        run: |
+          gh release delete latest --cleanup-tag --yes --repo "$GITHUB_REPOSITORY" || true
+          gh release create latest apostila.pdf --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --title "Apostila (latest)" \
+            --notes "PDF compilado de $GITHUB_SHA"
