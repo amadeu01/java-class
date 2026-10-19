@@ -1,0 +1,82 @@
+\section{GC e memória em container}
+\label{sec:memoria-container}
+
+\subsection*{A memória que o container vê não é o heap}
+
+O guia \citetitle{doc:quarkus-performance-measure} mede
+\termo{RSS}{\emph{Resident Set Size}: memória física de fato ocupada pelo
+processo, incluindo heap e memória nativa.}, e não o heap, porque o heap
+é só uma parte: a JVM também usa memória nativa para metadados de
+classes, pilhas de threads, código compilado e estruturas do GC. É o RSS
+que o limite do container corta. Somando o que a Parte~II e o manual do
+\texttt{java} (\citetitle{doc:java-cmd}) dizem sobre cada parte:
+
+\small
+\begin{longtable}{@{}p{3cm} p{4.4cm} p{4.8cm}@{}}
+\toprule
+Parte & Opção & Padrão no JDK~25, segundo o manual \\
+\midrule \endhead
+Heap & \texttt{-XX:MaxRAMPercentage} ou \texttt{-Xmx} & 25\% da memória
+  disponível (\texttt{MinRAMPercentage}, 50\%, vale para heaps pequenos,
+  de cerca de 125~MB) \\
+Metaspace (classes) & \texttt{-XX:MaxMetaspaceSize} & Sem limite \\
+Code cache (JIT) & \texttt{-XX:ReservedCodeCacheSize} & 240~MB no
+  máximo (48~MB sem compilação em camadas) \\
+Pilha por thread & \texttt{-Xss} & 1024~KB em Linux/x64, 2048~KB em
+  Linux/AArch64 \\
+Buffers diretos & \texttt{-XX:MaxDirectMemorySize} & Escolhido pela JVM
+  se não definido \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+O mesmo manual diz que, em Linux, \texttt{UseContainerSupport} vem
+ligado: a JVM detecta a memória e as CPUs do container e dimensiona os
+recursos com isso. Consequência direta: num container de 1~GB sem
+opções, o heap máximo fica em torno de 256~MB, e o resto sobra para
+memória nativa, que pode ou não ser suficiente. E as CPUs vistas pela JVM
+dimensionam os pools de threads do GC e do \texttt{ForkJoinPool};
+\texttt{-XX:ActiveProcessorCount} sobrescreve esse número.
+
+\subsection*{Modo JVM: que GC usar}
+
+A seção~\ref{sec:gc} trouxe a regra do guia de GC da Oracle: deixe a JVM
+escolher, ajuste o heap e só troque de coletor se o requisito não for
+atendido. Em container, isso vira:
+\begin{itemize}
+\item Container pequeno, com uma CPU e pouca memória: é o perfil que o
+  guia associa ao Serial.
+\item API com requisito de p99: compare G1 e ZGC no teste de carga,
+  com o mesmo limite de memória de produção.
+\item Fixe \texttt{-XX:MaxRAMPercentage} (ou \texttt{-Xmx}) explicitamente
+  e deixe margem para a memória nativa; ajuste olhando o RSS, não o heap.
+\end{itemize}
+
+\subsection*{Modo nativo: outro GC, outro padrão}
+
+O guia \citetitle{doc:graalvm-memory} diz que o Serial GC é o padrão no
+Native Image. O G1 existe só no Oracle GraalVM (não no Community
+Edition, base do Mandrel), em Linux AMD64 e AArch64. E o detalhe que mais
+surpreende: sem heap máximo definido, um executável com Serial GC usa
+até 80\% do tamanho da memória física. A página fala em memória física e
+não descreve como o limite do container entra nessa conta; por isso,
+passe \texttt{-Xmx} em runtime (ou \texttt{-R:MaxHeapSize} no build) e
+não dependa do padrão. A mesma página avisa que o RSS pode subir
+temporariamente durante uma coleta, o que importa em ambientes com
+limite de memória, como containers.
+
+\subsection*{A decisão}
+
+\begin{description}
+\item[Quando dar mais memória] RSS próximo do limite sob carga, pausas de
+  GC frequentes no JFR, ou heap pequeno demais para o conjunto de dados
+  em uso.
+\item[Quando reduzir] RSS estável muito abaixo do limite no pico de
+  carga, com folga de pausa no p99. Em escala, cada megabyte por réplica
+  vira custo.
+\item[O que medir] RSS com \texttt{ps -o rss} ou \texttt{pmap -x} (não
+  \texttt{docker stats}, segundo o guia de medição) em repouso e no pico
+  do teste de carga; pausas e alocação com JFR; reinícios por
+  \emph{OOMKilled} no orquestrador. Anote JDK, GC, limites de memória e
+  CPU junto de cada número, como pede a seção~\ref{sec:gc}.
+\end{description}

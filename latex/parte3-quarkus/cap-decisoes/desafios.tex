@@ -1,0 +1,29 @@
+\section{Desafios práticos}
+
+\desafio{Gere o mesmo serviço em modo JVM e nativo. Meça o tempo até a
+primeira requisição e o RSS seguindo o guia de medição (não use
+\texttt{docker stats}). Depois rode o teste de carga da Parte~I por dez
+minutos e compare o throughput no primeiro e no último minuto. Explique
+a diferença entre os dois modos usando a seção~\ref{sec:jit}.}
+
+\desafio{Crie uma classe com
+\texttt{static final String AMBIENTE = System.getenv("AMBIENTE")} e um
+endpoint que devolve o valor. Gere o executável nativo com uma variável
+definida no build e rode-o com outro valor. O que o endpoint devolve?
+Conserte sem tirar o campo \texttt{static}.}
+
+\desafio{Devolva de um endpoint um objeto serializado por Jackson cuja
+classe só é usada por reflexão. Encontre o erro no executável nativo e
+conserte de duas formas. Qual delas você deixaria no código, e por quê?}
+
+\desafio{Pegue um endpoint bloqueante que chama o banco e rode-o em
+worker thread e com \texttt{@RunOnVirtualThread}, com 50, 500 e 5000
+usuários concorrentes. Meça p99, threads de plataforma e conexões em uso
+no pool. Em que ponto o gargalo deixou de ser thread e passou a ser
+outra coisa?}
+
+\desafio{Rode o serviço num container com 512~MB de limite, sem opções
+de memória. Descubra o heap máximo que a JVM escolheu (\texttt{jcmd}
+ou \texttt{-XX:+PrintFlagsFinal}) e compare com o RSS sob carga. Repita
+com o executável nativo sem \texttt{-Xmx}. O que você passaria a
+configurar explicitamente?}

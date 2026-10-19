@@ -1,0 +1,71 @@
+\section{Reflexão e o que quebra no nativo}
+\label{sec:reflexao-nativo}
+
+No modo JVM, reflexão custa mais que uma chamada direta; no nativo,
+reflexão não declarada é um bug. A análise estática só enxerga o que é
+alcançável pelo código
+(seção~\ref{sec:gizmo}: \texttt{putfield} é visível, \texttt{Field.set}
+com um nome em string não é), e o que não foi alcançado não entra no
+binário. O \citetitle{doc:graalvm-compat} lista os recursos dinâmicos
+que exigem metadados no build.
+
+\subsection*{O que costuma quebrar}
+
+O guia \citetitle{doc:quarkus-native-tips} traz os casos típicos:
+\begin{description}
+\item[Serialização de classes não registradas] Com Jackson, o sintoma
+  citado é \texttt{No serializer found for class \ldots{} and no
+  properties discovered}; com JSON-B, o JSON pode sair completamente
+  vazio. O guia explica a regra geral: elementos usados via reflexão
+  \enquote{are not part of the call tree so they are dead code
+  eliminated}, a menos que sejam registrados.
+\item[Recursos não declarados] Arquivos do classpath que devem estar no
+  executável precisam ser configurados explicitamente; o caminho mais
+  fácil, segundo o guia, é \texttt{quarkus.native.resources.includes}.
+\item[Inicialização em build time] O guia afirma: \enquote{By default,
+  Quarkus initializes all classes at build time}. Junte isso à
+  seção~\ref{sec:augmentation}: o \texttt{<clinit>}
+  (seção~\ref{sec:class-loading}) roda na máquina de build, e os campos
+  \texttt{static} vão para o binário. Um \texttt{static final} que lê
+  uma variável de ambiente guarda o valor que ela tinha na máquina de
+  build. A saída é
+  \texttt{--initialize-at-run-time=<pacote ou classe>}.
+\item[Membros \texttt{private} em beans] O guia
+  \citetitle{doc:quarkus-cdi-reference} explica que acessá-los exige
+  reflexão, e reflexão exige registro (seção~\ref{sec:gizmo}).
+\item[Busca programática de beans] Um bean usado só via
+  \texttt{CDI.current()} pode ter sido removido no build
+  (seção~\ref{sec:jandex}).
+\end{description}
+
+\subsection*{Como registrar}
+
+\begin{itemize}
+\item \texttt{@RegisterForReflection} na classe (ou numa classe de
+  configuração, com \texttt{targets}, quando a classe é de uma
+  biblioteca). O guia avisa que, por padrão, a anotação registra também
+  classes aninhadas.
+\item Um arquivo \texttt{reflect-config.json} passado ao
+  \texttt{native-image} via \texttt{quarkus.native.additional-build-args},
+  para casos que a anotação não cobre.
+\item Dentro de extensões, build items como \texttt{ReflectiveClassBuildItem}
+  (guia \citetitle{doc:quarkus-writing-extensions}). É por isso que
+  bibliotecas com extensão Quarkus \enquote{simplesmente funcionam} no
+  nativo: alguém já escreveu esse registro.
+\end{itemize}
+
+\subsection*{A decisão}
+
+\begin{description}
+\item[Quando aceitar reflexão] Modo JVM, código de borda pouco
+  executado, biblioteca madura sem alternativa. Meça antes de otimizar.
+\item[Quando eliminar reflexão] Alvo nativo, caminho quente, ou quando
+  existe uma extensão Quarkus para a biblioteca. Prefira injeção pelo
+  construtor e campos \emph{package-private}, e escolha bibliotecas com
+  extensão.
+\item[O que medir] Rode a suíte de \texttt{@QuarkusIntegrationTest}
+  contra o executável nativo no CI (seção~\ref{sec:testes-camadas}):
+  é o único teste que mostra reflexão faltando. No modo JVM, o JFR e um
+  profiler (seção~\ref{sec:ferramentas}) mostram se
+  \texttt{Method.invoke} ou \texttt{Field.get} aparece no caminho quente.
+\end{description}

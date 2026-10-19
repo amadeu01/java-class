@@ -1,0 +1,48 @@
+\section{Observabilidade sem sujar o domínio}
+\label{sec:observabilidade-quarkus}
+
+Observabilidade é outro detalhe técnico: a regra de fechar pedido não
+muda porque alguém quer um gráfico. As três peças abaixo entram por
+extensão e ficam nos adaptadores e em \texttt{config}.
+
+\paragraph{Health checks.}
+O guia \citetitle{doc:quarkus-health} expõe \texttt{/q/health/live}
+(\enquote{The application is up and running}),
+\texttt{/q/health/ready} (pronta para atender), \texttt{/q/health/started}
+e \texttt{/q/health}, que agrega todos. Um check é um bean que implementa
+\texttt{HealthCheck} anotado com \texttt{@Liveness} ou \texttt{@Readiness}.
+Extensões registram checks sozinhas: o guia cita a
+\texttt{quarkus-agroal}, que registra um readiness check para cada
+datasource. Coloque checks próprios em \texttt{adaptador} (por exemplo,
+\texttt{adaptador.saida.cobranca.CobrancaHealth}), perto do recurso que
+eles verificam.
+
+Liveness e readiness respondem a perguntas diferentes, e confundi-las
+custa caro num orquestrador: um liveness que depende do banco faz o
+container ser reiniciado quando o banco cai, o que não conserta o
+banco. Use dependências externas no readiness.
+
+\paragraph{Métricas.}
+O guia \citetitle{doc:quarkus-micrometer} diz que \enquote{Micrometer is
+the recommended approach to metrics for Quarkus}; com a extensão
+\texttt{micrometer-registry-prometheus}, as métricas saem em
+\texttt{/q/metrics}. As anotações \texttt{@Timed} e \texttt{@Counted}
+funcionam em métodos de beans. Ponha-as no resource ou no adaptador;
+se uma métrica for de negócio (pedidos fechados por hora), publique um
+evento de domínio e conte-o num adaptador, em vez de importar Micrometer
+em \texttt{dominio}.
+
+\paragraph{Traces.}
+O guia \citetitle{doc:quarkus-opentelemetry} diz que, com a dependência
+adicionada, a extensão gera dados de tracing por padrão e os exporta em
+lote por OTLP/gRPC para \texttt{http://localhost:4317}. Métricas e logs
+via OpenTelemetry são \emph{tech preview} e vêm desligados; ligam-se em
+build time com \texttt{quarkus.otel.metrics.enabled=true} e
+\texttt{quarkus.otel.logs.enabled=true}.
+
+\paragraph{E a JVM?}
+Essas três peças mostram a aplicação. Para ver a JVM (pausas de GC,
+alocação, pinning de virtual threads, compilação), as ferramentas são as
+da seção~\ref{sec:ferramentas}: JFR, \texttt{jcmd} e JMC. Os dois níveis
+se completam: o trace mostra \emph{qual} requisição ficou lenta; o JFR
+mostra \emph{por quê}, por exemplo uma pausa de GC no mesmo instante.

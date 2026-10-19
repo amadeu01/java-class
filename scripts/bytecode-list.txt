@@ -12,3 +12,4 @@ SealedForma -c -p
 PoolConstantes -v -p
 ThreadsVirtuais -c -p
 SealedForma$Forma -v
+InjecaoSemReflexao -c -p

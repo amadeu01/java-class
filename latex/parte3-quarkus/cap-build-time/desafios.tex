@@ -1,0 +1,23 @@
+\section{Desafios práticos}
+
+\desafio{Num projeto Quarkus com um endpoint REST e um bean
+\texttt{@ApplicationScoped}, rode o build de produção com
+\texttt{-Dquarkus.debug.generated-classes-dir=target/gerado}. Encontre a
+classe gerada para o seu bean e leia-a com \texttt{javap -c -p}. Que
+instruções aparecem onde você esperaria reflexão?}
+
+\desafio{Ative \texttt{-Dquarkus.debug.print-startup-times=true} e
+anote os cinco build steps mais lentos. Remova uma extensão que você não
+usa e compare. O que mudou no build e o que mudou no tempo até a
+primeira requisição?}
+
+\desafio{Mova uma classe com \texttt{@ApplicationScoped} para um módulo
+Maven separado, sem \texttt{beans.xml} e sem índice Jandex. O que
+acontece na injeção? Conserte de duas formas diferentes, usando as
+fontes do índice listadas na seção~\ref{sec:jandex}, e explique qual
+você usaria num time.}
+
+\desafio{Troque, num bean seu, a injeção por campo \texttt{private} por
+injeção pelo construtor. Usando a listagem da seção~\ref{sec:gizmo},
+explique a um colega por que essa mudança importa mais no executável
+nativo do que no modo JVM.}

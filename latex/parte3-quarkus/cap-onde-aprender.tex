@@ -1,0 +1,72 @@
+\chapter{Onde aprender mais sobre Quarkus}
+\label{cap:onde-aprender}
+
+\proximasaulas
+
+A documentação do Quarkus muda a cada versão, e os livros envelhecem
+mais rápido que os de Java. A ordem sugerida: guias oficiais primeiro
+(sempre na versão que você usa), livros para a visão de conjunto e o
+Quarkus Insights para acompanhar o que está mudando.
+
+\section{Guias oficiais}
+
+Os guias citados nesta Parte, agrupados por assunto:
+\begin{description}
+\item[Build time] \citetitle{doc:quarkus-writing-extensions},
+  \citetitle{doc:quarkus-cdi-reference},
+  \citetitle{doc:quarkus-class-loading}.
+\item[Arquitetura] \citetitle{doc:quarkus-cdi},
+  \citetitle{doc:quarkus-rest}, \citetitle{doc:quarkus-panache},
+  \citetitle{doc:quarkus-config-mappings}.
+\item[Testes e operação] \citetitle{doc:quarkus-testing},
+  \citetitle{doc:quarkus-dev-services},
+  \citetitle{doc:quarkus-fault-tolerance},
+  \citetitle{doc:quarkus-health}, \citetitle{doc:quarkus-micrometer},
+  \citetitle{doc:quarkus-opentelemetry}.
+\item[Decisões] \citetitle{doc:quarkus-building-native},
+  \citetitle{doc:quarkus-native-tips},
+  \citetitle{doc:quarkus-performance-measure},
+  \citetitle{doc:quarkus-virtual-threads},
+  \citetitle{doc:quarkus-reactive-architecture}.
+\end{description}
+
+Para quem quer entender o porquê do projeto, a página
+\citetitle{doc:quarkus-container-first} resume a filosofia em poucas
+linhas.
+
+\section{Livros}
+
+\small
+\begin{longtable}{@{}p{4.6cm} p{3cm} p{4.6cm}@{}}
+\toprule
+Livro & Autor(es), ano & Por que ler \\
+\midrule \endhead
+\citetitle{livro:stefanko2025} & \citeauthor{livro:stefanko2025},
+  \citeyear{livro:stefanko2025} & O mais recente da lista; visão de
+  conjunto do desenvolvimento com Quarkus \\
+\citetitle{livro:clingan2021} & \citeauthor{livro:clingan2021},
+  \citeyear{livro:clingan2021} & Microsserviços com Quarkus e as APIs do
+  MicroProfile em Kubernetes \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Os dois são da Manning, em inglês; não encontramos edição em português.
+Confira a versão do Quarkus usada em cada um antes de copiar
+configuração: o livro de 2021 é anterior às virtual threads finais do
+JDK~21 (\citetitle{doc:jep444}, 2023), e a página da editora do livro de 2025 não
+informa a versão coberta.
+
+\section{Vídeos}
+
+O \citetitle{video:quarkus-insights} é um podcast em vídeo semanal,
+apresentado por desenvolvedores do Quarkus, sobre o que está mudando no
+projeto e no ecossistema. Os episódios ficam no canal do Quarkus no
+YouTube, linkado na página.
+
+\section{Desafio prático}
+
+\desafio{Escolha um guia oficial desta lista que você ainda não leu.
+Leia na versão do Quarkus do seu projeto e escreva, em cinco linhas, uma
+coisa que você faria diferente no seu serviço a partir dele, com o
+trecho do guia que justifica.}

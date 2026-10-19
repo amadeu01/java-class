@@ -1,0 +1,27 @@
+\chapter{Arquitetar uma aplicação Quarkus}
+\label{cap:arquitetura-quarkus}
+
+\proximasaulas
+
+A seção sobre \emph{Clean Architecture} do capítulo~\ref{cap:profissional}
+terminou com uma leitura da Dependency Rule para Quarkus: anotações de
+framework nos adaptadores, regras de negócio em classes comuns. Este
+capítulo transforma isso num projeto concreto, com nomes de pacotes,
+e mostra onde ficam REST, Panache, configuração, testes, resiliência e
+observabilidade.
+
+O exemplo é um serviço de pedidos, com raiz no pacote
+\texttt{br.com.turma.pedidos}. As listagens são esqueletos ilustrativos,
+escritos para este capítulo; não estão em \texttt{examples/} e não
+foram compilados contra uma versão específica do Quarkus. A divisão em
+pacotes é uma aplicação do livro de Martin e do artigo de Cockburn, não
+uma regra do Quarkus, que não impõe estrutura nenhuma.
+
+\input{parte3-quarkus/cap-arquitetura/clean-architecture}
+\input{parte3-quarkus/cap-arquitetura/hexagonal-cdi}
+\input{parte3-quarkus/cap-arquitetura/panache-rest}
+\input{parte3-quarkus/cap-arquitetura/testes}
+\input{parte3-quarkus/cap-arquitetura/resiliencia}
+\input{parte3-quarkus/cap-arquitetura/observabilidade}
+\input{parte3-quarkus/cap-arquitetura/aprofundar}
+\input{parte3-quarkus/cap-arquitetura/desafios}

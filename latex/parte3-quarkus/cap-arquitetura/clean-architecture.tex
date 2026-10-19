@@ -1,0 +1,69 @@
+\section{Os círculos da Clean Architecture em pacotes Quarkus}
+\label{sec:circulos-quarkus}
+
+O capítulo~22 do \citetitle{livro:martin2017} desenha quatro círculos
+concêntricos e uma regra: as dependências de código-fonte só apontam
+para dentro. O círculo de dentro não sabe o nome de nada que está fora
+dele, nem de classes, nem de funções, nem de frameworks. A tabela mapeia
+cada círculo para pacotes e construções do Quarkus.
+
+\small
+\begin{longtable}{@{}p{2.4cm} p{4.4cm} p{5.4cm}@{}}
+\toprule
+Círculo & Pacote & O que tem e o que pode importar \\
+\midrule \endhead
+\emph{Entities} & \texttt{\ldots pedidos.dominio} & Records e classes
+  com as regras de negócio (\texttt{Pedido}, \texttt{ItemPedido},
+  \texttt{Dinheiro}). Só importa \texttt{java.*}. Nada de Jakarta, nada
+  de Quarkus \\
+\emph{Use Cases} & \texttt{\ldots pedidos.aplicacao} e
+  \texttt{\ldots aplicacao.porta} & Casos de uso (\texttt{FecharPedido})
+  e as \emph{portas}: interfaces que o caso de uso precisa
+  (\texttt{Pedidos}, \texttt{CobrancaGateway}). Importa só
+  \texttt{dominio} \\
+\emph{Interface Adapters} & \texttt{\ldots adaptador.\allowbreak entrada.\allowbreak rest},
+  \texttt{\ldots adaptador.\allowbreak saida.\allowbreak persistencia},
+  \texttt{\ldots adaptador.\allowbreak saida.\allowbreak cobranca} & Resources REST (\texttt{@Path}),
+  repositórios Panache e entidades JPA, clientes REST. Implementam as
+  portas e convertem entre o modelo externo e o domínio \\
+\emph{Frameworks \& Drivers} & \texttt{\ldots config} e o próprio
+  Quarkus & \texttt{application.properties}, \texttt{@ConfigMapping},
+  producers CDI que montam os casos de uso, extensões, banco, Vert.x \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Onde ficam as extensões.}
+Extensões Quarkus são dependências de build, não pacotes seus: entram no
+\texttt{pom.xml} e aparecem no código só nos adaptadores e em
+\texttt{config}. Uma forma de conferir é olhar os \texttt{import} de
+\texttt{dominio} e \texttt{aplicacao}: se aparecer \texttt{io.quarkus},
+\texttt{jakarta.persistence} ou \texttt{jakarta.ws.rs}, a regra foi
+quebrada.
+
+\paragraph{E a injeção de dependência?}
+A pergunta honesta é se \texttt{@ApplicationScoped} e \texttt{@Inject}
+podem aparecer em \texttt{aplicacao}. São anotações da especificação
+Jakarta (\texttt{jakarta.enterprise.context}, \texttt{jakarta.inject}),
+não do Quarkus, e não mudam o comportamento da classe num teste JUnit
+puro. Há duas escolhas defensáveis, e a seção seguinte mostra as duas:
+\begin{description}
+\item[Caso de uso anotado] Mais simples; aceita uma dependência fraca de
+  uma especificação estável.
+\item[Caso de uso sem anotação, criado por um producer em \texttt{config}]
+  Mantém \texttt{aplicacao} com zero dependências externas, ao custo de
+  um arquivo a mais. Lembre da seção~\ref{sec:jandex}: classe sem
+  \emph{bean defining annotation} não é descoberta, então o producer é
+  obrigatório.
+\end{description}
+
+O que não é defensável é deixar o domínio depender do framework para
+existir: uma entidade de domínio que só funciona dentro de uma transação
+JPA, ou uma regra de negócio que lê \texttt{ConfigProvider} diretamente.
+
+\paragraph{Configuração como detalhe.}
+O guia \citetitle{doc:quarkus-config-mappings} mostra o
+\texttt{@ConfigMapping}: uma interface pública cujos métodos viram
+propriedades a partir de um prefixo. Ela fica em \texttt{config}; o caso
+de uso recebe só os valores de que precisa (um \texttt{Duration}, um
+limite), pelo construtor, sem saber de onde vieram.

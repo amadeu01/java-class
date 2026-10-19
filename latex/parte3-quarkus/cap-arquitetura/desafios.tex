@@ -1,0 +1,26 @@
+\section{Desafios práticos}
+
+\desafio{Pegue um serviço Quarkus que você já tem e liste os
+\texttt{import} de cada pacote. Desenhe as setas de dependência entre
+pacotes. Alguma aponta para fora, do domínio para o framework? Proponha
+a menor mudança que inverte essa seta.}
+
+\desafio{Implemente o caso de uso \texttt{FecharPedido} da
+seção~\ref{sec:hexagonal-cdi} em TDD, com um fake em memória da porta
+\texttt{Pedidos}, sem nenhuma dependência do Quarkus no módulo. Quanto
+tempo leva a suíte? Compare com a mesma regra testada por
+\texttt{@QuarkusTest}.}
+
+\desafio{Escreva a mesma entidade nos dois estilos do Panache (active
+record e repository). Para cada um, responda: onde fica a regra de
+negócio, como se testa sem banco e o que muda se amanhã a persistência
+for um serviço HTTP em vez de um banco.}
+
+\desafio{No adaptador de cobrança, configure \texttt{@Timeout} e
+\texttt{@CircuitBreaker} e use o Toxiproxy (aula~2) para injetar
+latência. Verifique no trace do OpenTelemetry e nas métricas do
+Micrometer o que o usuário viu enquanto o circuito estava aberto.}
+
+\desafio{Escreva um readiness check para a cobrança e decida, com
+argumentos, se ele deve também ser liveness. O que o orquestrador faria
+em cada caso quando a cobrança cai?}

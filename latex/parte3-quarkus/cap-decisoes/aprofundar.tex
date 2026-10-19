@@ -1,0 +1,31 @@
+\section{Onde aprofundar}
+
+\subsection*{Documentação}
+\small
+\begin{longtable}{@{}p{5cm} p{7.2cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\citetitle{doc:quarkus-building-native} & Como gerar o executável,
+  Mandrel e GraalVM, e a comparação JVM/Leyden/nativo \\
+\citetitle{doc:quarkus-performance-measure} & Como medir RSS e tempo até
+  a primeira requisição sem se enganar \\
+\citetitle{doc:graalvm-native-basics} e \citetitle{doc:graalvm-compat}
+  & Mundo fechado, inicialização em build time e o que exige metadados \\
+\citetitle{doc:quarkus-native-tips} & Registro de reflexão, recursos e
+  inicialização em runtime \\
+\citetitle{doc:graalvm-memory} & GCs e tamanho de heap no nativo \\
+\citetitle{doc:quarkus-virtual-threads} e
+  \citetitle{doc:quarkus-reactive-architecture} & Os três modelos de
+  execução e as limitações de virtual threads \\
+\citetitle{doc:java-cmd} e \citetitle{doc:gc-collectors} & Opções de
+  memória e coletores da HotSpot no JDK~25 \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Ferramentas e dados}
+\citetitle{doc:quarkus-perf-comparison} (a aplicação e os scripts do
+benchmark) e \citetitle{doc:quarkus-benchmarks} (os resultados e
+gráficos). Para medir na sua máquina: JFR, \texttt{jcmd} e
+async-profiler (seção~\ref{sec:ferramentas}).

@@ -1,0 +1,59 @@
+\section{Testes por camada}
+\label{sec:testes-camadas}
+
+A arquitetura acima existe, em boa parte, para tornar os testes da
+Parte~I baratos. O capítulo~\ref{cap:ponte-quarkus} apresentou
+\texttt{@QuarkusTest}, \texttt{@QuarkusIntegrationTest} e Dev Services;
+aqui a pergunta é \emph{onde} usar cada um.
+
+\small
+\begin{longtable}{@{}p{3cm} p{4.2cm} p{5cm}@{}}
+\toprule
+Camada & Tipo de teste & Por quê \\
+\midrule \endhead
+\texttt{dominio} & JUnit puro, rápido, muitos & Sem framework, sem
+  container; o ciclo de TDD da aula~1 roda em milissegundos \\
+\texttt{aplicacao} & JUnit puro com fakes das portas & As portas são
+  interfaces suas; um \texttt{Pedidos} em memória substitui o banco \\
+\texttt{adaptador.\allowbreak saida.*} & \texttt{@QuarkusTest} com Dev Services &
+  O que importa é o SQL, o mapeamento e a configuração reais \\
+\texttt{adaptador.\allowbreak entrada.\allowbreak rest} & \texttt{@QuarkusTest} pela API HTTP,
+  com o caso de uso substituído quando convém & Serialização, códigos de
+  status e validação \\
+Artefato final & \texttt{@QuarkusIntegrationTest} & Caixa preta contra o
+  JAR ou o executável nativo produzido pelo build \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Substituir um bean num \texttt{@QuarkusTest}.}
+O guia \citetitle{doc:quarkus-testing} mostra o \texttt{@InjectMock},
+disponível com a dependência \texttt{quarkus-junit-mockito}, e o
+\texttt{QuarkusMock}, com \texttt{installMockForType} para instalar um
+mock antes dos testes. Na arquitetura hexagonal, o candidato natural a
+mock é uma porta (\texttt{CobrancaGateway}), nunca uma classe de
+domínio.
+
+\paragraph{Cuidado com o custo de subir o Quarkus.}
+O mesmo guia diz que, nos exemplos dele, o Quarkus sobe uma vez para
+todos os testes. Um teste com \texttt{@TestProfile} diferente do anterior
+faz o Quarkus ser desligado e iniciado de novo com o novo perfil. Agrupe
+os testes por perfil e prefira poucos perfis: cada um soma uma subida ao
+tempo da suíte.
+
+\paragraph{Dev Services e o modo nativo.}
+Os Dev Services (\citetitle{doc:quarkus-dev-services}) sobem banco e
+outros serviços com Testcontainers quando nada foi configurado, nos
+modos de desenvolvimento e teste. O guia de testes diz que o
+\texttt{@QuarkusIntegrationTest} funciona com contêineres iniciados por
+Dev Services, o que permite rodar os mesmos testes de caixa preta contra
+o executável nativo no CI. É o teste que pega os problemas da
+seção~\ref{sec:reflexao-nativo}: reflexão não registrada só aparece no
+binário nativo.
+
+\paragraph{Mutação.}
+O PIT (aula~2) brilha em \texttt{dominio} e \texttt{aplicacao}, onde os
+testes são rápidos e o código não depende do Quarkus. A integração do
+PIT com \texttt{@QuarkusTest} continua não verificada
+(capítulo~\ref{cap:ponte-quarkus}); manter as regras fora do framework
+evita depender dela.

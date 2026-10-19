@@ -1,0 +1,78 @@
+\section{Virtual threads, reativo ou worker threads}
+\label{sec:vt-vs-reativo}
+
+Por baixo, o Quarkus tem um motor reativo: o guia
+\citetitle{doc:quarkus-reactive-architecture} diz que ele é baseado no
+Eclipse Vert.x e no Netty e cuida do I/O não bloqueante, com poucas
+threads de I/O (\termo{event loop}{Laço de eventos: thread que atende
+muitas conexões alternando entre elas sem bloquear; se ela bloqueia,
+todas as conexões que ela atende param.}) que atendem muitas conexões
+e por isso precisam ser usadas com cuidado. Sobre esse motor, o guia
+\citetitle{doc:quarkus-virtual-threads} compara três modelos que podem
+conviver na mesma aplicação:
+
+\small
+\begin{longtable}{@{}p{3.6cm} p{4.2cm} p{4.4cm}@{}}
+\toprule
+Modelo & Vantagem & Custo, segundo o guia \\
+\midrule \endhead
+Código síncrono em \emph{worker thread} & Código simples & A
+  concorrência fica limitada pelo número de workers \\
+Código reativo no event loop (\texttt{Uni}, \texttt{Multi}) & Alta
+  concorrência e pouco uso de recursos & Código mais complexo \\
+Código síncrono em virtual thread (\texttt{@RunOn\-Virtual\-Thread}) &
+  Código simples & Risco de \emph{pinning}, monopolização e pool de
+  objetos ineficiente \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{O que a Parte~II já explicou.}
+A seção~\ref{sec:virtual-threads} mostrou que virtual threads servem para
+escala em I/O, não para velocidade; que o pinning em
+\texttt{synchronized} acabou no JDK~24 (o guia do Quarkus confirma: em
+Java~24+, \texttt{synchronized} \enquote{no longer cause pinning}); e
+que pool via \texttt{ThreadLocal} é contraproducente. O guia acrescenta
+três pontos do ponto de vista do Quarkus:
+\begin{itemize}
+\item \texttt{@RunOnVirtualThread} só vale em endpoints bloqueantes, por
+  \texttt{@Blocking} ou pela assinatura (seção~\ref{sec:panache-rest});
+  um método que devolve \texttt{Uni} já roda no event loop.
+\item Monopolização: o escalonador atual não preempta tarefas, então uma
+  computação longa segura a carrier; o guia avisa que, em ambiente
+  restrito, isso pode levar a falta de memória e ao container ser
+  encerrado. Para trabalho de CPU, o guia chama virtual threads de
+  \enquote{useless and counterproductive}.
+\item O ecossistema Java ainda não está todo pronto. Drivers JDBC do
+  PostgreSQL anteriores ao 42.6.0 causam pinning frequente em Java~21 a
+  23; em Java~24+, a maioria dos drivers JDBC não prende mais a carrier.
+  Clientes Vert.x com Mutiny oferecem métodos \texttt{andAwait()} que
+  bloqueiam sem prender a carrier.
+\end{itemize}
+
+\subsection*{A decisão}
+
+\begin{description}
+\item[Quando escolher virtual threads] Serviço de I/O com muitas
+  requisições concorrentes que esperam banco ou HTTP, time confortável
+  com código imperativo, JDK~24 ou mais novo (ou JDK~21 com as
+  bibliotecas conferidas para pinning). É o caminho de menor mudança a
+  partir de um serviço bloqueante.
+\item[Quando escolher reativo] Streaming, muitas conexões longas
+  (WebSocket, SSE), composição de várias chamadas assíncronas, ou quando
+  as bibliotecas que você usa já são reativas. Exige que o time saiba não
+  bloquear o event loop.
+\item[Quando ficar nas worker threads] Concorrência moderada e
+  previsível, código legado com \texttt{ThreadLocal} pesado, ou trabalho
+  de CPU. O limite de workers funciona como proteção natural.
+\item[O que medir] Sob o teste de carga da Parte~I: p99 e throughput
+  nos três modelos, número de threads de plataforma e RSS. Com JFR
+  (seção~\ref{sec:ferramentas}), o evento \texttt{jdk.VirtualThreadPinned}
+  mostra pinning residual. Monitore também as conexões do pool do banco:
+  virtual threads não criam conexões, e milhares de requisições
+  concorrentes passam a disputar as mesmas poucas.
+\end{description}
+
+O repositório \citetitle{doc:quarkus-perf-comparison} tem uma variante
+\texttt{quarkus3-virtual} da mesma aplicação, um bom ponto de partida
+para comparar os modelos com números do seu hardware.
