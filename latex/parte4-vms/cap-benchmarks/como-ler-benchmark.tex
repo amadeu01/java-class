@@ -1,0 +1,68 @@
+\section{Como ler um benchmark}
+\label{sec:como-ler-benchmark}
+
+\paragraph{O \enquote{melhor de N} engana.}
+\textcite{paper:statistically-rigorous-java-perf} partem de uma
+observação: o tempo de um programa Java varia de execução para execução,
+por causa do JIT (guiado por amostragem de métodos por tempo), do
+escalonamento de threads, do GC e do sistema. Mesmo assim, muitos
+trabalhos relatavam a média, o melhor ou o segundo melhor de várias
+execuções, sem estatística. O exemplo do paper usa a Jikes RVM com cinco
+coletores no benchmark \texttt{db} do SPECjvm98: pelo melhor de 30
+execuções, CopyMS e GenCopy parecem empatados e SemiSpace parece
+claramente melhor que GenCopy; com intervalos de confiança de 95\%,
+GenCopy é significativamente melhor que CopyMS, e a diferença entre
+SemiSpace e GenCopy pode ser só ruído. O \enquote{melhor de N} relata a execução de
+sorte.
+
+\paragraph{Startup e steady state são perguntas diferentes.}
+O mesmo paper recomenda medir os dois separadamente:
+\begin{description}
+\item[Startup] várias medições, cada uma com uma invocação nova da VM e
+  uma única iteração do benchmark; intervalo de confiança entre elas.
+\item[Steady state] várias invocações da VM, cada uma com várias
+  iterações; dentro de cada invocação, só as iterações depois do
+  aquecimento; intervalo de confiança entre invocações.
+\end{description}
+É a mesma divisão da seção~\ref{sec:jvm-vs-nativo}: \emph{time to first
+request} é startup, throughput de pico é steady state. Um número sem
+dizer qual dos dois mede não diz nada.
+
+\paragraph{Steady state pode não existir.}
+\textcite{paper:vm-warmup-hot-cold} testaram a premissa de que, depois do
+aquecimento, toda VM chega a um patamar de desempenho de pico. Com
+análise de \emph{changepoints}, em três máquinas e em VMs que incluem
+HotSpot~8u112b15, Graal~0.18, PyPy, V8 e LuaJIT, encontraram que
+\enquote{at most 43.5\% of <VM, Benchmark> pairs consistently reach a
+steady state of peak performance}. Alguns benchmarks ficam mais
+\emph{lentos} com o tempo. Descartar as primeiras iterações como
+\enquote{aquecimento} e tirar a média do resto pode esconder isso.
+
+\paragraph{A carga precisa parecer com a sua.}
+O DaCapo nasceu para trocar microbenchmarks por aplicações reais
+\parencite{paper:dacapo}; a versão atual, Chopin, pede que se cite a
+versão exata usada (\citetitle{doc:dacapo}) e tem paper próprio
+\parencite{paper:dacapo-chopin}. O Renaissance
+\parencite{paper:renaissance} foi criado porque as suítes anteriores
+não exercitavam concorrência e programação funcional modernas (Spark,
+Akka, streams), e os autores mostram que otimizações invisíveis no DaCapo
+aparecem no Renaissance. Um benchmark de JSON em memória não diz nada
+sobre o seu serviço que passa 80\% do tempo esperando o banco.
+
+\paragraph{Checklist para qualquer número.}
+\begin{enumerate}
+\item \emph{Quem mediu?} Fornecedor, concorrente ou terceiro. Número de
+  fornecedor não é falso, mas foi escolhido por quem vende.
+\item \emph{Quando, e com que versões?} JDK, framework, VM, sistema.
+  Número de 2019 descreve uma VM de 2019.
+\item \emph{Em que máquina?} Núcleos, memória, rede, se a aplicação
+  dividia a máquina com o gerador de carga.
+\item \emph{Mede startup ou steady state?} E, se for steady state, como
+  decidiu que chegou lá?
+\item \emph{Quantas execuções, e qual a variação?} Sem intervalo de
+  confiança ou dispersão, uma diferença de 5\% pode ser ruído.
+\item \emph{O que ficou de fora?} Benchmarks excluídos, testes em que o
+  sistema perde, configurações ajustadas só de um lado.
+\item \emph{A carga parece com a minha?} Se não, use o número para ter
+  ordem de grandeza e meça o seu (Parte~I).
+\end{enumerate}

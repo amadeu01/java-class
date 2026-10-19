@@ -1,0 +1,46 @@
+\section{Onde aprofundar}
+
+\subsection*{Livros e teses}
+\small
+\begin{longtable}{@{}p{5.2cm} p{7cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\citetitle{doc:beam-book} (Stenman, aberto, CC BY 4.0) & A BEAM por
+  dentro: processos, escalonamento por reductions, GC, carga de código \\
+\citetitle{paper:armstrong-thesis-reliable-systems} (Armstrong, KTH,
+  2003) & A filosofia do Erlang/OTP; leia os capítulos~2 e~4 \\
+\citetitle{livro:cesarini2016} (Cesarini e Vinoski, 2016) & Supervisão,
+  \emph{behaviours} e confiabilidade em sistemas OTP reais \\
+\citetitle{paper:history-of-erlang} (Armstrong, HOPL~III, 2007) & A
+  história do Erlang contada pelo criador \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Documentação}
+\small
+\begin{longtable}{@{}p{5.2cm} p{7cm}@{}}
+\toprule
+Fonte & Para quê \\
+\midrule \endhead
+\citetitle{doc:erlang-processes}, \citetitle{doc:erlang-eff-processes}
+  & Processos, sinais, links e custo de memória \\
+\citetitle{doc:erlang-gc} & O coletor por processo e os binários
+  grandes \\
+\citetitle{doc:erlang-supervisor} & Estratégias de reinício e limite de
+  intensidade \\
+\citetitle{doc:erlang-code-loading} & As duas versões de um módulo \\
+\citetitle{doc:erlang-beamasm} & Como funciona o JIT da BEAM \\
+\citetitle{doc:graalvm-compiler}, \citetitle{doc:truffle} & O Graal como
+  JIT e como base do Truffle \\
+\citetitle{doc:jep505} & Concorrência estruturada no Java, inspirada em
+  parte nos supervisores do Erlang \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{Papers}
+\textcite{paper:truffle-partial-evaluation} e
+\textcite{paper:native-image-initialize-once} explicam, com dados, os
+dois modos da GraalVM que este capítulo resumiu.

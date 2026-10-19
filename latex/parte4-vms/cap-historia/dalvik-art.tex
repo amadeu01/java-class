@@ -1,0 +1,49 @@
+\section{Dalvik e ART: registradores, AOT e JIT}
+\label{sec:hist-dalvik}
+
+\paragraph{Dalvik: uma VM de registradores para Java.}
+O Android usa Java como linguagem, mas não roda uma JVM: o runtime
+executa bytecode no formato DEX (\citetitle{doc:android-art}).
+A especificação diz: \enquote{The machine is
+register-based, and frames are fixed in size upon creation}; cada frame
+tem um número fixo de registradores de 32~bits, valores de 64~bits usam
+pares, e o desenho tenta \enquote{approximately imitate common real
+architectures and C-style calling conventions}
+(\citetitle{doc:android-dalvik-bytecode}).
+
+\paragraph{Pilha ou registradores?}
+\textcite{paper:vm-showdown} mediram a troca que o Dalvik fez. Eles
+traduziram bytecode JVM de pilha para um formato de registradores dentro
+de uma JVM interpretada (Sun J2ME CDC~1.0), com SPECjvm98 e Java Grande.
+Resultado, medido pelos autores (Trinity College Dublin e TU Wien, 2005):
+a versão de registradores executa, em média, mais de 47\% menos
+instruções da VM, com bytecode cerca de 25\% maior; num Pentium~4, roda
+em média 32,3\% mais rápido com despacho por \texttt{switch} em C e cerca
+de 26,5\% com \emph{threaded dispatch}. Note o que foi medido: um
+\emph{interpretador}. Num JIT, o bytecode é só a entrada do compilador,
+que gera código para os registradores da máquina real; o C2, por
+exemplo, faz alocação de registradores por coloração de grafos
+\parencite{paper:hotspot-server-compiler}. A vantagem medida vale para a
+fase interpretada, não para o código quente.
+
+\paragraph{ART: AOT na instalação, JIT com perfil.}
+O sucessor do Dalvik é o ART. A documentação diz que \enquote{ART and
+Dalvik are compatible runtimes running DEX bytecode} e que, na
+instalação, o ART compila os apps com a ferramenta \texttt{dex2oat}; o GC
+é descrito como majoritariamente concorrente, com uma só pausa
+(\citetitle{doc:android-art}). O ART também tem um JIT
+\enquote{with code profiling}: um método pode estar interpretado,
+compilado pelo JIT ou compilado AOT, e um daemon usa o perfil coletado
+pelo JIT para guiar a compilação AOT, o que a documentação chama de
+\emph{profile-guided compilation} (\citetitle{doc:android-art-jit}).
+
+\paragraph{O que isso explica na JVM.}
+\begin{itemize}
+\item Que o bytecode de pilha da JVM é um formato de distribuição, não
+  de execução: Dalvik e ART pegam o mesmo código Java e o executam em
+  outra forma.
+\item Que AOT e JIT não são rivais. O ART usa o perfil do JIT para
+  compilar antes; no OpenJDK, o Projeto Leyden vai na mesma direção com o
+  cache AOT da seção~\ref{sec:jvm-vs-nativo} e o perfil de métodos
+  antecipado do \citetitle{doc:jep515}.
+\end{itemize}

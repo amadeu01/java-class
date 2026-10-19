@@ -10,4 +10,10 @@ exclude = [
   '^https://netflixtechblog\.com/',
   '^https://netflixtechblog\.medium\.com/',
   '^https://techblog\.netflix\.com/',
+  # ACM Digital Library (e os DOIs 10.1145, que redirecionam para ela) e
+  # O'Reilly respondem 403 a acesso automatizado. Os metadados desses DOIs
+  # foram conferidos no registro do Crossref (api.crossref.org/works/<doi>).
+  '^https://doi\.org/10\.1145/',
+  '^https://dl\.acm\.org/',
+  '^https://www\.oreilly\.com/',
 ]

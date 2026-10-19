@@ -1,0 +1,34 @@
+\chapter{De onde vêm as ideias da JVM}
+\label{cap:historia-vms}
+
+\proximasaulas
+
+Bytecode de pilha, JIT, inline cache, desotimização, metadados ricos no
+arquivo de classe: quase nada disso nasceu com o Java. Este capítulo
+visita cinco sistemas, em ordem aproximada, e liga cada um a algo que a
+Parte~II mostrou na HotSpot de hoje. A ideia não é fazer arqueologia: é
+entender por que a JVM é como é, e o que ela poderia ter sido.
+
+\begin{description}
+\item[Pascal-P e o p-code] (anos~1970) Compilar para uma máquina que não
+  existe e portar só o interpretador.
+\item[Smalltalk-80] (1983) Uma VM especificada em livro, com bytecodes,
+  interpretador e memória de objetos.
+\item[Self] (1989--1994) O laboratório do JIT adaptativo, dos inline
+  caches polimórficos e da desotimização.
+\item[CLR] (anos~2000) A VM da Microsoft, que fez outra escolha para
+  generics.
+\item[Dalvik e ART] (Android) Uma VM de registradores e, depois, a mistura
+  de AOT com JIT.
+\end{description}
+
+Não incluímos um sistema quando não conseguimos uma fonte primária para
+ele; por isso a lista é curta.
+
+\input{parte4-vms/cap-historia/p-code}
+\input{parte4-vms/cap-historia/smalltalk}
+\input{parte4-vms/cap-historia/self-hotspot}
+\input{parte4-vms/cap-historia/clr}
+\input{parte4-vms/cap-historia/dalvik-art}
+\input{parte4-vms/cap-historia/aprofundar}
+\input{parte4-vms/cap-historia/desafios}

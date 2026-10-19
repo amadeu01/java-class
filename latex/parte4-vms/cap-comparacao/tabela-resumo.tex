@@ -1,0 +1,76 @@
+\section{Tabela-resumo}
+\label{sec:vms-tabela}
+
+A tabela junta as seções anteriores. Cada célula traz a fonte; onde não
+encontramos número publicado e comparável, a célula diz isso em vez de
+inventar um. Números de desempenho são do fornecedor e servem como ordem
+de grandeza (capítulo~\ref{cap:benchmarks}).
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{3.6cm}@{}}
+\toprule
+Eixo & HotSpot (JDK~25) & BEAM (OTP~29.1.2) & GraalVM (JIT e Native
+  Image) \\
+\midrule \endhead
+Modelo de concorrência & Threads de plataforma (do SO) e virtual
+  threads num \texttt{ForkJoinPool}, sem \emph{time sharing}; heap
+  compartilhado (\citetitle{doc:jep444}; \citetitle{doc:jvms25},
+  §2.5.3) & Processos leves, sem memória compartilhada, mensagens
+  copiadas para a mailbox; preempção por reductions
+  (\citetitle{doc:erlang-processes};
+  \citetitle{doc:erlang-eff-processes}; \citetitle{doc:beam-book}) &
+  O da HotSpot, na qual a GraalVM se baseia
+  (\citetitle{doc:graalvm-java}); no Native Image, as mesmas APIs Java
+  \\
+\addlinespace
+GC & Um heap para todas as threads; G1 padrão, ZGC, Parallel, Serial
+  (seção~\ref{sec:gc}; \citetitle{doc:gc-collectors}) & Por processo,
+  geracional por cópia (Cheney), mais espaço global de binários
+  contados por referência (\citetitle{doc:erlang-gc}) & JIT: os da
+  HotSpot. Native: Serial (padrão, \emph{stop and copy}); G1 só no
+  Oracle GraalVM em Linux; Epsilon (\citetitle{doc:graalvm-memory}) \\
+\addlinespace
+Tratamento de falha & Exceção não tratada termina a thread; o estado no
+  heap fica (\citetitle{doc:jls25}, §11.3); resiliência por bibliotecas
+  (seção~\ref{sec:resiliencia-quarkus}) & \emph{Let it crash}: links,
+  sinais de saída e árvores de supervisão com limite de reinícios
+  (\citetitle{paper:armstrong-thesis-reliable-systems};
+  \citetitle{doc:erlang-supervisor}) & Igual à HotSpot nos dois modos
+  (é a mesma linguagem) \\
+\addlinespace
+Carga de código & Class loading dinâmico
+  (seção~\ref{sec:class-loading}); redefinição só de corpos de métodos
+  (\citetitle{doc:jvmti25}) & Duas versões por módulo; chamada
+  qualificada migra para a nova; a terceira carga mata quem ficou na
+  mais antiga (\citetitle{doc:erlang-code-loading}) & JIT: como a
+  HotSpot. Native: mundo fechado, nada novo em runtime
+  (\citetitle{doc:graalvm-native-basics}) \\
+\addlinespace
+Compilação & Interpretador + C1/C2 com perfil, especulação e
+  desotimização (seção~\ref{sec:jit}; \citetitle{doc:hotspot-perf}) &
+  BeamAsm: tradução na carga, sem otimização entre instruções
+  (\citetitle{doc:erlang-beamasm}) & JIT: Graal, escrito em Java, com
+  \emph{partial escape analysis} (\citetitle{doc:graalvm-compiler}).
+  Native: AOT após análise de \emph{points-to}
+  (\citetitle{paper:native-image-initialize-once}) \\
+\addlinespace
+Startup e memória & Quarkus em modo JVM: 4417~ms até a 1ª requisição,
+  304~MiB de RSS. Perf-lab do Quarkus, 21/04/2026, Quarkus~3.34.3,
+  JDK~25.0.2 (fornecedor; seção~\ref{sec:jvm-vs-nativo}) & 327
+  palavras por processo novo (OTP~27, \citetitle{doc:erlang-eff-processes}).
+  Não achamos medição publicada de startup e RSS de um serviço
+  comparável ao do Quarkus & Native: 581~ms e 95~MiB na mesma medição
+  do Quarkus (fornecedor). O paper do Native Image fala em startup
+  \enquote{up to two orders of magnitude} melhor que a HotSpot (Oracle
+  Labs, fornecedor, 2019) \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Como ler a tabela.}
+A linha de startup é a única com números, e eles não se comparam entre
+colunas: a medição do Quarkus é de um serviço REST com banco, e as 327
+palavras da BEAM são o custo de \emph{um} processo, não de um serviço.
+O que a tabela mostra bem são as escolhas de projeto: a HotSpot aposta em
+heap compartilhado e JIT especulativo; a BEAM, em isolamento e troca a
+quente; o Native Image, em saber tudo no build.

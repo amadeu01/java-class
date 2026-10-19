@@ -1,0 +1,156 @@
+\chapter{Decisões: o que levar das outras VMs}
+\label{cap:decisoes-vm}
+
+\proximasaulas
+
+Os capítulos anteriores compararam VMs. Este fecha a Parte~IV com a
+pergunta prática: o que muda no código e na arquitetura de um serviço
+Java/Quarkus por causa disso? Mesmo formato da Parte~III
+(capítulo~\ref{cap:decisoes-quarkus}): quando escolher, o que medir, o
+que não vem junto.
+
+\section{Quando a BEAM seria a ferramenta melhor}
+
+Pelas propriedades vistas no capítulo~\ref{cap:comparacao-vms}, a BEAM
+leva vantagem de projeto quando o sistema tem estas características:
+\begin{itemize}
+\item \emph{Muitas atividades longas, independentes e com estado
+  próprio}: conexões, sessões, dispositivos. Um processo por atividade é
+  barato (327 palavras ao nascer) e o limite padrão passa de um milhão
+  por nó (seção~\ref{sec:vms-concorrencia}).
+\item \emph{Falha parcial como rotina}: o sistema precisa continuar
+  quando uma parte quebra. Foi o problema da tese de Armstrong, que cita
+  o AXD301 da Ericsson, com mais de um milhão de linhas de Erlang, como
+  \enquote{one of the most reliable products ever made by Ericsson}
+  (palavras do autor, no resumo da tese).
+\item \emph{Justiça de latência entre tarefas que misturam CPU e espera}:
+  a preempção por reductions impede que uma tarefa de CPU segure um
+  scheduler (com a exceção das NIFs).
+\item \emph{Atualizar sem derrubar conexões}: troca de módulo a quente,
+  com duas versões convivendo (seção~\ref{sec:vms-hot-code}).
+\end{itemize}
+Cada vantagem tem preço: mensagens copiadas, NIFs que bloqueiam
+schedulers, um JIT que traduz instrução por instrução, sem especular
+(seção~\ref{sec:vms-jit-aot}). Não encontramos benchmark publicado e
+rigoroso que compare BEAM e HotSpot num serviço como os da turma; por
+isso este capítulo não diz qual é \enquote{mais rápida}.
+
+\section{Por que não estamos nela}
+
+Porque a VM vem junto com linguagem, bibliotecas, ferramentas de
+diagnóstico e o que a equipe sabe operar. Os serviços da turma são Java
+com Quarkus, e a Parte~II mostrou o que se ganha conhecendo a HotSpot a
+fundo: JFR, \texttt{jcmd}, JIT, GC. E a JVM fechou parte da distância: o
+JEP~444 apresenta as virtual threads como o mesmo tipo de \emph{user-mode
+thread} que os processos do Erlang (seção~\ref{sec:vms-concorrencia}).
+O que a JVM não dá é o isolamento garantido pela VM. Esse você constrói
+com desenho, e é disso que trata a próxima seção.
+
+\section{O que trazer da BEAM para Java e Quarkus}
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}p{4.6cm}@{}}
+\toprule
+Na BEAM & Em Java/Quarkus & O que não vem junto \\
+\midrule \endhead
+Um processo por atividade & Uma virtual thread por tarefa, sem pool
+  (seção~\ref{sec:virtual-threads}) & Heap compartilhado; sem preempção
+  por tempo \\
+\addlinespace
+Nada compartilhado; mensagens copiadas & \texttt{record}s imutáveis,
+  nenhum estado mutável \texttt{static}, eventos entre componentes &
+  A VM não impede compartilhar: é disciplina de código e de revisão \\
+\addlinespace
+\emph{Let it crash} & Tratar só a exceção prevista; o resto sobe até a
+  borda e a requisição falha inteira & O estado que a thread já alterou
+  no heap continua lá \\
+\addlinespace
+Supervisor e árvore de supervisão & \texttt{StructuredTaskScope}
+  (\citetitle{doc:jep505}, prévia no JDK~25); \emph{liveness probe} e
+  reinício do container (\citetitle{doc:k8s-probes}) & A API é prévia;
+  o reinício pelo Kubernetes é do container inteiro \\
+\addlinespace
+Limite de reinícios do supervisor & Circuit breaker
+  (seção~\ref{sec:resiliencia-quarkus}): para de insistir depois de
+  falhas seguidas & Protege a dependência, não reinicia nada \\
+\addlinespace
+Isolamento de falha entre processos & Bulkhead e \texttt{Semaphore}
+  por recurso escasso & Isola recursos (threads, conexões), não memória \\
+\addlinespace
+Troca de código a quente & Deploy sem downtime com contratos
+  compatíveis entre versões (seção~\ref{sec:vms-hot-code}) & Duas
+  versões convivem em réplicas diferentes, não na mesma VM \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{\emph{Let it crash} numa requisição Java.}
+A distinção de Armstrong entre exceção (prevista, com tratamento
+conhecido) e erro (ninguém sabe o que fazer) vira uma regra de código:
+
+\begin{lstlisting}[language=Java]
+// Defensivo: engole qualquer erro e segue com estado duvidoso.
+try { pedido.aplicarCupom(cupom); }
+catch (Exception e) { log.warn("ignorando cupom", e); }
+repositorio.salvar(pedido);
+
+// Prevista: cupom inválido tem resposta de negócio (ex.: HTTP 422).
+// Não prevista: um bug sobe até a borda e a requisição falha inteira,
+// sem salvar um pedido pela metade.
+try { pedido.aplicarCupom(cupom); }
+catch (CupomInvalido e) { throw new RequisicaoInvalida(e.getMessage()); }
+repositorio.salvar(pedido);
+\end{lstlisting}
+
+O segundo trecho só é seguro se \texttt{pedido} não for compartilhado com
+outra thread e se a transação for desfeita quando a exceção subir. É o
+\enquote{processo leva o estado junto} do Erlang, feito à mão: objeto
+por requisição, transação por requisição.
+
+\section{Quando escolher nativo}
+
+A seção~\ref{sec:jvm-vs-nativo} deu os números e a regra do guia do
+Quarkus (comece em JVM; vá para nativo com uma necessidade concreta). A
+Parte~IV acrescenta o porquê de cada lado:
+\begin{description}
+\item[O nativo ganha] quando startup e memória por réplica dominam o
+  custo: o trabalho foi feito no build e o processo começa com o heap
+  pronto (seção~\ref{sec:vms-jit-aot}).
+\item[O nativo perde] quando o serviço vive muito e o throughput de pico
+  importa: sem perfil e sem desotimização, não há a especulação herdada
+  do Self (seção~\ref{sec:hist-self}); e quando o código depende de
+  carregar classes em runtime, porque o mundo é fechado
+  (seção~\ref{sec:vms-hot-code}).
+\item[Confira o GC] O Serial GC é o padrão do Native Image, e o G1 só
+  existe no Oracle GraalVM em Linux (seção~\ref{sec:vms-gc}). Meça o p99
+  sob carga antes de decidir.
+\item[Meça] Com a metodologia do capítulo~\ref{cap:benchmarks}: startup
+  com uma VM nova por medição, steady state com várias iterações e
+  várias invocações, e intervalo de confiança nos dois.
+\end{description}
+
+\section{Onde aprofundar}
+\textcite{paper:armstrong-thesis-reliable-systems}, capítulo~4, para a
+filosofia de erros; \citetitle{doc:erlang-supervisor} para supervisão;
+\citetitle{doc:jep505} e \citetitle{doc:jep444} para o que a JVM tem de
+parecido; \citetitle{doc:quarkus-fault-tolerance} e
+\citetitle{doc:quarkus-health} para as pontes no Quarkus;
+\citetitle{doc:quarkus-building-native} para a decisão de nativo.
+
+\section{Desafios práticos}
+
+\desafio{Procure no seu serviço todos os \texttt{catch (Exception e)}.
+Para cada um, decida: é uma exceção prevista, com tratamento de negócio,
+ou um erro engolido? Reescreva dois deles no estilo do exemplo
+deste capítulo.}
+
+\desafio{Escolha um componente do serviço que guarda estado mutável
+compartilhado entre requisições. Redesenhe-o para que o estado pertença a
+uma só tarefa e as outras se comuniquem com ele por mensagens (uma fila
+ou um \texttt{BlockingQueue}). O que ficou mais simples, e o que ficou
+mais caro?}
+
+\desafio{Descreva, para o seu serviço, a \enquote{árvore de supervisão}
+que já existe sem você ter desenhado: quem reinicia o quê quando uma
+parte falha (circuit breaker, liveness probe, Kubernetes)? Onde falta um
+limite de reinícios?}

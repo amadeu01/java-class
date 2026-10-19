@@ -1,0 +1,57 @@
+\section{Coleta de lixo: um heap ou um heap por processo}
+\label{sec:vms-gc}
+
+\paragraph{HotSpot.}
+Um heap para todas as threads (§2.5.3 da \citetitle{doc:jvms25}) e um
+coletor que cuida dele inteiro. A seção~\ref{sec:gc} mostrou as opções do
+JDK~25: G1 por padrão, ZGC para pausas curtas, Parallel e Serial para
+casos específicos. Como o heap é um só, o coletor precisa lidar com objetos
+de todas as threads ao mesmo tempo, e o tamanho do heap é uma decisão de
+toda a aplicação.
+
+\paragraph{BEAM.}
+A documentação do coletor da BEAM descreve outra arquitetura:
+\enquote{a per process generational semi-space copying collector using
+Cheney's copy collection algorithm together with a global large object
+space} (\citetitle{doc:erlang-gc}). Em português:
+\begin{itemize}
+\item cada processo tem a sua pilha e o seu heap, e o coletor trabalha
+  sobre o heap de \emph{um} processo de cada vez;
+\item dentro desse heap, a coleta é geracional e por cópia;
+\item binários com mais de 64 bytes ficam fora dos heaps dos processos,
+  num espaço global contado por referência; o processo guarda só um
+  ponteiro para eles.
+\end{itemize}
+O \citetitle{doc:beam-book} completa: quando um processo fica sem espaço
+no heap, a VM primeiro tenta recuperar espaço coletando o lixo
+\emph{daquele} processo. Como as mensagens são copiadas
+(seção~\ref{sec:vms-concorrencia}), não há ponteiro de um heap de
+processo para outro, e é isso que torna a coleta por processo possível.
+
+\paragraph{O que isso muda na prática.}
+O custo da coleta passa a ser proporcional ao processo, e um processo
+com muita memória não obriga os outros a pagar por ele. A página do
+coletor, porém, não diz que a coleta de um processo nunca afeta os
+outros, e nenhuma das fontes abertas aqui promete isso; não leia
+\enquote{GC por processo} como \enquote{nenhuma pausa global}. O lado
+ruim aparece nos binários. O \emph{BEAM Book} explica que um pedaço
+extraído de um binário (\emph{sub binary}) é só uma estrutura com
+ponteiros para o binário original e aumenta a contagem de referências
+dele: enquanto o pedaço pequeno estiver vivo, o binário grande também
+estará.
+
+\paragraph{GraalVM.}
+No modo JIT, os coletores são os da HotSpot. No Native Image, a página
+\citetitle{doc:graalvm-memory} lista outros: o Serial GC é o padrão,
+descrito como \enquote{a simple (non-parallel, non-concurrent) stop and
+copy GC}, com geração jovem e velha; o G1 existe só no Oracle GraalVM
+(não na Community Edition), em Linux AMD64 e AArch64, com
+\texttt{--gc=G1}; e o Epsilon não coleta nada. A
+seção~\ref{sec:memoria-container} mostrou o efeito disso em container.
+
+\paragraph{Ponte com o seu código.}
+Em Java, o mais perto de \enquote{heap por processo} é \emph{não}
+compartilhar estado mutável entre tarefas: objetos imutáveis
+(\texttt{record}, seção~\ref{sec:records}) e mensagens copiadas entre
+componentes. Isso não muda o GC da HotSpot, mas tira o estado
+compartilhado do caminho, que é o que a BEAM resolve na VM.

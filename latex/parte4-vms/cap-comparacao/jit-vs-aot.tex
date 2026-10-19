@@ -1,0 +1,67 @@
+\section{Compilação: JIT especulativo, JIT de carga e AOT}
+\label{sec:vms-jit-aot}
+
+\paragraph{HotSpot: especular com perfil.}
+A seção~\ref{sec:jit} mostrou o ciclo: interpretar, medir, compilar o que
+é quente com C1 e depois C2, especular sobre o que o perfil mostrou e,
+se a especulação falha, \emph{desotimizar} e voltar ao interpretador.
+O capítulo~\ref{cap:historia-vms} mostra de onde veio esse ciclo.
+
+\paragraph{Graal como JIT.}
+A página \citetitle{doc:graalvm-compiler} descreve o Graal como
+\enquote{a dynamic compiler, written in Java, that transforms bytecode
+into machine code}, integrado à HotSpot. Entre as fases de otimização,
+cita \emph{inlining} agressivo, \emph{inlining} polimórfico e uma
+\emph{partial escape analysis} que \enquote{can remove the costly
+allocations of certain objects}: a escape analysis da seção~\ref{sec:jit},
+aplicada também quando o objeto só escapa em alguns caminhos. O
+ciclo de especulação e desotimização é o mesmo da HotSpot; muda o
+compilador do último nível.
+
+\paragraph{Truffle: o interpretador vira compilador.}
+O Graal também é a base do Truffle, que a documentação apresenta como
+uma biblioteca para implementar linguagens que \enquote{automatically
+deriv[es] high-performance code from interpreters}
+(\citetitle{doc:truffle}). O mecanismo é a
+\termo{partial evaluation}{Avaliação parcial: especializar um programa
+para parte das suas entradas já conhecidas. Aqui, especializar o
+interpretador para um programa fixo, o que produz código compilado desse
+programa.}: \textcite{paper:truffle-partial-evaluation} definem a
+linguagem só escrevendo um interpretador; o código compilado sai
+automaticamente por avaliação parcial e, quando uma especulação falha,
+\enquote{execution transfers back to the interpreter}. É a desotimização
+da HotSpot generalizada para qualquer linguagem.
+
+\paragraph{Native Image: compilar tudo antes.}
+\textcite{paper:native-image-initialize-once}, o paper do Native Image,
+descrevem o processo: uma aplicação iterativa de análise de
+\emph{points-to} e de \emph{snapshot} do heap, seguida de compilação AOT
+com um compilador otimizador. Código de inicialização pode rodar no
+build, e a execução começa com um heap já populado, o \emph{image heap}
+(seção~\ref{sec:jvm-vs-nativo}); é por isso que o trabalho que o Quarkus
+adianta para o build (capítulo~\ref{cap:build-time}) rende tanto no nativo. Sem perfil de
+execução e sem class loading, não há o que especular em runtime; a
+seção~\ref{sec:jvm-vs-nativo} mostrou o efeito no throughput de pico.
+
+\paragraph{BEAM: JIT sem especulação.}
+O JIT da BEAM, o BeamAsm, faz outra coisa. A documentação diz que ele
+\enquote{provides load-time conversion of Erlang BEAM instructions into
+native code on x86-64 and aarch64}: traduz cada módulo quando ele é
+carregado, eliminando o custo de despacho do interpretador e
+especializando cada instrução pelos tipos dos argumentos. E avisa:
+\enquote{BeamAsm does hardly any cross instruction optimizations}
+(\citetitle{doc:erlang-beamasm}). Não há perfil, não há inlining
+especulativo, não há desotimização. Em troca, o JIT é simples, o código
+nativo existe desde a carga e a troca a quente de módulos
+(seção~\ref{sec:vms-hot-code}) continua funcionando como antes.
+
+\paragraph{Três respostas para \enquote{quando compilar}.}
+\begin{description}
+\item[Durante a execução, com perfil] HotSpot e GraalVM JIT: demoram a
+  aquecer, chegam ao melhor código de pico, dependem de especulação e
+  desotimização.
+\item[Na carga, sem perfil] BeamAsm: o código nativo existe desde a
+  carga do módulo, com otimização local por instrução.
+\item[No build] Native Image: startup rápido e memória menor, ao custo
+  do mundo fechado e de compilar sem ver a execução real.
+\end{description}

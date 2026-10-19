@@ -1,0 +1,61 @@
+\section{Trocar código com o sistema rodando}
+\label{sec:vms-hot-code}
+
+\paragraph{BEAM: duas versões de cada módulo.}
+O Erlang foi feito para trocar código sem parar o sistema, o
+\termo{hot code loading}{Carga de código a quente: substituir um módulo
+enquanto o sistema roda, sem reiniciar.}. A página
+\citetitle{doc:erlang-code-loading} descreve a regra:
+\begin{itemize}
+\item um módulo pode existir em duas variantes ao mesmo tempo, a
+  \emph{current} e a \emph{old}; carregar uma versão nova torna a anterior
+  \emph{old};
+\item \enquote{Fully qualified function calls always refer to current
+  code}: uma chamada \texttt{modulo:funcao()} sempre vai para a versão
+  nova, e é assim que um processo migra;
+\item ao carregar uma terceira versão, o code server remove a mais antiga
+  \enquote{and any processes lingering in it are terminated}.
+\end{itemize}
+O \citetitle{doc:beam-book} tira a consequência para quem escreve o
+código: um laço de servidor que não faz nenhuma chamada qualificada
+continua rodando o código velho. A troca a quente funciona porque o
+código foi escrito para ela.
+
+\paragraph{HotSpot: redefinição com limites.}
+A JVM também troca código em execução, mas bem menos. A
+\citetitle{doc:jvmti25} diz que a redefinição de uma classe pode mudar
+corpos de métodos, o constant pool e atributos, e \enquote{must not add,
+remove or rename fields or methods, change the signatures of methods,
+change modifiers, or change inheritance}. A documentação de
+\citetitle{doc:instrumentation25} completa: um método redefinido que tem
+frames ativos continua executando o bytecode antigo nesses frames; a
+versão nova vale para as próximas chamadas. É a mesma ideia das duas
+versões do Erlang, restrita ao corpo dos métodos. É o que depuradores e
+agentes de instrumentação usam, e não um mecanismo de deploy.
+
+\paragraph{Quarkus: reinício rápido no lugar de troca a quente.}
+O dev mode do Quarkus resolve o problema de outro jeito. O
+\citetitle{doc:quarkus-class-loading} separa um class loader persistente
+(o \emph{base runtime}, que carrega o que não muda) de um \emph{runtime
+class loader} com as classes da aplicação, que \enquote{is recreated when
+the application is restarted}. Em vez de redefinir classes, o Quarkus
+descarta o class loader e cria outro: na prática, reinicia só a parte que
+mudou. A mesma página avisa que isso não tem efeito em builds de produção.
+
+\paragraph{Native Image: nada novo depois do build.}
+No outro extremo está o executável nativo. A
+\termo{closed-world assumption}{Suposição de mundo fechado: todo o código
+que pode executar é conhecido no build (seção~\ref{sec:jvm-vs-nativo}).}
+diz que, construída a imagem, \enquote{no new elements can be added at
+run time, for example, through class loading}
+(\citetitle{doc:graalvm-native-basics}). Trocar código significa gerar
+outro binário e trocar o processo.
+
+\paragraph{A decisão que isso muda.}
+Em Java, o \enquote{hot code loading} de produção é o deploy sem
+downtime: subir réplicas novas, mover o tráfego e desligar as velhas. O
+problema que o Erlang resolve dentro da VM (duas versões convivendo) você
+resolve fora dela, e com o mesmo cuidado: durante o rollout, versões
+diferentes do serviço atendem ao mesmo tempo, então contratos de API e
+esquema de banco precisam aceitar as duas (é para isso que servem os
+testes de contrato, como em \citetitle{artigo:consumer-driven-contracts}).
