@@ -14,8 +14,11 @@ o tanto do sistema e dos usuários que um experimento pode afetar.}, e
 tenha uma condição de parada.
 
 O caos põe à prova os mecanismos de resiliência: \emph{timeout}, \emph{retry}
-com \emph{backoff}, \emph{circuit breaker} (\citetitle{artigo:circuitbreaker}),
-\emph{bulkhead} e \emph{fallback}. Para injetar falhas, a aula apresentou
+com \termo{backoff}{Espera crescente entre uma tentativa e a próxima,
+para não sobrecarregar quem está falhando.}, \emph{circuit breaker}
+(\citetitle{artigo:circuitbreaker}), \termo{bulkhead}{\enquote{Antepara}:
+limitar os recursos (threads, conexões) de cada dependência, para que uma
+falha não esgote os das outras.} e \emph{fallback}. Para injetar falhas, a aula apresentou
 \citetitle{doc:chaos-monkey-spring} e \citetitle{doc:toxiproxy}; o
 \citetitle{doc:netflix-chaosmonkey} é a origem da ideia, e
 \citetitle{doc:resilience4j} cobre os padrões de resiliência em Java.

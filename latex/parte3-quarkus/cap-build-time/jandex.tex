@@ -37,8 +37,9 @@ formado, entre outras fontes, pela aplicação e por:
 O guia de extensões completa: o índice das classes analisadas
 \enquote{will not automatically include your external class dependencies}
 e nenhum artefato é incluído transitivamente. O sintoma clássico é um
-módulo \texttt{dominio} num JAR separado cujas classes anotadas
-\enquote{somem}: o Quarkus não as viu porque o JAR não estava no índice.
+módulo compartilhado (por exemplo, adaptadores comuns a vários serviços)
+num JAR separado cujos beans \enquote{somem}: o Quarkus não os viu porque
+o JAR não estava no índice.
 
 \subsection*{Remoção de beans não usados}
 

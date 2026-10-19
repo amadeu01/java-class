@@ -35,7 +35,10 @@ forma agressiva (\citetitle{doc:hotspot-perf}).
   vivos e deixa nos outros uma \termo{uncommon trap}{Ponto no código
   compilado que devolve o controle ao runtime quando um caminho
   considerado impossível acontece.}. Se o caminho raro acontece, o
-  código compilado é descartado (\emph{deoptimization}), o método volta
+  código compilado é descartado
+  (\termo{deoptimization}{Desotimização: trocar, em plena execução,
+  frames de código otimizado por frames equivalentes de código não
+  otimizado.}), o método volta
   ao interpretador ou a uma camada inferior, ganha novo perfil e é
   recompilado (\citetitle{artigo:shipilev-uncommon-traps}).
 \item Chamadas virtuais: num ponto de chamada que só viu um tipo, o
@@ -46,7 +49,7 @@ forma agressiva (\citetitle{doc:hotspot-perf}).
 \end{itemize}
 
 \paragraph{Safepoints.}
-Várias operações da JVM (algumas fases do GC, deoptimização) precisam
+Várias operações da JVM (algumas fases do GC, desotimização) precisam
 parar as threads Java em pontos conhecidos, os
 \termo{safepoints}{Pontos do código em que o estado da thread é
 conhecido pela JVM; as threads verificam periodicamente se devem parar

@@ -36,7 +36,8 @@ Item do \emph{Effective Java} (3ª ed.) & Onde o bytecode mostra \\
 A JVM otimiza o código que roda muito, no momento em que ele roda
 (capítulo~\ref{cap:jvm-por-dentro}). Métodos pequenos, que o
 \emph{Clean Code} recomenda, são candidatos naturais a
-\termo{inlining}{Otimização do JIT que copia o corpo do método chamado
-para dentro do chamador, eliminando a chamada.}. Antes de sacrificar
+\termo{inlining}{Otimização do compilador JIT (que compila o código
+durante a execução; ver seção~\ref{sec:jit}) que copia o corpo do método
+chamado para dentro do chamador, eliminando a chamada.}. Antes de sacrificar
 legibilidade por desempenho, meça; o item 67 do \emph{Effective Java}
 diz o mesmo.

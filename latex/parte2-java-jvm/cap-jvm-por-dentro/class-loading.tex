@@ -45,7 +45,9 @@ ciclo de vida (um bean), em que o erro aparece na subida.
 \paragraph{Startup e o cache AOT.}
 Carregar e ligar milhares de classes custa tempo a cada subida. O
 \citetitle{doc:jep483} (JDK~24) guarda classes já carregadas e ligadas
-num cache gerado por uma execução de treino; o \citetitle{doc:jep514}
+num cache \termo{AOT}{\emph{Ahead-of-time}: compilação ou preparação
+feita antes da execução, em oposição ao JIT, que compila durante a
+execução.} gerado por uma execução de treino; o \citetitle{doc:jep514}
 (JDK~25) reduz a criação do cache a um comando
 (\texttt{java -XX:AOTCacheOutput=app.aot \ldots}), e o
 \citetitle{doc:jep515} (JDK~25) guarda também perfis de métodos, para o
