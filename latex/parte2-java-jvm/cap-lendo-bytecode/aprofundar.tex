@@ -40,3 +40,17 @@ Lambdas & \citetitle{video:goetz-lambda-hood} (Philly ETE 2014, InfoQ)
 \citetitle{doc:jfr-tool}, \citetitle{doc:jmc}, \citetitle{doc:jitwatch},
 \citetitle{doc:async-profiler} e \citetitle{doc:jmh}. Para as pontes:
 \citetitle{doc:graalvm-compat} e \citetitle{doc:quarkus-native-tips}.
+
+\subsection*{Pesquisa acadêmica}
+Pilha ou registradores, e de onde vem a otimização de chamadas virtuais.
+Acesso (aberto ou pago) e links no apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:vm-showdown}{Traduz bytecode da JVM para registradores e
+  compara as duas formas: o argumento técnico por trás do Dalvik.}
+\pesquisa*{paper:hazan-maquina-registradores-java}{Dissertação da PUC-Rio
+  que propõe um conjunto de instruções de registradores para Java.}
+\pesquisa{paper:lua50-implementation}{A VM de registradores da Lua, feita
+  na PUC-Rio: bom contraste com a pilha da JVM.}
+\pesquisa{paper:self-pics}{Os polymorphic inline caches, que o HotSpot usa
+  nos call sites de \texttt{invokevirtual} e \texttt{invokeinterface}.}
+\end{itemize}

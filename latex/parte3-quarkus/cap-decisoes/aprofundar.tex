@@ -29,3 +29,17 @@ Fonte & Para quê \\
 benchmark) e \citetitle{doc:quarkus-benchmarks} (os resultados e
 gráficos). Para medir na sua máquina: JFR, \texttt{jcmd} e
 async-profiler (seção~\ref{sec:ferramentas}).
+
+\subsection*{Pesquisa acadêmica}
+Antes de comparar JVM e nativo, veja como medir. Acesso e links no
+apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:statistically-rigorous-java-perf}{Intervalos de confiança
+  em vez de \enquote{melhor de N}, separando startup de regime estável.}
+\pesquisa{paper:vm-warmup-hot-cold}{Muitos benchmarks nunca chegam a um
+  regime estável limpo, mesmo depois de aquecer.}
+\pesquisa{paper:gc-myths-realities}{O tamanho do heap muda o custo total do
+  GC, o que importa quando o container limita a memória.}
+\pesquisa{paper:graal-partial-escape-analysis}{Por que o Graal elimina
+  alocações que o C2 mantém.}
+\end{itemize}

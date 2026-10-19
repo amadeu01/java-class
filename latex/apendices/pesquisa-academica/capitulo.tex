@@ -1,0 +1,55 @@
+\chapter{Pesquisa acadêmica}
+\label{ap:pesquisa}
+
+Papers, teses e cursos abertos de universidades sobre TDD, testes,
+arquitetura, a JVM e outras VMs. Cada capítulo cita, na seção
+\enquote{Onde aprofundar}, os que se conectam com ele; aqui eles aparecem
+juntos, por tema e por instituição.
+
+\begin{description}
+\item[Como foram escolhidos] Venue revisado por pares, tese defendida ou
+  curso de universidade. Título, autores e ano foram conferidos no registro
+  do DOI (Crossref e OpenAlex), no repositório da universidade ou no site do
+  curso em 18 e 19/10/2026. O que não foi confirmado ficou de fora.
+\item[Acesso aberto] Só quando uma fonte sobre aquele paper confirmou uma
+  cópia aberta e legal: a página da editora, o OpenAlex, o repositório da
+  universidade ou o arXiv. Sem essa confirmação, o paper aparece como
+  \emph{acesso pago}, com o DOI. Muitos têm preprint na página dos autores,
+  mas não conferimos.
+\item[Em português] Obras escritas em português levam a marca \pt.
+\end{description}
+
+\section{Recomendação de leitura}
+Se for ler só cinco, comece por estes. Dois são em português.
+
+\begin{enumerate}
+\item \citetitle{livro:valente2020} \pt, de \citeauthor{livro:valente2020},
+  capítulos~8 (testes) e~7 (arquitetura). É a melhor porta de
+  entrada em português e cobre quase toda a Parte~I e parte da Parte~III.
+  Leitura gratuita no site do livro.
+\item \citetitle{paper:hazan-maquina-registradores-java} \pt, de
+  \citeauthor{paper:hazan-maquina-registradores-java} (PUC-Rio,
+  \citeyear{paper:hazan-maquina-registradores-java}). Dissertação aberta que
+  discute pilha contra registradores; ajuda a ler bytecode da JVM, do Dalvik
+  e da Lua com outros olhos.
+\item \citetitle{paper:aniche-tdd-class-design-jbcs-2015}, de
+  \citeauthor{paper:aniche-tdd-class-design-jbcs-2015}
+  (\citeyear{paper:aniche-tdd-class-design-jbcs-2015}). Curto, aberto, feito
+  na USP com empresas brasileiras; explica \emph{como} o TDD ajuda no design.
+\item \citetitle{paper:inozemtseva-coverage-2014}
+  (\citeyear{paper:inozemtseva-coverage-2014}), lido junto com
+  \citetitle{paper:just-mutants-real-faults-2014}
+  (\citeyear{paper:just-mutants-real-faults-2014}). Juntos explicam por que
+  a apostila usa teste de mutação e não só cobertura.
+\item \citetitle{paper:hotspot-server-compiler}, de
+  \citeauthor{paper:hotspot-server-compiler}
+  (\citeyear{paper:hotspot-server-compiler}). Aberto na USENIX,
+  com a melhor descrição curta do C2.
+\end{enumerate}
+
+Para quem quiser mais em português: \citetitle{paper:delamaro-proteum-im-1997}
+\pt, do ICMC-USP, mostra a tradição brasileira em teste de mutação desde os
+anos~1990.
+
+\input{apendices/pesquisa-academica/por-tema}
+\input{apendices/pesquisa-academica/por-instituicao}

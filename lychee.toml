@@ -22,6 +22,12 @@ exclude = [
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam
 # para ela. Em vez de excluí-los, o lychee checa o registro do mesmo DOI no
 # Crossref: se o DOI não existir, o link falha.
+#
+# O mesmo vale para IEEE (10.1109, responde 202/418 a robôs), Elsevier
+# (10.1016) e Wiley (10.1002, responde 403): o DOI é conferido no Crossref.
 remap = [
   '^https://doi\.org/(10\.1145/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1109/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1016/.+)$ https://api.crossref.org/works/$1',
+  '^https://doi\.org/(10\.1002/.+)$ https://api.crossref.org/works/$1',
 ]

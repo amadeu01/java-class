@@ -34,3 +34,49 @@ Da série \emph{JVM Anatomy Quarks}, de Aleksey Shipilëv:
 \citetitle{doc:jvms25} (cap.~5), \citetitle{doc:jls25} (cap.~17),
 \citetitle{doc:hotspot-perf}, \citetitle{doc:gc-collectors} e
 \citetitle{doc:java-cmd}.
+
+\subsection*{Pesquisa acadêmica}
+Os papers que estão por trás do JIT e dos coletores do HotSpot, e cursos
+abertos de compiladores. Acesso (aberto ou pago) e links no
+apêndice~\ref{ap:pesquisa}.
+\begin{itemize}
+\pesquisa{paper:self-type-feedback}{Type feedback: o JIT usa os tipos vistos
+  em execução para fazer inlining especulativo.}
+\pesquisa{paper:hotspot-server-compiler}{O C2 descrito por quem o fez:
+  sea of nodes, inlining e alocação de registradores.}
+\pesquisa{paper:hotspot-client-compiler-java6}{O C1, o primeiro nível da
+  tiered compilation.}
+\pesquisa{paper:jalapeno-adaptive-optimization}{Otimização adaptativa na
+  JVM de pesquisa da IBM: amostragem e recompilação em níveis.}
+\pesquisa{paper:survey-adaptive-optimization-vms}{Panorama de perfilamento e
+  recompilação seletiva em VMs.}
+\pesquisa{paper:escape-analysis-deoptimization}{Escape analysis no HotSpot,
+  com desotimização quando uma classe nova invalida a análise.}
+\pesquisa{paper:graal-partial-escape-analysis}{A escape analysis parcial do
+  Graal, que elimina alocações nos caminhos em que o objeto não escapa.}
+\pesquisa{paper:g1-garbage-first}{O paper original do G1, o coletor padrão
+  desde o JDK~9.}
+\pesquisa{paper:shenandoah}{Compactação concorrente da Red Hat, com pausas
+  que não crescem com o heap.}
+\pesquisa{paper:zgc-deep-dive}{O ZGC descrito e medido em revista
+  revisada por pares (Uppsala e Oracle).}
+\pesquisa{paper:gc-myths-realities}{Mostra o custo do GC na localidade e no
+  tempo total, não só nas pausas.}
+\pesquisa{paper:immix}{O coletor mark-region, que junta a velocidade do
+  mark-sweep com a localidade da compactação.}
+\pesquisa{paper:java-memory-model}{A base formal do capítulo~17 da JLS.}
+\pesquisa*{paper:neves-memoria-java-embarcado}{Dissertação da UFRGS sobre
+  gerência de memória e um coletor de tempo real para Java embarcado.}
+\pesquisa*{paper:heuristica-gc-jvm-wso2008}{Heurística que ajusta o
+  tamanho do heap da JVM (UFRJ, Unicamp e UFJF).}
+\pesquisa*{paper:cruz-gc-jikes-usp}{Dissertação do IME-USP que modulariza
+  o GC da JVM de pesquisa Jikes RVM.}
+\pesquisa{doc:stanford-cs143}{Compiladores em Stanford, com aulas de
+  ambiente de execução e gerência automática de memória.}
+\pesquisa{doc:mit-6035-ocw}{Compilador completo com otimizações, no MIT
+  OpenCourseWare.}
+\pesquisa{doc:cmu-15411}{Compilador do zero na CMU, com organização do
+  runtime e coleta de lixo.}
+\pesquisa*{doc:unicamp-mc921}{Plano da disciplina de compiladores da
+  Unicamp, com projetos em Python.}
+\end{itemize}
