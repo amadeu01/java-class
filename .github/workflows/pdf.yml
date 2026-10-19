@@ -51,21 +51,93 @@ jobs:
           args: --config lychee.toml --no-progress 'latex/**/*.tex' 'latex/bib/*.bib'
           fail: true
 
+  site:
+    # valida o site em PRs e pushes (sem deploy)
+    needs: pdf
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apostila
+          path: pdf
+      - name: Instalar pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Gerar site
+        run: scripts/build-site.sh pdf/apostila.pdf
+      - name: Testar site
+        run: scripts/test-site.sh
+
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: pdf
     runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.ref_name }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: apostila
-      - name: Recriar release latest
+          path: pdf
+      - name: Montar assets e notas
         run: |
-          gh release delete latest --cleanup-tag --yes --repo "$GITHUB_REPOSITORY" || true
-          gh release create latest apostila.pdf --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" --title "Apostila (latest)" \
-            --notes "PDF compilado de $GITHUB_SHA"
+          v="${TAG#v}"
+          cp pdf/apostila.pdf "apostila-$TAG.pdf"
+          scripts/package-latex.sh "$TAG"
+          # notas: seção [X.Y.Z] do CHANGELOG.md
+          awk -v v="$v" '
+            /^## \[/ { if (em) exit; em = (index($0, "[" v "]") > 0); next }
+            em { print }
+          ' CHANGELOG.md > notas.md
+          [ -s notas.md ] || { echo "Seção [$v] ausente ou vazia no CHANGELOG.md" >&2; exit 1; }
+      - name: Criar release
+        run: |
+          gh release create "$TAG" "apostila-$TAG.pdf" "dist/apostila-latex-$TAG.zip" \
+            --title "Apostila $TAG" --notes-file notas.md
+
+  pages:
+    # release é pulado em push na main; always() deixa o deploy seguir nesse caso
+    if: >-
+      always() && github.event_name == 'push'
+      && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+      && needs.site.result == 'success'
+      && (needs.release.result == 'success' || needs.release.result == 'skipped')
+    needs: [site, release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apostila
+          path: pdf
+      - name: Instalar pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Gerar e testar site (já com a release recém-criada)
+        run: |
+          scripts/build-site.sh pdf/apostila.pdf
+          scripts/test-site.sh
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deploy
+        uses: actions/deploy-pages@v4
