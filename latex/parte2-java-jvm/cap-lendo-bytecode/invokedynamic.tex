@@ -5,7 +5,8 @@ As outras instruções de chamada sabem, em tempo de compilação, qual
 método chamar. O \texttt{invokedynamic} adia essa decisão: na primeira
 execução, a JVM chama um \emph{método de bootstrap}, que devolve o código
 a usar naquele ponto; nas execuções seguintes, a mesma instrução reutiliza
-o resultado, sem chamar o bootstrap de novo (JVMS §5.4.3.6).
+o resultado, sem chamar o bootstrap de novo (JVMS §5.4.3; a chamada do
+bootstrap está na §5.4.3.6).
 
 \paragraph{Concatenação de strings (JDK~9+).}
 Na listagem de \texttt{ConcatenacaoStrings}
@@ -61,4 +62,4 @@ essa hipótese, porque podem introduzir chamadas em tempo de execução, mas
 que os usos gerados pelo \texttt{javac} para lambdas e concatenação de
 strings são suportados, porque não mudam o método chamado. Ou seja:
 lambdas e \texttt{+} estão liberados no nativo; geração dinâmica de
-código com method handles, não. A Parte~III detalha.
+código com method handles, não. A Parte~\ref{parte:quarkus} detalha.

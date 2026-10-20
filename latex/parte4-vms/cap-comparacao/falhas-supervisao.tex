@@ -5,17 +5,17 @@
 A tese de Joe Armstrong (\citetitle{paper:armstrong-thesis-reliable-systems},
 KTH, 2003) parte de uma premissa: sistemas grandes vão para produção
 \emph{com} erros, por mais que tenham sido testados. A resposta não é
-evitar todo erro, e sim isolar o estrago. Na seção~2.4.3, o isolamento
+evitar todo erro, e sim isolar o estrago. No §2.4.3, o isolamento
 tem consequências diretas: processos não compartilham nada, mensagem é o
 único jeito de passar dados e, por isso, a troca de mensagens é
-assíncrona. Na seção~4.3, a filosofia vira quatro lemas:
+assíncrona. No §4.3, a filosofia vira quatro lemas:
 \begin{quote}
 Let some other process do the error recovery. If you can't do what you
 want to do, die. Let it crash. Do not program defensively.
 \end{quote}
 
 \paragraph{Exceção não é erro.}
-A seção~4.4 da tese faz uma distinção que vale para Java também:
+O §4.4 da tese faz uma distinção que vale para Java também:
 \enquote{exceptions occur when the run-time system does not know what to
 do} e \enquote{errors occur when the programmer doesn't know what to do}.
 Abrir um arquivo que não existe gera uma exceção, mas, se o programador

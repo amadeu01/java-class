@@ -29,6 +29,16 @@ exclude = [
   # (falhou em 2 de 3 execuções em 2026-10-19), mas abre normalmente fora do
   # CI (HTTP 200, título conferido). Verificado manualmente no peer review.
   '^https://lume\.ufrgs\.br/',
+  # Red Hat Developer: o Akamai responde 403 a robôs (UA do lychee e de
+  # navegador via curl); a página existe (Wayback: snapshot 200 de
+  # 2026-05-13, título conferido em 2026-10-20). Verificado manualmente no
+  # peer review.
+  '^https://developers\.redhat\.com/',
+  # bugs.openjdk.org (JBS) responde 403 a acesso automatizado (lychee e
+  # navegador via curl, 2026-10-20); JDK-6993732, JDK-8214719 e JDK-8221766
+  # foram conferidos no Wayback e citados na nota de release do JDK 13.
+  # Verificado manualmente no peer review.
+  '^https://bugs\.openjdk\.org/',
 ]
 
 # A ACM Digital Library responde 403 a robôs, e os DOIs 10.1145 redirecionam

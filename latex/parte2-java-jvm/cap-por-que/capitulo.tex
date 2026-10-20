@@ -1,0 +1,33 @@
+\chapter{Por que o Java é assim}
+\label{cap:por-que}
+
+\proximasaulas
+
+Por que o Java e a JVM são assim, e o que isso muda no código que você
+escreve? Este capítulo responde a essa pergunta com foco em concorrência:
+muitos \termo{requests}{Requisições que chegam ao servidor, cada uma
+exigindo trabalho do seu programa.}, memória compartilhada entre
+\termo{threads}{Linhas de execução dentro do mesmo processo, que
+compartilham a memória.} e vários núcleos.
+Cada seção segue a mesma forma: o problema da época, a decisão tomada, o
+que mudou depois, o que isso muda no seu código e onde aprofundar.
+As listagens de bytecode são saída real do \texttt{javap} do JDK~25
+sobre os exemplos de \texttt{examples/}. Se o \texttt{javap} for
+novidade, o capítulo~\ref{cap:lendo-bytecode} ensina a ler essas
+listagens; volte aqui depois.
+
+Afirmações históricas são conferidas nas segundas edições da JLS
+(\citetitle{livro:gosling2000-jls2}) e da JVMS
+(\citetitle{livro:lindholm1999}). Afirmações sobre o estado atual da
+linguagem e da máquina virtual são conferidas na JLS e na JVMS do Java
+SE~25, \citetitle{doc:jls25} e \citetitle{doc:jvms25}.
+
+\input{parte2-java-jvm/cap-por-que/objetivos}
+\input{parte2-java-jvm/cap-por-que/verificacao}
+\input{parte2-java-jvm/cap-por-que/monitores}
+\input{parte2-java-jvm/cap-por-que/threads-vt}
+\input{parte2-java-jvm/cap-por-que/modelo-memoria-historia}
+\input{parte2-java-jvm/cap-por-que/juc}
+\input{parte2-java-jvm/cap-por-que/muitos-requests}
+\input{parte2-java-jvm/cap-por-que/aprofundar}
+\input{parte2-java-jvm/cap-por-que/desafios}

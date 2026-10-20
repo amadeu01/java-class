@@ -8,7 +8,7 @@ O guia \citetitle{doc:quarkus-performance-measure} mede
 processo, incluindo heap e memória nativa.}, e não o heap, porque o heap
 é só uma parte: a JVM também usa memória nativa para metadados de
 classes, pilhas de threads, código compilado e estruturas do GC. É o RSS
-que o limite do container corta. Somando o que a Parte~II e o manual do
+que o limite do container corta. Somando o que a Parte~\ref{parte:java-jvm} e o manual do
 \texttt{java} (\citetitle{doc:java-cmd}) dizem sobre cada parte:
 
 \small
@@ -44,8 +44,11 @@ A seção~\ref{sec:gc} trouxe a regra do guia de GC da Oracle: deixe a JVM
 escolher, ajuste o heap e só troque de coletor se o requisito não for
 atendido. Em container, isso vira:
 \begin{itemize}
-\item Container pequeno, com uma CPU e pouca memória: é o perfil que o
-  guia associa ao Serial.
+\item Container pequeno, abaixo de duas CPUs ou de 1792~MB: no JDK~25
+  a JVM já escolhe o Serial, o perfil que o guia associa a ele
+  (\citetitle{doc:gc-ergonomics}). Quem quer o G1 nesse container
+  precisa passar \texttt{-XX:+UseG1GC}, e toda medição deve registrar o
+  coletor que rodou (\texttt{-Xlog:gc}, seção~\ref{sec:gc}).
 \item API com requisito de p99: compare G1 e ZGC no teste de carga,
   com o mesmo limite de memória de produção.
 \item Fixe \texttt{-XX:MaxRAMPercentage} (ou \texttt{-Xmx}) explicitamente

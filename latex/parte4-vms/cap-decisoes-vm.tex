@@ -3,9 +3,9 @@
 
 \proximasaulas
 
-Os capítulos anteriores compararam VMs. Este fecha a Parte~IV com a
+Os capítulos anteriores compararam VMs. Este fecha a Parte~\ref{parte:vms} com a
 pergunta prática: o que muda no código e na arquitetura de um serviço
-Java/Quarkus por causa disso? Mesmo formato da Parte~III
+Java/Quarkus por causa disso? Mesmo formato da Parte~\ref{parte:quarkus}
 (capítulo~\ref{cap:decisoes-quarkus}): quando escolher, o que medir, o
 que não vem junto.
 
@@ -39,7 +39,7 @@ isso este capítulo não diz qual é \enquote{mais rápida}.
 
 Porque a VM vem junto com linguagem, bibliotecas, ferramentas de
 diagnóstico e o que a equipe sabe operar. Os serviços da turma são Java
-com Quarkus, e a Parte~II mostrou o que se ganha conhecendo a HotSpot a
+com Quarkus, e a Parte~\ref{parte:java-jvm} mostrou o que se ganha conhecendo a HotSpot a
 fundo: JFR, \texttt{jcmd}, JIT, GC. E a JVM fechou parte da distância: o
 JEP~444 apresenta as virtual threads como o mesmo tipo de \emph{user-mode
 thread} que os processos do Erlang (seção~\ref{sec:vms-concorrencia}).
@@ -111,7 +111,7 @@ por requisição, transação por requisição.
 
 A seção~\ref{sec:jvm-vs-nativo} deu os números e a regra do guia do
 Quarkus (comece em JVM; vá para nativo com uma necessidade concreta). A
-Parte~IV acrescenta o porquê de cada lado:
+Parte~\ref{parte:vms} acrescenta o porquê de cada lado:
 \begin{description}
 \item[O nativo ganha] quando startup e memória por réplica dominam o
   custo: o trabalho foi feito no build e o processo começa com o heap
@@ -132,7 +132,7 @@ Parte~IV acrescenta o porquê de cada lado:
 \end{description}
 
 \section{Onde aprofundar}
-\textcite{paper:armstrong-thesis-reliable-systems}, capítulo~4, para a
+\textcite{paper:armstrong-thesis-reliable-systems}, cap.~4, para a
 filosofia de erros; \citetitle{doc:erlang-supervisor} para supervisão;
 \citetitle{doc:jep505} e \citetitle{doc:jep444} para o que a JVM tem de
 parecido; \citetitle{doc:quarkus-fault-tolerance} e

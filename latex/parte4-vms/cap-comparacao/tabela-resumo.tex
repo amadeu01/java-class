@@ -23,7 +23,8 @@ Modelo de concorrência & Threads de plataforma (do SO) e virtual
   (\citetitle{doc:graalvm-java}); no Native Image, as mesmas APIs Java
   \\
 \addlinespace
-GC & Um heap para todas as threads; G1 padrão, ZGC, Parallel, Serial
+GC & Um heap para todas as threads; G1 padrão em máquinas
+  server-class (Serial nas outras), ZGC, Parallel
   (seção~\ref{sec:gc}; \citetitle{doc:gc-collectors}) & Por processo,
   geracional por cópia (Cheney), mais espaço global de binários
   contados por referência (\citetitle{doc:erlang-gc}) & JIT: os da

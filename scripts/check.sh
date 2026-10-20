@@ -38,6 +38,50 @@ if [ -f "$blg" ]; then
   fi
 fi
 
+# Resultado do benchmark de contenção (seção sec:juc): gerado por scripts/bench.sh.
+bench=latex/dados/bench/contencao.txt
+if [ ! -f "$bench" ]; then
+  echo "ERRO: $bench não existe; rode scripts/bench.sh e versione o resultado."; fail=1
+elif ! grep -q '^# jdk:' "$bench"; then
+  echo "ERRO: $bench sem a linha '# jdk:' no cabeçalho; gere de novo com scripts/bench.sh."; fail=1
+fi
+
+# Saídas dos experimentos do capítulo cap:por-que: geradas por scripts/experimentos.sh.
+for exp in verifyerror noverify vt versao; do
+  f=latex/dados/experimentos/$exp.txt
+  if [ ! -f "$f" ]; then
+    echo "ERRO: $f não existe; rode scripts/experimentos.sh e versione o resultado."; fail=1
+  elif ! grep -q '^# jdk:' "$f"; then
+    echo "ERRO: $f sem a linha '# jdk:' no cabeçalho; gere de novo com scripts/experimentos.sh."; fail=1
+  fi
+done
+
+# Glossário: todo \termo{...} da apostila tem uma linha no apêndice (inglês ou
+# português na 1ª/2ª coluna, sem diferenciar maiúsculas; "X (sigla)" casa com X).
+out=$(find latex -name '*.tex' -not -path 'latex/build/*' -not -path 'latex/preamble/*' -print0 \
+  | xargs -0 perl -0777 -e '
+    my %k;
+    for my $g (glob "latex/apendices/glossario*.tex") {
+      open my $h, "<", $g or die; local $/ = "\n";
+      while (<$h>) {
+        next unless /^\\textit\{((?:[^{}]|\{[^}]*\})*)\}\s*&\s*([^&]*?)\s*&/;
+        my ($en, $pt) = (lc $1, lc $2); $k{$en} = $k{$pt} = 1;
+        (my $s = $en) =~ s/\s*\(.*\)\s*$//; $k{$s} = 1;
+        $k{lc $1} = 1 if $en =~ /\(([^)]*)\)/;
+      }
+    }
+    $k{desmonta} = 1;   # flexão de "desmontar" (unmount)
+    for my $f (@ARGV) {
+      open my $h, "<", $f or die; my $t = <$h>;
+      while ($t =~ /\\termo\s*(\{((?:[^{}]++|(?1))*)\})/g) {
+        (my $a = $2) =~ s/\s+/ /g;
+        print "  $f: $a\n" unless $k{lc $a};
+      }
+    }')
+if [ -n "$out" ]; then
+  echo "ERRO: \\termo sem linha no glossário (latex/apendices/glossario.tex):"; echo "$out"; fail=1
+fi
+
 out=$(find latex -name '*.tex' -not -path 'latex/build/*' -print0 | xargs -0 wc -l \
   | awk '$2!="total" && $1>200 {print "  " $2 " (" $1 " linhas)"}')
 if [ -n "$out" ]; then

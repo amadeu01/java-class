@@ -7,13 +7,13 @@ Este capítulo trata de quatro decisões que todo serviço Quarkus
 enfrenta: modo JVM ou executável nativo, como conviver com reflexão,
 virtual threads ou reativo, e quanto de memória dar ao container. Cada
 uma aparece no mesmo formato: \emph{quando escolher X}, \emph{quando
-escolher Y} e \emph{o que medir} antes de decidir. A base é a Parte~II:
+escolher Y} e \emph{o que medir} antes de decidir. A base é a Parte~\ref{parte:java-jvm}:
 quem sabe o que o JIT, o GC e o class loading fazem sabe o que se perde
 e o que se ganha ao trocar cada um.
 
 Números de desempenho aqui são do fornecedor, com data, versão e
 máquina. Eles servem para dar ordem de grandeza, não para prever o seu
-serviço: meça o seu, com o teste de carga da Parte~I.
+serviço: meça o seu, com o teste de carga da Parte~\ref{parte:testes}.
 
 \input{parte3-quarkus/cap-decisoes/jvm-vs-nativo}
 \input{parte3-quarkus/cap-decisoes/reflexao-nativo}

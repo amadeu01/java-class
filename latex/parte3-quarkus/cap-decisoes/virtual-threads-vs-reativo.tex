@@ -27,7 +27,7 @@ Código síncrono em virtual thread (\texttt{@RunOn\-Virtual\-Thread}) &
 \end{longtable}
 \normalsize
 
-\paragraph{O que a Parte~II já explicou.}
+\paragraph{O que a Parte~\ref{parte:java-jvm} já explicou.}
 A seção~\ref{sec:virtual-threads} mostrou que virtual threads servem para
 escala em I/O, não para velocidade; que o pinning em
 \texttt{synchronized} acabou no JDK~24 (o guia do Quarkus confirma: em
@@ -65,7 +65,7 @@ três pontos do ponto de vista do Quarkus:
 \item[Quando ficar nas worker threads] Concorrência moderada e
   previsível, código legado com \texttt{ThreadLocal} pesado, ou trabalho
   de CPU. O limite de workers funciona como proteção natural.
-\item[O que medir] Sob o teste de carga da Parte~I: p99 e throughput
+\item[O que medir] Sob o teste de carga da Parte~\ref{parte:testes}: p99 e throughput
   nos três modelos, número de threads de plataforma e RSS. Com JFR
   (seção~\ref{sec:ferramentas}), o evento \texttt{jdk.VirtualThreadPinned}
   mostra pinning residual. Monitore também as conexões do pool do banco:

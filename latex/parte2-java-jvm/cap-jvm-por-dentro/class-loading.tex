@@ -1,7 +1,7 @@
 \section{Carregamento, linking e inicialização}
 \label{sec:class-loading}
 
-O capítulo~5 da JVMS divide a vida de uma classe em três fases.
+O cap.~5 da JVMS divide a vida de uma classe em três fases.
 
 \begin{description}
 \item[Carregamento (§5.3)] Um \termo{class loader}{Objeto que encontra os
@@ -63,4 +63,4 @@ as dependências e um \emph{Runtime ClassLoader} para as classes da
 aplicação, recriado quando a aplicação reinicia; é isso que permite o
 live reload sem reiniciar a JVM. No pacote padrão de produção
 (\texttt{fast-jar}), um loader que indexa as classes em tempo de build;
-em executável nativo, classpath plano. A Parte~III volta a isso.
+em executável nativo, classpath plano. A Parte~\ref{parte:quarkus} volta a isso.

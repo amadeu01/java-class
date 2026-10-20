@@ -12,7 +12,7 @@ Compare com a seção~\ref{sec:class-loading}: na HotSpot, uma classe pode
 ser carregada a qualquer momento; no nativo, não existe class loading
 dinâmico, e o \emph{image heap} já traz objetos criados durante o build.
 
-O que muda em relação à Parte~II:
+O que muda em relação à Parte~\ref{parte:java-jvm}:
 \begin{itemize}
 \item O código é compilado antes da execução, não pelo JIT da HotSpot
   em runtime (seção~\ref{sec:jit}). O guia do Quarkus atribui a isso a
@@ -63,7 +63,7 @@ modo JVM vai de cerca de 0,4~s (um REST pequeno) a cerca de 3~s (um CRUD
 grande), vindo de outros posts do blog, e a medição do perf-lab inclui
 subir o serviço completo e atender a primeira requisição.
 
-Leia a tabela com a Parte~II na cabeça. O nativo ganha em tempo até a
+Leia a tabela com a Parte~\ref{parte:java-jvm} na cabeça. O nativo ganha em tempo até a
 primeira requisição e em memória; o JVM ganha em throughput de pico, que
 é onde o JIT, compilando os métodos quentes com o perfil da execução
 (seção~\ref{sec:jit}), faz diferença. A linha do meio usa o cache AOT
@@ -93,7 +93,7 @@ have a concrete need.}
   resposta 200, não o tempo que o framework imprime no log), RSS com
   \texttt{ps} ou \texttt{pmap} (o guia pede explicitamente para
   \emph{não} usar \texttt{docker stats}), throughput e p99 sob o teste
-  de carga da Parte~I, e o tempo de build no CI. Compare as três
+  de carga da Parte~\ref{parte:testes}, e o tempo de build no CI. Compare as três
   opções da tabela no \emph{seu} serviço antes de decidir.
 \end{description}
 

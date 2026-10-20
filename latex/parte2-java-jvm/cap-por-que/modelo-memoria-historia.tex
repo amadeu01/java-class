@@ -1,0 +1,126 @@
+\section{O modelo de memória ao longo do tempo}
+\label{sec:jmm-historia}
+
+\paragraph{O problema.}
+O cap.~17 da JLS 2ª ed. descreve a memória em duas camadas. Cada
+thread tem uma \termo{working memory}{Memória de trabalho: no modelo
+da JLS 2ª ed., o lugar onde a thread guarda suas cópias das
+variáveis, separado da memória principal.}, onde guarda a cópia de
+trabalho das variáveis que usa ou atribui, e a cópia mestra fica na
+memória principal (cap.~17, abertura, e §17.1). O modelo tem oito
+ações: \texttt{use}, \texttt{assign}, \texttt{load}, \texttt{store},
+\texttt{read}, \texttt{write}, \texttt{lock} e \texttt{unlock}. Copiar
+um valor da memória principal para a de trabalho exige duas: um
+\texttt{read} da memória principal e, \enquote{some time later}, o
+\texttt{load} correspondente na memória de trabalho (§17.1). Travar um
+lock descarrega conceitualmente todas as variáveis da memória de
+trabalho, e destravá-lo força a gravação na memória principal das
+variáveis que a thread atribuiu (§17.9). O mesmo capítulo avisa:
+\enquote{In the absence of explicit synchronization, an implementation
+is free to update the main memory in an order that may be surprising.}
+
+Para \texttt{volatile}, a §17.7 só permite um \texttt{use} se a ação
+anterior da thread sobre a variável foi um \texttt{load}, e só permite
+um \texttt{store} se a anterior foi um \texttt{assign}. Entre duas
+variáveis \texttt{volatile}, as ações sobre as cópias mestras seguem
+a ordem pedida pela thread, e essas ações são atômicas mesmo para
+\texttt{double} e \texttt{long}. Para campos \texttt{final}, o
+cap.~17 não tem regra própria.
+
+Em 2000, William Pugh publicou
+\citetitle{paper:pugh2000-fatally-flawed}, na revista
+\emph{Concurrency: Practice and Experience}. A tese de Jeremy Manson,
+orientada por Pugh (\citetitle{paper:manson-tese-jmm-2004}, 2004),
+traz no resumo: \enquote{Java's original threading
+specification, its memory model, was fundamentally flawed.} Segundo o
+mesmo resumo, o tratamento de \texttt{volatile} era \enquote{so weak
+as to render them useless}. Os campos comuns eram super-especificados,
+e o modelo impedia quase todas as otimizações de código que os usava.
+Os campos \texttt{final} não tinham especificação além da de um campo
+comum.
+
+O FAQ da JSR~133, de Manson e Brian Goetz
+(\citetitle{doc:jsr133-faq}, fevereiro de 2004), dá os sintomas. O
+modelo antigo era difícil de entender e, por isso, muito violado: em
+muitos casos, não permitia reordenações que aconteciam em toda JVM.
+Acessos \texttt{volatile} não podiam ser reordenados entre si, mas
+podiam ser reordenados com acessos comuns, o que minava
+\texttt{volatile} como meio de uma thread sinalizar uma condição a
+outra. Como nada tratava \texttt{final} de forma diferente, uma thread
+podia ver o valor default de um campo e, mais tarde, o valor
+construído. No exemplo do FAQ, numa implementação de \texttt{String} com campos
+\texttt{final} de array, deslocamento e tamanho, o resultado de
+\texttt{substring} podia parecer mudar de \texttt{/usr} para
+\texttt{/tmp}, e
+\enquote{several JVMs have exhibited this behavior}.
+
+O FAQ chama de \enquote{infamous} o \termo{double-checked
+locking}{DCL: testar um campo sem lock e, só se ele for nulo, travar,
+testar de novo e inicializar. O FAQ o descreve como um truque para
+ter inicialização preguiçosa sem o custo da sincronização.}.
+A declaração \citetitle{doc:dcl-broken} tem 13 signatários, entre eles
+Joshua Bloch, Cliff Click, Doug Lea, Manson e Pugh. Ela diz que o
+idiom \enquote{will not work reliably in a platform independent way
+when implemented in Java, without additional synchronization}. A razão
+mais óbvia, segundo o texto, é que as escritas que inicializam o objeto
+e a escrita da referência no campo podem ser feitas ou percebidas fora
+de ordem. Uma thread pode então ver a referência não nula e os campos
+do objeto ainda com os valores default. O FAQ completa: não há como
+consertar o DCL no modelo antigo, e, nas JVMs anteriores à 1.5,
+declarar o campo \texttt{volatile} não garantia que ele funcionasse.
+
+\paragraph{A decisão.}
+Segundo o FAQ, a confusão sobre o modelo antigo levou à criação da
+\citetitle{doc:jsr133}, liderada por Pugh. A votação
+de revisão da JSR (JSR Review Ballot) foi de 29 de maio a 11 de junho de 2001, e a Final
+Release, em 30 de setembro de 2004. A página da JSR descreve o escopo
+como \enquote{the semantics of threads, locks, volatile variables and
+data races} e diz que a especificação seria entregue no release
+\enquote{Tiger}. A tese de Manson afirma que o trabalho foi incorporado
+à versão 5.0 da linguagem, o Java~5 (2004). O modelo novo é o tema do
+artigo de Manson, Pugh e Sarita Adve no POPL 2005
+(\citetitle{paper:java-memory-model}).
+
+\paragraph{O que mudou depois.}
+Na JLS do Java SE~25, a §17.4 define o modelo de memória como o
+critério que diz se o rastro de uma execução é uma execução legal do
+programa, com base na relação
+\termo{happens-before}{\enquote{Acontece antes}: se uma ação
+happens-before outra, a primeira é visível para a segunda e ordenada
+antes dela.} (§17.4.5), sem memória de trabalho: \enquote{If one action happens-before another,
+then the first is visible to and ordered before the second.} As
+arestas de \texttt{unlock}/\texttt{lock} e de \texttt{volatile} estão
+na tabela abaixo e na seção~\ref{sec:modelo-memoria}. O FAQ resume o
+efeito de \texttt{volatile}: escrever num
+\texttt{volatile} tem o efeito de memória de liberar um monitor, e ler,
+o de adquiri-lo. A §17.5 dá semântica aos campos \texttt{final}: o
+congelamento acontece quando o construtor termina, e \enquote{a
+thread-safe immutable object is seen as immutable by all threads}, mesmo
+quando a referência passa entre threads por um
+\termo{data race}{Duas threads acessam a mesma variável, pelo menos uma
+escreve, e não há happens-before entre os acessos.}.
+
+\begin{center}
+\begin{tabular}{@{}p{0.18\textwidth}p{0.38\textwidth}p{0.38\textwidth}@{}}
+\toprule
+Aspecto & JLS/JVMS 2ª ed. (§) & SE 25 (§) \\
+\midrule
+Base do modelo & Memória principal e uma memória de trabalho por
+thread; oito ações (JLS §17.1) & Critério de legalidade de execuções;
+happens-before (JLS §17.4, §17.4.5) \\
+Locks & \texttt{lock} descarrega a memória de trabalho;
+\texttt{unlock} grava na principal (JLS §17.9) & \texttt{unlock}
+happens-before o \texttt{lock} subsequente (JLS §17.4.5) \\
+\texttt{volatile} & \texttt{use} só após \texttt{load}; ordem entre
+variáveis \texttt{volatile} (JLS §17.7) & Escrita happens-before a leitura subsequente
+(JLS §17.4.5) \\
+\texttt{final} & Não mencionado (JLS cap.~17) & Congelamento ao fim do
+construtor (JLS §17.5) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Os detalhes do modelo atual, com o \texttt{contador++} que perde
+incrementos, estão na seção~\ref{sec:modelo-memoria}.
+
+\input{parte2-java-jvm/cap-por-que/modelo-memoria-codigo}

@@ -1,0 +1,80 @@
+\section{Os objetivos de projeto}
+\label{sec:objetivos-1995}
+
+\paragraph{O problema.}
+O problema da época era distribuir código por redes de máquinas
+diferentes. O \termo{white paper}{Documento técnico que apresenta e justifica um
+projeto.} \citetitle{paper:java-language-environment}
+(maio de 1996, de Gosling e McGilton) afirma que a
+tecnologia deve permitir \enquote{secure, high performance, and highly
+robust applications on multiple platforms in heterogeneous, distributed
+networks}. O mesmo texto resume o sistema como simples, familiar,
+orientado a objetos, \termo{multithreaded}{Com suporte a várias threads
+de execução na própria linguagem.} e interpretado, para máxima
+portabilidade e capacidades dinâmicas.
+
+\paragraph{A decisão.}
+As metas de segurança, robustez e neutralidade de arquitetura (§1.2.2 e
+§1.2.3 do white paper) levaram a quatro escolhas que o resto do capítulo
+retoma. Primeiro, o compilador gera \termo{bytecode}{Conjunto de
+instruções da JVM, independente de processador. O \texttt{javac} o
+grava em arquivos \texttt{.class}.}: um formato intermediário neutro,
+pensado para transportar código a várias plataformas (§1.2.3). Segundo,
+o bytecode foi desenhado para ser fácil de interpretar em qualquer
+máquina ou de traduzir dinamicamente para código nativo quando o
+desempenho pedir (§4.1.1). Terceiro, o código que chega pela rede não é
+confiável: o sistema de execução o submete à verificação de bytecode
+(§6.3), tratada na seção~\ref{sec:verificacao}. Quarto, o modelo de
+memória não tem tipos ponteiro definidos pelo programador, nem aritmética
+de ponteiros, e tem coleta automática de lixo (§1.2.2); o white paper
+também diz que programadores Java não conseguem forjar ponteiros para a
+memória (§6.1). Para a coleta, o texto descreve um \termo{garbage
+collector}{Coletor de lixo: componente da JVM que libera os objetos que
+o programa não alcança mais.} em segundo plano, numa thread de baixa
+prioridade (§2.1.7). Já as threads são parte da linguagem, preemptivas e,
+conforme a plataforma, divididas por fatias de tempo (§7.1), assunto da
+seção~\ref{sec:monitores}.
+
+O white paper descreve a JVM como máquina abstrata baseada
+principalmente na interface POSIX, o que exige suporte a multithreading
+na plataforma de destino (§1.2.3). Ele chama o carregador de bytecode de
+próxima linha de defesa depois do verificador (§6.2).
+
+\paragraph{O que mudou depois.}
+A verificação de bytecode, uma das quatro escolhas acima, mudou de
+técnica: a JVMS 2ª ed. descreve análise de fluxo de dados, e a JVMS do
+Java SE~25 exige \termo{type checking}{Verificação em que o
+atributo \texttt{StackMapTable} informa os tipos e o verificador os
+confere.} para \termo{class files}{Arquivos \texttt{.class}, o formato
+binário que a JVM carrega.} de versão 50.0 ou maior. A comparação está
+na seção~\ref{sec:verificacao}.
+
+\paragraph{O que isso muda no seu código.}
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{JDK~25:} o mesmo \texttt{.class} só é aceito por uma JVM
+  que suporte a versão desse class file. Uma JVM do Java
+  SE~25 suporta as versões major de 45 a 69 (JVMS SE~25, §4.1); um class
+  file de versão não suportada faz a JVM lançar
+  \texttt{UnsupportedClassVersionError} ao derivar a classe (§5.3.5).
+  Experimento: o script \texttt{scripts/experimentos.sh} compila a mesma
+  classe com \texttt{-{}-release 25} e com \texttt{-{}-release 21} e roda
+  as duas no JDK~25 e no JDK~21. O JDK~25 roda as duas; o JDK~21 roda a
+  compilada para 21 e recusa a compilada para 25 (saída abaixo).
+\item \emph{Java SE~25:} a linguagem tem gerenciamento automático de
+  memória, em geral com um coletor de lixo, para evitar os problemas de
+  segurança da desalocação explícita, e os detalhes da representação na
+  máquina não ficam acessíveis pela linguagem (JLS SE~25, cap.~1). Em
+  troca, o tempo de coleta e o comportamento de threads entram no seu
+  raciocínio sobre desempenho, temas das seções seguintes.
+\end{itemize}
+
+A saída do experimento do primeiro item, com JDK, CPUs e processador no
+cabeçalho, é a desta máquina:
+
+\lstinputlisting[language={}]{dados/experimentos/versao.txt}
+
+\paragraph{Onde aprofundar.}
+O formato do bytecode é lido em detalhe no capítulo~\ref{cap:lendo-bytecode},
+e o carregamento, a ligação e a inicialização estão na
+seção~\ref{sec:class-loading}.

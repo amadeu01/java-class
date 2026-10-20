@@ -1,0 +1,64 @@
+\paragraph{Um heap por thread funciona?}
+A hipótese de coleta de lixo local por thread, com um heap para cada
+thread, é viável na prática? Dois artigos do ISMM testaram a ideia.
+
+Steensgaard partiu de um problema de servidor: o coletor convencional
+para todas as threads, e \enquote{for server-type applications with
+several hundred threads}, esse encontro global e a espera pelo fim da
+coleta podem ser um gargalo sério (\citetitle{paper:steensgaard2000},
+2000). Com escape analysis, os dados que só uma thread enxerga vão para
+um heap específico daquela thread, que pode ser coletado sem envolver as
+outras. A implementação foi feita no Marmot, um compilador
+ahead-of-time para um subconjunto de Java, e os resultados são
+estatísticas de cópia, não tempos: nos cinco programas testados, entre
+eles o VolanoMark, foi zero o número de conflitos entre threads copiando
+o mesmo objeto compartilhado.
+
+Domani e colegas deram a cada thread uma partição do heap, em que ela
+aloca e coleta sem sincronizar com as outras
+(\citetitle{paper:domani2002}, 2002). Uma barreira de escrita
+(\emph{write barrier}) detecta
+quando um objeto passa a ser global. Numa JVM da IBM (um protótipo do
+JDK~1.3.0 para Windows) em modo interpretado, sem o JIT, num servidor
+Netfinity de quatro processadores:
+\begin{itemize}
+\item o tempo total de GC foi \enquote{substantially reduced} e a maior
+  parte das pausas longas sumiu. As pausas de GC cheio ficavam na ordem de
+  100~ms, as coletas locais em torno de 10~ms e, com alocação global
+  direta, em cerca de 1~ms;
+\item o tempo total de execução ficou praticamente o mesmo: o ganho de
+  2 a 3\% foi anulado pelo custo da write barrier, de 2,1 a 2,8\% do
+  tempo. Os autores não implementaram a barreira no JIT e dizem que, com
+  ele, esse custo muito provavelmente vai subir de forma significativa;
+\item no benchmark pBOB, cerca de 30\% dos objetos criados eram globais;
+\item a coleta cheia continua existindo: ela para todas as threads e
+  coleta o heap inteiro, mas acontece raramente.
+\end{itemize}
+
+\emph{O que a HotSpot faz em vez disso.} Na HotSpot, a parte local de
+cada thread é só a alocação. O documento da Sun sobre a gerência de
+memória da HotSpot (\citetitle{doc:hotspot-memmgmt-2006}, J2SE~5.0)
+descreve o \termo{TLAB}{\emph{Thread-local allocation buffer}: buffer
+de alocação de uma thread, um pedaço do heap em que só ela aloca.}: cada
+thread recebe um buffer, \enquote{a small portion of the generation}, e
+como só uma thread aloca em cada TLAB, a alocação usa
+\termo{bump-the-pointer}{Alocar avançando um ponteiro até o fim do
+último objeto alocado.} sem lock. Só raramente, ao pegar um TLAB novo, é
+preciso sincronizar. No JDK~25, o comentário de
+\citetitle{doc:hotspot-tlab-hpp} diz que o TLAB \enquote{is
+thread-private at any time, but maybe multiplexed over time across
+multiple threads}. O heap continua compartilhado: a JVMS SE~25, §2.5.3,
+diz que a JVM tem um heap \enquote{shared among all Java Virtual Machine
+threads}, e Shipilëv lembra que os TLABs são locais à thread só no
+sentido temporal e continuam sendo parte do heap Java
+(\citetitle{artigo:shipilev-tlab}). Alocação local, heap compartilhado.
+
+\emph{Como a BEAM faz.} Na BEAM, cada processo Erlang tem pilha e heap
+próprios, no mesmo bloco de memória, crescendo um em direção ao outro, e
+o coletor é \enquote{a per process generational semi-space copying
+collector}, com um espaço global para objetos grandes
+(\citetitle{doc:erlang-gc}). O heap de um processo começa, por padrão,
+com 233 palavras (\citetitle{doc:erlang-eff-processes}). Ao enviar uma
+mensagem, o remetente copia o conteúdo dela. A
+seção~\ref{sec:vms-gc} compara os dois modelos e mostra o lado ruim da
+BEAM, nos binários grandes.

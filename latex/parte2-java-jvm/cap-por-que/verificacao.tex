@@ -1,0 +1,141 @@
+\section{A verificação do bytecode}
+\label{sec:verificacao}
+
+\paragraph{O problema.}
+A JVM não tem garantia de que o arquivo que
+recebe veio do \texttt{javac} nem de que está bem formado (JVMS 2ª ed.,
+§4.9). Uma verificação feita em tempo de ligação evita checagens caras a
+cada instrução durante a execução (§4.9). O white paper já dizia que o
+sistema de execução não confia no código que chega e o submete à
+verificação de bytecode (§6.3 do white paper,
+\citetitle{paper:java-language-environment}).
+
+\paragraph{A decisão.}
+Na \citetitle{livro:lindholm1999}, a verificação de um
+class file tem quatro passes. O passe~3 faz \enquote{data-flow analysis}
+sobre o array \texttt{code} do atributo \texttt{Code} de cada método
+(§4.9, §4.9.1 e §4.9.2).
+
+\paragraph{Como o verificador prova a segurança de tipos?}
+Para garantir a segurança de tipos, o verificador confere, durante a
+ligação, que nenhum local é acessado sem que se saiba que contém um
+valor de tipo apropriado, e que os operandos de cada instrução têm o
+tipo esperado (§4.9.1, passe~3). Para isso ele modela o efeito de cada
+instrução na pilha e nos locais, e a verificação falha se um local
+usado não contém o tipo apropriado (§4.9.2).
+
+A listagem abaixo mostra o que ele enxerga. Em \texttt{combinar}, o
+\texttt{int} \texttt{quantidade} vive no \termo{slot}{Posição no array
+de variáveis locais do frame do método.} 0 e o \texttt{String}
+\texttt{rotulo} no slot~1. As instruções são tipadas:
+\texttt{istore\_0} guarda um inteiro e \texttt{astore\_1} uma
+referência. Cada linha começa com o \termo{offset}{Posição, em bytes, da
+instrução dentro do código do método.}: \texttt{istore\_0} está no
+offset~1, \texttt{astore\_1} no~4, \texttt{iload\_0} no~5 e
+\texttt{aload\_1} no~6, que alimenta o \texttt{invokevirtual} de
+\texttt{String.length} no offset~7.
+
+\lstinputlisting[language=Java]{generated/source/VerificacaoTipos.java}
+
+\inputbytecode{VerificacaoTipos}
+
+O \texttt{iload} exige que o local contenha um \texttt{int} (JVMS
+SE~25, §6.5). Experimento: o programa \texttt{CorrompeVerificacao}, em
+\texttt{examples/experimentos}, troca no \texttt{.class} compilado o
+byte do \texttt{aload\_1} do offset~6 por \texttt{iload\_1}
+(\texttt{0x2b} por \texttt{0x1b}), e o script
+\texttt{scripts/experimentos.sh} executa a classe alterada num
+\termo{container}{Processo isolado que roda a partir de uma imagem com o
+sistema e as ferramentas, como o JDK, já instalados.} com JDK~25. A JVM a recusa com
+\texttt{VerifyError: Bad local variable type}: no offset~6 de \texttt{combinar}, o slot~1 guarda uma
+\texttt{String}, e não um inteiro. A saída abaixo, com JDK, CPUs e
+processador no cabeçalho, é a desta máquina.
+
+\lstinputlisting[language={}]{dados/experimentos/verifyerror.txt}
+
+\paragraph{O que o verificador não prova?}
+Entre os testes do passe~3 estão os itens acima: pilha, locais,
+argumentos, campos e operandos tipados (§4.9.1). A §4.9.2 acrescenta
+outros: os desvios ficam dentro do array \texttt{code} e caem no início
+de uma instrução, as referências ao constant pool apontam para entradas
+do tipo certo, a execução não passa do fim do código e os intervalos dos
+tratadores de exceção são válidos. Alguns testes que
+poderiam ser feitos no passe~3 são adiados para a primeira vez que o
+código do método é invocado, e o passe~4 é feito pelas próprias
+instruções da JVM. Um exemplo da JVMS: se um método chama outro que
+devolve uma instância de \texttt{A} e ela só é atribuída a um campo do
+tipo \texttt{A}, o verificador não confere se \texttt{A} existe. Erros
+detectados no passe~4 lançam subclasses de \texttt{LinkageError}
+(§4.9.1). A JVMS do Java SE~25 repete que certos testes são adiados até
+a primeira invocação (§4.10.2.1).
+
+\paragraph{O que mudou depois.}
+Na JVMS do Java SE~25 (§4.10), class files de versão 50.0 ou maior
+devem ser verificados por type checking; a inferência de tipos
+continua para versões menores (§4.10). O atributo \texttt{StackMapTable} existe para esse fim
+(§4.7.4). Só a versão 50.0 (Java 6) pode recuar para inferência se o
+type checking falhar; nas versões 51.0 e posteriores não há recuo
+(§4.10.1). A \citetitle{doc:jsr202}, uma \termo{JSR}{Java
+Specification Request: o documento que propõe ao JCP uma especificação
+nova ou uma revisão importante de uma existente.}, introduziu a \termo{split
+verification}{Verificação dividida entre quem gera o class file e a
+JVM.} no Java SE~6, com versão final em 11 de dezembro de 2006.
+
+\begin{center}
+\begin{tabular}{@{}p{0.3\textwidth}p{0.3\textwidth}p{0.3\textwidth}@{}}
+\toprule
+Aspecto & JLS/JVMS 2ª ed. (§) & SE 25 (§) \\
+\midrule
+Técnica & Análise de fluxo de dados (§4.9.1) & Type checking, versão
+$\geq$ 50.0 (§4.10) \\
+Informação de tipos & Inferida pelo verificador (§4.9.2) &
+\texttt{StackMapTable} (§4.7.4) \\
+Inferência & Única técnica & Para versões menores que 50.0 (§4.10) e
+como recuo opcional na 50.0 (§4.10.1) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{O que acontece se a verificação for desabilitada?}
+As opções \texttt{-Xverify:none} e \texttt{-noverify} foram depreciadas
+no JDK~13 (\citetitle{doc:jdk-8214719}), porque permitem executar código
+Java que viola a especificação. Segundo as \citetitle{doc:jdk13-relnotes},
+elas continuam funcionando, mas emitem o aviso \enquote{warning: Options
+-Xverify:none and -noverify were deprecated in JDK 13 and will likely be
+removed in a future release.} As mesmas notas dizem que a depreciação
+ajuda a evitar código que viola a JVMS, \enquote{which can leave their
+applications open to malicious code}. Para quem quer pular a verificação
+no \termo{startup}{Inicialização da aplicação.}, elas indicam o
+\termo{AppCDS}{Class Data Sharing de aplicação: arquivo com classes já
+processadas, que a JVM mapeia na inicialização.}: as classes são
+verificadas ao serem arquivadas, e a verificação em execução é evitada.
+Também avisam que o suporte da Oracle pode exigir reproduzir o problema
+sem essas opções.
+
+O que acontece, então, com a classe alterada acima? Experimento, no
+JDK~25: executada com \texttt{-Xverify:none}, ela não é recusada com
+\texttt{VerifyError}. A JVM imprime o aviso de depreciação e o processo
+termina com um erro fatal da própria JVM, um \texttt{SIGSEGV} no frame
+\texttt{LinkResolver::resolve\_invokevirtual}; o código de saída está no
+cabeçalho. A saída abaixo é a desta máquina; o relatório completo do
+erro fica no arquivo \texttt{hs\_err} que a JVM indica.
+
+\lstinputlisting[language={}]{dados/experimentos/noverify.txt}
+
+\paragraph{O que isso muda no seu código.}
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{Class files de versão 50.0 ou maior (Java~6 em diante):}
+  quem transforma bytecode com uma ferramenta pode alterá-lo de modo que
+  exija ajustar os \termo{stack map frames}{Entradas do
+  \texttt{StackMapTable} que descrevem os tipos em um ponto do método.}
+  (§4.10.1).
+\item \emph{JDK~13 em diante:} evite \texttt{-Xverify:none} e
+  \texttt{-noverify}, depreciadas nessa versão
+  (\citetitle{doc:jdk13-relnotes}).
+\end{itemize}
+
+\paragraph{Onde aprofundar.}
+A verificação é uma etapa de ligação, explicada na
+seção~\ref{sec:class-loading}. Para ler listagens como a acima, veja o
+capítulo~\ref{cap:lendo-bytecode}.

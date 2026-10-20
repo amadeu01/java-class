@@ -1,0 +1,24 @@
+# jdk: openjdk version "25.0.4.1" 2026-08-18 LTS
+# cpus: 12
+# cpu: AMD Ryzen 5 9600X 6-Core Processor
+# data: 2026-10-20T07:05:13Z
+# experimento: VerificacaoTipos com aload_1 trocado por iload_1, carregada normalmente (gerado por scripts/experimentos.sh; não edite)
+# troca: combinar()@6: aload_1 (0x2b) -> iload_1 (0x1b)
+# código de saída: 1
+
+$ java -cp corrompida apostila.bytecode.VerificacaoTipos
+Error: Unable to initialize main class apostila.bytecode.VerificacaoTipos
+Caused by: java.lang.VerifyError: Bad local variable type
+Exception Details:
+  Location:
+    apostila/bytecode/VerificacaoTipos.combinar()I @6: iload_1
+  Reason:
+    Type 'java/lang/String' (current frame, locals[1]) is not assignable to integer
+  Current Frame:
+    bci: @6
+    flags: { }
+    locals: { integer, 'java/lang/String' }
+    stack: { integer }
+  Bytecode:
+    0000000: 063b 1207 4c1a 1bb6 0009 60ac          
+

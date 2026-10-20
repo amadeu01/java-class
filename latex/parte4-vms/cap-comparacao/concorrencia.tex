@@ -2,7 +2,7 @@
 \label{sec:vms-concorrencia}
 
 \paragraph{HotSpot.}
-A Parte~II mostrou os dois tipos de thread do Java. A thread de plataforma
+A Parte~\ref{parte:java-jvm} mostrou os dois tipos de thread do Java. A thread de plataforma
 é uma thread do sistema operacional. A virtual thread
 (seção~\ref{sec:virtual-threads}) é escalonada pelo próprio JDK: o
 \citetitle{doc:jep444} diz que o escalonador padrão é um
@@ -10,7 +10,7 @@ A Parte~II mostrou os dois tipos de thread do Java. A thread de plataforma
 processadores disponíveis. Em qualquer dos dois casos, todas as threads
 enxergam o mesmo heap: a especificação da JVM diz que ele é
 \enquote{shared among all Java Virtual Machine threads}
-(\citetitle{doc:jvms25}, §2.5.3). Por isso a Parte~II precisou falar de
+(\citetitle{doc:jvms25}, §2.5.3). Por isso a Parte~\ref{parte:java-jvm} precisou falar de
 \texttt{synchronized} e do modelo de memória
 (seções~\ref{sec:sincronizacao} e~\ref{sec:modelo-memoria}).
 
