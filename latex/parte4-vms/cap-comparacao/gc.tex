@@ -27,6 +27,8 @@ no heap, a VM primeiro tenta recuperar espaço coletando o lixo
 \emph{daquele} processo. Como as mensagens são copiadas
 (seção~\ref{sec:vms-concorrencia}), não há ponteiro de um heap de
 processo para outro, e é isso que torna a coleta por processo possível.
+O que a pesquisa encontrou ao testar heaps por thread na JVM, e o que a
+HotSpot faz em vez disso (o TLAB), está na seção~\ref{sec:gc}.
 
 \paragraph{O que isso muda na prática.}
 O custo da coleta passa a ser proporcional ao processo, e um processo

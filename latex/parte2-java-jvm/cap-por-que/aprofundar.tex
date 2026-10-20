@@ -1,1 +1,43 @@
 \section{Onde aprofundar}
+
+As fontes principais deste capítulo, na ordem em que aparecem. Acesso
+(aberto ou pago) e links também na bibliografia.
+
+\subsection*{Especificações}
+\begin{itemize}
+\obra{livro:gosling2000-jls2}{A JLS 2ª ed., de onde vêm as regras de
+  threads, locks e memória antes da JSR~133 (cap.~17).}
+\obra{livro:lindholm1999}{A JVMS 2ª ed., com os quatro passes do
+  verificador (seção~\ref{sec:verificacao}).}
+\obra{doc:jls25}{A JLS atual, para comparar o cap.~17 com o da 2ª ed.}
+\obra{doc:jvms25}{A JVMS atual, com o verificador por type checking e as
+  flags de campo e de método mostradas nas listagens.}
+\end{itemize}
+
+\subsection*{Decisões e história}
+\begin{itemize}
+\obra*{paper:java-language-environment}{O white paper que lista os
+  objetivos de projeto (seção~\ref{sec:objetivos-1995}).}
+\obra*{paper:hoare1974-monitors}{O artigo de monitores; o white paper
+  diz que o paradigma de monitor do Java vem de Hoare.}
+\obra*{paper:brinch-hansen1999-insecure}{A crítica de 1999 aos monitores
+  do Java (seção~\ref{sec:monitores}).}
+\obra*{paper:manson-tese-jmm-2004}{A tese, aberta, que explica o que
+  estava errado no modelo de memória antigo e o modelo novo.}
+\obra*{doc:jsr133-faq}{Os sintomas do modelo antigo e o
+  \texttt{volatile} e o \texttt{final} do novo, em perguntas e respostas.}
+\obra*{paper:lea2000-forkjoin}{O framework Fork/Join e o work-stealing,
+  antes de entrarem no JDK (seção~\ref{sec:juc}).}
+\obra*{artigo:kegel-c10k}{O texto que pergunta como atender dez mil
+  clientes ao mesmo tempo (seção~\ref{sec:muitos-requests}).}
+\obra*{doc:jep444}{Por que as virtual threads existem: dar escala, não
+  velocidade (seção~\ref{sec:threads-ate-vt}).}
+\end{itemize}
+
+\subsection*{Para o código do dia a dia}
+\begin{itemize}
+\obra*{livro:goetz2006}{Visibilidade, publicação segura e
+  \texttt{java.util.concurrent} na prática.}
+\obra{doc:javase25-juc}{O javadoc do pacote, com as coleções
+  concorrentes e quando preferi-las a um mapa sincronizado.}
+\end{itemize}

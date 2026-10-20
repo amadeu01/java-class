@@ -15,6 +15,8 @@ aponta onde a apostila trata o assunto.
 \item[1992--1994] O projeto perde as concorrências de TV a cabo e passa
   por um período em que ninguém sabe se ele continua (02:32--03:46).
 \end{description}
+Os objetivos de projeto que o white paper de 1996 dá para a linguagem
+estão na seção~\ref{sec:objetivos-1995}.
 
 \subsection{A virada para a web (1994--1995)}
 \begin{description}
@@ -28,28 +30,38 @@ aponta onde a apostila trata o assunto.
   (06:34--06:57).
 \end{description}
 O \enquote{rode em qualquer lugar} é a JVM com o bytecode como contrato:
-o capítulo~\ref{cap:lendo-bytecode} mostra esse contrato por dentro.
+o capítulo~\ref{cap:lendo-bytecode} mostra esse contrato por dentro, e
+a seção~\ref{sec:verificacao} conta por que a JVM verifica o bytecode
+antes de executá-lo.
 
 \subsection{Conflitos, padronização e ecossistema (1996--2006)}
 \begin{description}
 \item[1996--1998] A \enquote{guerra do Java} com a Microsoft, que acaba
   nos tribunais porque a implementação para Windows quebrava a
   compatibilidade (18:20--22:45). \emph{Conferido:} a Sun processou a
-  Microsoft em outubro de 1997, e o acordo saiu em janeiro de 2001.
+  Microsoft em outubro de 1997, e o acordo saiu em janeiro de 2001
+  (\citetitle{doc:microsoft-sun-acordo-2001}).
 \item[1999] O filme fala da criação do \textbf{Java Community Process}
   (JCP), que formaliza a evolução da linguagem com a indústria
   (24:45--26:20). \emph{Conferido:} o JCP foi criado em 1998
-  (\citetitle{doc:jcp}); 1999 é o ano do J2EE~1.2, a primeira versão da
-  plataforma corporativa.
+  (\citetitle{doc:jcp}); 1999 é o ano em que a Sun lançou o J2EE, a
+  plataforma corporativa, em dezembro.
 \item[2000--2006] O Java domina o mercado corporativo com o J2EE. Surgem o
   Apache Tomcat (28:59), o Spring e o Hibernate (33:15--35:10).
   \emph{Conferido:} o Tomcat foi doado à Apache em 1999, o Hibernate é de
   2001 e o Spring~1.0 é de março de 2004.
 \item[2006] A Sun anuncia que vai abrir o código do Java: nasce o
   \textbf{OpenJDK} (36:07--38:31). \emph{Conferido:} o anúncio, com o
-  HotSpot e o \texttt{javac} sob GPL, é de novembro de 2006; o resto do
-  JDK saiu em maio de 2007.
+  HotSpot e o \texttt{javac} sob GPL, é de novembro de 2006
+  (\citetitle{artigo:reinhold-one-giant-leap}); um JDK compilável por
+  completo saiu sob GPL em maio de 2007
+  (\citetitle{artigo:reinhold-liftoff}).
 \end{description}
+Três decisões de concorrência do capítulo~\ref{cap:por-que} são dessa
+fase: as APIs de I/O escalável da JSR~51, no Java~1.4 (2002;
+seção~\ref{sec:muitos-requests}), e, no Java~5 (2004), o modelo de
+memória da JSR~133 (seção~\ref{sec:jmm-historia}) e o
+\texttt{java.util.concurrent} da JSR~166 (seção~\ref{sec:juc}).
 
 \paragraph{Por que o J2EE quase fracassou.}
 O filme dá três motivos (31:46--33:16):
@@ -86,8 +98,9 @@ fica na borda (seção~\ref{sec:circulos-quarkus}).
   desempenho e concorrência, como o \textbf{Project Loom}
   (52:23--01:00:00), mantendo o Java relevante para nuvem e IA
   (01:08:44--01:11:29). \emph{Conferido:} Mark Reinhold propôs o ciclo de
-  seis meses em setembro de 2017 (\citetitle{artigo:forward-faster}), e o
-  primeiro lançamento nesse ritmo foi o JDK~10, em março de 2018.
+  seis meses em setembro de 2017 (\citetitle{artigo:forward-faster}); no
+  modelo de seis meses, o lançamento de março de 2018 é o JDK~10
+  (\citetitle{doc:jep322}).
 \end{description}
 
 \paragraph{Project Loom e virtual threads.}
@@ -110,4 +123,5 @@ O filme dedica um trecho ao Loom (00:59:52--01:03:30):
 (2022) e ficaram finais no JDK~21, em setembro de 2023
 (\citetitle{doc:jep444}). O bytecode e as regras de uso estão na
 seção~\ref{sec:virtual-threads}; a escolha entre virtual threads e reativo
-no Quarkus, na seção~\ref{sec:vt-vs-reativo}.
+no Quarkus, na seção~\ref{sec:vt-vs-reativo}; e o caminho das green
+threads às virtual threads, na seção~\ref{sec:threads-ate-vt}.

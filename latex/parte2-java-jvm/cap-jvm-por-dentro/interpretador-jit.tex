@@ -20,6 +20,41 @@ otimizado).}, introduzida no Java SE~7 e ligada por padrão, o
 mesmas, e o \emph{server compiler} (C2) usa esse perfil para compilar de
 forma agressiva (\citetitle{doc:hotspot-perf}).
 
+\paragraph{Interpretador, JIT ou AOT: quem decide, e quanto custa no startup?}
+Como a JVM decide entre interpretador, JIT e AOT, e qual é o impacto real
+do tempo de startup com compilação dinâmica e estática? Na HotSpot, quem
+decide entre interpretador e JIT é a política de compilação, descrita no
+comentário de cabeçalho de \citetitle{doc:hotspot-compilationpolicy}. Ela
+tem cinco níveis: o 0 é o interpretador, o 1, o 2 e o 3 são o C1 com
+graus diferentes de coleta de perfil, e o 4 é o C2, \enquote{with full
+profile guided optimization}. A execução começa no nível~0, e a política
+pode compilar o método no nível~3 ou no~2; terminada a coleta de perfil
+no nível~3, o método passa ao nível~4. A passagem do nível~0 ao~3 compara
+o número de invocações e de \emph{back-edges} (voltas de laço) do método
+com limiares multiplicados por um coeficiente de escala, e o tamanho das
+filas do C1 e do C2 ajusta esses limiares. Experimento (JDK~25.0.4.1,
+imagem \texttt{eclipse-temurin:25-jdk}): \texttt{java
+-XX:+PrintFlagsFinal -version} mostrou \texttt{Tier3InvocationThreshold}
+igual a 200 e \texttt{Tier4InvocationThreshold} igual a 5000.
+
+O AOT aparece de dois jeitos. Dentro da HotSpot, o
+\citetitle{doc:jep483} (JDK~24) guarda num cache as classes carregadas e
+ligadas (seção~\ref{sec:class-loading}), e o \citetitle{doc:jep515}
+(JDK~25) guarda também perfis de métodos coletados num treino, para que o
+JIT gere código nativo logo no início. Fora dela, o
+\citetitle{doc:graalvm-native-image} compila o código Java, antes da
+execução, para um executável nativo (seção~\ref{sec:jvm-vs-nativo}).
+
+Os números publicados vêm dos próprios JEPs. O JEP~483 informa que um
+programa pequeno roda em 0,031~s no JDK~23 e em 0,018~s no JDK~24 com o
+cache, 42\% mais rápido; o número do Spring PetClinic está na
+seção~\ref{sec:class-loading}. O JEP~515 informa que o seu programa de
+exemplo roda em 90~ms com um cache sem perfis e em 73~ms depois de
+coletar os perfis no cache, 19\% mais rápido. Para JVM contra executável
+nativo, a seção~\ref{sec:jvm-vs-nativo} traz a tabela que o Quarkus
+publica, com tempo até a primeira requisição, throughput de pico e
+memória nos dois modos e com o cache AOT.
+
 \paragraph{Otimizações que dependem do perfil.}
 \begin{itemize}
 \item \emph{Inlining}: o corpo do método chamado é copiado no chamador.

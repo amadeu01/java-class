@@ -1,1 +1,32 @@
 \section{Desafios práticos}
+
+\desafio{\emph{Muitos requests.} Escreva um programa que envia 10.000
+tarefas com \texttt{Thread.sleep} de um segundo para um
+\texttt{Executors.newFixedThreadPool(200)} e depois para um
+\texttt{Executors.newVirtualThreadPerTaskExecutor()}, no formato do
+exemplo do JEP~444 (seção~\ref{sec:threads-ate-vt}). Meça o tempo total
+de cada um. Troque o \texttt{sleep} por um cálculo de um segundo e meça
+de novo. Anote o JDK, o número de CPUs e a máquina junto dos números.}
+
+\desafio{\emph{Memória compartilhada: \texttt{wait} e \texttt{notifyAll}.}
+Copie o \texttt{EsperaEmLaco} da seção~\ref{sec:monitores} e acrescente
+um segundo consumidor. Depois troque os dois \texttt{while} por
+\texttt{if}. Rode várias vezes cada versão. Usando a JLS SE~25,
+§17.2.1, explique o que pode acontecer com a versão com \texttt{if} que
+o laço impede.}
+
+\desafio{\emph{Memória compartilhada: publicação.} Copie o
+\texttt{PublicacaoSegura} da seção~\ref{sec:jmm-historia}, tire o
+\texttt{volatile} do campo \texttt{instancia} e gere o \texttt{javap -v
+-p}. Compare as flags do campo com as da listagem do capítulo. Com as
+regras de \emph{happens-before} da JLS SE~25, §17.4.5, diga que garantia
+o \texttt{obter()} perde e por que o \texttt{obterPorPortador()} não
+depende dessa flag.}
+
+\desafio{\emph{Vários núcleos.} Numa cópia do repositório, mude o laço
+\texttt{for t in 1 8} de \texttt{scripts/bench.sh} para incluir 2, 4 e o
+número de CPUs da sua máquina, e rode o benchmark \texttt{Contencao} da
+seção~\ref{sec:juc}. Faça um gráfico de ops/\textmu{}s por número de threads
+para os três métodos. Como cada curva muda com o número de threads? Compare com
+o cabeçalho do seu \texttt{contencao.txt} (JDK, CPUs, máquina) antes de
+comparar com a tabela do capítulo.}

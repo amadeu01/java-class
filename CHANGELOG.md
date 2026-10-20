@@ -8,6 +8,10 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 ### Adicionado
 
 - Linha do tempo do documentário *The Java Story* no apêndice "Quem fez o Java": as fases do Oak ao Project Loom com a minutagem do vídeo, por que o J2EE quase fracassou, e as datas conferidas nas fontes primárias onde o filme arredonda (JCP em 1998, não 1999; OpenJDK completo em 2007; virtual threads finais no JDK 21).
+- Parte II, capítulo novo "Por que o Java é assim", com foco em concorrência (muitos requests, memória compartilhada, vários núcleos): objetivos de projeto, verificação do bytecode, monitores e `wait`/`notify`, de threads de plataforma a virtual threads, o modelo de memória e a JSR 133, `java.util.concurrent` e servidores com muitos requests. Cada seção conta o problema da época, a decisão (com a seção da JLS/JVMS 2ª ed.), o que mudou até o Java SE 25 e o que isso muda no seu código; listagens `javap` de `VerificacaoTipos`, `EsperaEmLaco` e `PublicacaoSegura`; "Onde aprofundar" e desafios práticos.
+- Benchmark JMH de contenção (`synchronized` × `AtomicLong` × `LongAdder`, com 1 e 8 threads), rodado em container por `scripts/bench.sh`, com JDK, CPUs e máquina impressos junto dos números; o `check.sh` falha se o resultado não estiver versionado.
+- Perguntas respondidas nos capítulos que já tratavam do assunto: como a HotSpot decide entre interpretador, JIT e AOT e o efeito no startup (seção do JIT); como ZGC e Shenandoah encurtam as pausas stop-the-world (seção de GC); e se um heap por thread funciona, com os resultados de Steensgaard (2000) e Domani et al. (2002), o TLAB da HotSpot e o heap por processo da BEAM (seção de GC, com ponte para a Parte IV).
+- Linha do tempo do documentário revisada: as notas "conferido" foram reconferidas em fontes primárias (comunicados da Sun e da Microsoft, blog de Mark Reinhold, JEP 322), e cada fase aponta para a seção correspondente do capítulo novo.
 
 ## [0.1.0] - 2026-10-19
 

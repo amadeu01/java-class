@@ -38,7 +38,7 @@ pendentes. A thread fica dormente até acontecer uma de três coisas: um
 o fim do tempo limite, se houver. Depois ela trava o objeto de novo e
 volta de \texttt{wait} com o lock no mesmo estado em que estava.
 
-A JVMS 2ª ed. traz o modelo de threads e locks no capítulo~8, \enquote{adapted with
+A JVMS 2ª ed. traz o modelo de threads e locks no cap.~8, \enquote{adapted with
 minimal changes from Chapter 17 of the first edition of The Java
 Language Specification}, nas seções §8.12 a §8.14. Na §8.14, um
 \texttt{notify} remove do wait set uma thread escolhida arbitrariamente.
@@ -60,7 +60,7 @@ imitates insecure monitors}, e o artigo conclui que o Java ignora os
 paralela.
 
 \paragraph{O que mudou depois.}
-Na JLS do Java SE~25, o capítulo~17 continua se chamando
+Na JLS do Java SE~25, o cap.~17 continua se chamando
 \enquote{Threads and Locks}, mas a sincronização está na §17.1, o wait
 set na §17.2 e o modelo de memória na §17.4. A §17.1 define:
 \enquote{Each object in Java is associated with a monitor, which a
