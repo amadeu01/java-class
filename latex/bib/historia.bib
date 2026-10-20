@@ -1,0 +1,226 @@
+% Por que o Java é assim (Task 1): fontes do capítulo de história e decisões
+% de projeto: objetivos, verificação, monitores, threads, modelo de memória,
+% java.util.concurrent, muitas requisições, JIT/AOT e GC por thread.
+%
+% Convenção de chaves: livro:<sobrenome><ano>, paper:<slug>, artigo:<slug>,
+% doc:<slug>. Todo registro tem keywords={livro|paper|artigo|doc} e langid.
+% Mesmas regras de pessoas.bib e academico.bib: acesso em livro e paper
+% (compra|aberto|pago|esgotado), pago exige doi, url/urlgratis/doi.
+% Obra que já existe em outro .bib não se repete aqui (biber quebra com
+% chave duplicada). Reusadas pelo capítulo: doc:jep444, doc:jep491,
+% doc:jep377, doc:jep379, doc:jep439, doc:jep474, doc:jep483, doc:jep514,
+% doc:jep515, doc:jls25, doc:jvms25, doc:quarkus-virtual-threads,
+% doc:quarkus-reactive-architecture, doc:erlang-gc, doc:erlang-eff-processes,
+% doc:graalvm-native-basics, paper:java-memory-model,
+% paper:manson-tese-jmm-2004, paper:shenandoah, paper:zgc-deep-dive,
+% paper:java-language-environment, livro:lindholm1999, artigo:goetz-virtual-threads.
+%
+% Fontes que só existem hoje no Internet Archive (JLS/JVMS 2a edição, bugs do
+% JBS que bloqueiam robôs): url = endereço oficial original; a cópia do
+% Wayback fica em urlgratis (livro, paper) ou em note (doc). Abertas em
+% 2026-10-20; ver .superpowers/sdd/2026-10-19-historia-decisoes/research-historia.md.
+
+% ---- Livros ----
+@book{livro:gosling2000-jls2,
+  author={James Gosling and Bill Joy and Guy Steele and Gilad Bracha},
+  title={The Java Language Specification}, edition={2},
+  publisher={Addison-Wesley}, date={2000-06}, isbn={9780201310085},
+  url={http://java.sun.com/docs/books/jls/second_edition/html/jTOC.doc.html}, urldate={2026-10-20},
+  urlgratis={https://web.archive.org/web/20021203021153/http://java.sun.com/docs/books/jls/second_edition/html/jTOC.doc.html},
+  acesso={esgotado}, note={HTML oficial da Sun, hoje só no Internet Archive}, langid={english}, keywords={livro}}
+
+% ---- Papers ----
+@article{paper:hoare1974-monitors,
+  author={C. A. R. Hoare}, title={Monitors: An Operating System Structuring Concept},
+  journaltitle={Communications of the ACM}, volume={17}, number={10}, pages={549--557}, date={1974-10},
+  doi={10.1145/355620.361161}, url={https://doi.org/10.1145/355620.361161}, urldate={2026-10-20},
+  acesso={aberto}, langid={english}, keywords={paper}}
+@article{paper:brinch-hansen1999-insecure,
+  author={Per Brinch Hansen}, title={Java's Insecure Parallelism},
+  journaltitle={ACM SIGPLAN Notices}, volume={34}, number={4}, pages={38--45}, date={1999-04},
+  doi={10.1145/312009.312034}, url={https://doi.org/10.1145/312009.312034}, urldate={2026-10-20},
+  acesso={aberto}, langid={english}, keywords={paper}}
+@article{paper:pugh2000-fatally-flawed,
+  author={William Pugh}, title={The {Java} Memory Model is Fatally Flawed},
+  journaltitle={Concurrency: Practice and Experience}, volume={12}, number={6}, pages={445--455}, date={2000-05},
+  doi={10.1002/1096-9128(200005)12:6<445::AID-CPE484>3.0.CO;2-A},
+  url={https://doi.org/10.1002/1096-9128(200005)12:6%3C445::aid-cpe484%3E3.0.co;2-a}, urldate={2026-10-20},
+  acesso={pago}, langid={english}, keywords={paper}}
+@article{paper:lea2005-aqs,
+  author={Doug Lea}, title={The {java.util.concurrent} Synchronizer Framework},
+  journaltitle={Science of Computer Programming}, volume={58}, number={3}, pages={293--309}, date={2005-12},
+  doi={10.1016/j.scico.2005.03.007}, url={https://doi.org/10.1016/j.scico.2005.03.007},
+  urlgratis={http://gee.cs.oswego.edu/dl/papers/aqs.pdf}, urldate={2026-10-20},
+  acesso={pago}, note={Cópia gratuita do autor é a versão do workshop CSJP 2004, não o texto da revista},
+  langid={english}, keywords={paper}}
+@inproceedings{paper:lea2000-forkjoin,
+  author={Doug Lea}, title={A {Java} Fork/Join Framework},
+  booktitle={Proceedings of the ACM 2000 Conference on Java Grande}, publisher={ACM},
+  pages={36--43}, date={2000-06},
+  doi={10.1145/337449.337465}, url={https://doi.org/10.1145/337449.337465},
+  urlgratis={http://gee.cs.oswego.edu/dl/papers/fj.pdf}, urldate={2026-10-20},
+  acesso={pago}, note={Cópia do autor; identidade com a versão da ACM não conferida},
+  langid={english}, keywords={paper}}
+@inproceedings{paper:steensgaard2000,
+  author={Bjarne Steensgaard}, title={Thread-Specific Heaps for Multi-Threaded Programs},
+  booktitle={Proceedings of the 2nd International Symposium on Memory Management (ISMM)}, publisher={ACM},
+  pages={18--24}, date={2000-10},
+  doi={10.1145/362422.362432}, url={https://doi.org/10.1145/362422.362432},
+  urlgratis={https://web.archive.org/web/20180721063644/https://cs.purdue.edu/homes/hosking/ismm2000/papers/steensgaard.pdf},
+  urldate={2026-10-20}, acesso={pago},
+  note={Cópia no site do ISMM 2000, via Internet Archive}, langid={english}, keywords={paper}}
+@inproceedings{paper:domani2002,
+  author={Tamar Domani and Gal Goldshtein and Elliot K. Kolodner and Ethan Lewis and Erez Petrank and Dafna Sheinwald},
+  title={Thread-Local Heaps for {Java}},
+  booktitle={Proceedings of the 3rd International Symposium on Memory Management (ISMM)}, publisher={ACM},
+  pages={76--87}, date={2002-06},
+  doi={10.1145/512429.512439}, url={https://doi.org/10.1145/512429.512439}, urldate={2026-10-20},
+  acesso={pago}, langid={english}, keywords={paper}}
+
+% ---- Especificações, JSRs e bugs do JDK ----
+@online{doc:jvms7, author={{Oracle}}, title={The Java Virtual Machine Specification, Java SE 7 Edition},
+  url={https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:jsr51, author={{Java Community Process}}, title={JSR 51: New I/O APIs for the Java Platform},
+  url={https://jcp.org/en/jsr/detail?id=51}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jsr133, author={{Java Community Process}}, title={JSR 133: Java Memory Model and Thread Specification Revision},
+  url={https://jcp.org/en/jsr/detail?id=133}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jsr166, author={{Java Community Process}}, title={JSR 166: Concurrency Utilities},
+  url={https://jcp.org/en/jsr/detail?id=166}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jsr202, author={{Java Community Process}}, title={JSR 202: Java Class File Specification Update},
+  url={https://jcp.org/en/jsr/detail?id=202}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jdk-8214719, author={{OpenJDK}}, title={JDK-8214719: Deprecate -Xverify:none option},
+  url={https://bugs.openjdk.org/browse/JDK-8214719}, urldate={2026-10-20},
+  note={Aberto no Internet Archive (snapshot de 2024-11-02): https://web.archive.org/web/20241102181613/https://bugs.openjdk.org/browse/JDK-8214719},
+  langid={english}, keywords={doc}}
+@online{doc:jdk13-relnotes, author={{Oracle}}, title={JDK 13 Release Notes},
+  url={https://www.oracle.com/java/technologies/javase/13-relnote-issues.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:jdk-6993732, author={{OpenJDK}}, title={JDK-6993732: Remove the HPI},
+  url={https://bugs.openjdk.org/browse/JDK-6993732}, urldate={2026-10-20},
+  note={Texto lido pela API REST do JBS; a página HTML responde 403 a robôs},
+  langid={english}, keywords={doc}}
+@online{doc:jdk-8221766, author={{OpenJDK}}, title={JDK-8221766: Load-reference barriers for Shenandoah},
+  url={https://bugs.openjdk.org/browse/JDK-8221766}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+
+% ---- JEPs ----
+@online{doc:jep189, author={{OpenJDK}}, title={JEP 189: Shenandoah: A Low-Pause-Time Garbage Collector (Experimental)},
+  url={https://openjdk.org/jeps/189}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jep266, author={{OpenJDK}}, title={JEP 266: More Concurrency Updates},
+  url={https://openjdk.org/jeps/266}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jep333, author={{OpenJDK}}, title={JEP 333: ZGC: A Scalable Low-Latency Garbage Collector (Experimental)},
+  url={https://openjdk.org/jeps/333}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jep425, author={{OpenJDK}}, title={JEP 425: Virtual Threads (Preview)},
+  url={https://openjdk.org/jeps/425}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:jep436, author={{OpenJDK}}, title={JEP 436: Virtual Threads (Second Preview)},
+  url={https://openjdk.org/jeps/436}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+
+% ---- Páginas de release do OpenJDK (datas de disponibilidade geral) ----
+@online{doc:openjdk-jdk7, author={{OpenJDK}}, title={JDK 7}, url={https://openjdk.org/projects/jdk7/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk8, author={{OpenJDK}}, title={JDK 8}, url={https://openjdk.org/projects/jdk8/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk9, author={{OpenJDK}}, title={JDK 9}, url={https://openjdk.org/projects/jdk9/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk19, author={{OpenJDK}}, title={JDK 19}, url={https://openjdk.org/projects/jdk/19/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk20, author={{OpenJDK}}, title={JDK 20}, url={https://openjdk.org/projects/jdk/20/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk21, author={{OpenJDK}}, title={JDK 21}, url={https://openjdk.org/projects/jdk/21/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:openjdk-jdk24, author={{OpenJDK}}, title={JDK 24}, url={https://openjdk.org/projects/jdk/24/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+
+% ---- API do Java SE ----
+@online{doc:javase7-forkjoinpool, author={{Oracle}}, title={ForkJoinPool (Java SE 7 API)},
+  url={https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ForkJoinPool.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase8-completablefuture, author={{Oracle}}, title={CompletableFuture (Java SE 8 API)},
+  url={https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase8-stream, author={{Oracle}}, title={java.util.stream (Java SE 8 API)},
+  url={https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase8-longadder, author={{Oracle}}, title={LongAdder (Java SE 8 API)},
+  url={https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/LongAdder.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase9-flow, author={{Oracle}}, title={Flow (Java SE 9 API)},
+  url={https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+
+% ---- Threads, Loom e concorrência ----
+@online{doc:jdk11-solaris-threads, author={{Sun Microsystems}},
+  title={Multithreading (JDK 1.1 for Solaris Developer's Guide, cap. 2)},
+  url={https://docs.oracle.com/cd/E19455-01/806-3461/6jck06gqe}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:loom-dev-green-threads, author={Chris Phillips and David Holmes},
+  title={Did Java on Solaris once had a Fiber-like threads?}, date={2019-10-09}, organization={loom-dev},
+  url={https://mail.openjdk.org/pipermail/loom-dev/2019-October/000784.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:loom-dev-naming, author={Ron Pressler}, title={Virtual Threads: A Short Note about Naming},
+  date={2019-11-22}, organization={loom-dev},
+  url={https://mail.openjdk.org/pipermail/loom-dev/2019-November/000871.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:loom-project, author={{OpenJDK}}, title={Project Loom},
+  url={https://openjdk.org/projects/loom/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:loom-cfd-2017, author={Ron Pressler}, title={Call for Discussion: New Project: Loom},
+  date={2017-09-26}, organization={OpenJDK discuss},
+  url={https://mail.openjdk.org/pipermail/discuss/2017-September/004390.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:loom-proposal, author={Ron Pressler}, title={Project Loom: Fibers and Continuations for the JVM},
+  url={https://cr.openjdk.org/~rpressler/loom/Loom-Proposal.html}, urldate={2026-10-20},
+  note={Arquivo atualizado em 2018-08-23 (cabeçalho Last-Modified)}, langid={english}, keywords={doc}}
+@online{doc:state-of-loom, author={Ron Pressler}, title={State of Loom}, date={2020},
+  url={https://cr.openjdk.org/~rpressler/loom/loom/sol1_part1.html}, urldate={2026-10-20},
+  note={Texto editado depois de 2020}, langid={english}, keywords={doc}}
+@online{doc:quasar-github, author={{Parallel Universe}}, title={Quasar: Fibers, Channels and Actors for the JVM},
+  url={https://github.com/puniverse/quasar}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:quasar-docs, author={{Parallel Universe}}, title={Quasar Documentation},
+  url={http://docs.paralleluniverse.co/quasar/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:lea-util-concurrent, author={Doug Lea},
+  title={Overview of package util.concurrent Release 1.3.4},
+  url={http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+
+% ---- Muitas requisições ----
+@online{artigo:kegel-c10k, author={Dan Kegel}, title={The C10K problem}, date={2014-02-05},
+  url={http://www.kegel.com/c10k.html}, urldate={2026-10-20},
+  note={Escrito desde 1999; última atualização em 5 de fevereiro de 2014}, langid={english}, keywords={artigo}}
+@online{doc:jakarta-servlet61, author={{Jakarta EE}}, title={Jakarta Servlet Specification, Version 6.1},
+  url={https://jakarta.ee/specifications/servlet/6.1/jakarta-servlet-spec-6.1.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:reactive-streams, author={{Reactive Streams}}, title={Reactive Streams},
+  url={https://www.reactive-streams.org/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:reactive-streams-jvm, author={{Reactive Streams}}, title={reactive-streams-jvm (release 1.0.0)},
+  url={https://github.com/reactive-streams/reactive-streams-jvm}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+
+% ---- Modelo de memória ----
+@online{doc:pugh-jmm-pagina, author={William Pugh}, title={The Java Memory Model (site oficial da JSR 133)},
+  url={https://www.cs.umd.edu/~pugh/java/memoryModel/}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:dcl-broken, author={David Bacon and others},
+  title={The ``Double-Checked Locking is Broken'' Declaration},
+  url={https://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:jsr133-faq, author={Jeremy Manson and Brian Goetz}, title={JSR 133 (Java Memory Model) FAQ},
+  date={2004-02}, url={https://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+
+% ---- JIT, startup, AOT e GC ----
+@online{doc:hotspot-tiered-se7, author={{Oracle}}, title={Java HotSpot VM Performance Enhancements (Java SE 7): Tiered Compilation},
+  url={https://docs.oracle.com/javase/8/docs/technotes/guides/vm/performance-enhancements-7.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:hotspot-compilationpolicy, author={{OpenJDK}}, title={compilationPolicy.hpp (HotSpot, branch master)},
+  url={https://github.com/openjdk/jdk/blob/master/src/hotspot/share/compiler/compilationPolicy.hpp}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:graalvm-native-image, author={{Oracle}}, title={GraalVM Native Image},
+  url={https://www.graalvm.org/latest/reference-manual/native-image/}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:gctuning-se21, author={{Oracle}}, title={Available Collectors (HotSpot GC Tuning Guide, Java SE 21)},
+  url={https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:kennke-lrb-rfr, author={Roman Kennke}, title={RFR: JDK-8221766: Load-reference barriers for Shenandoah},
+  date={2019-04-02}, organization={build-dev},
+  url={https://mail.openjdk.org/pipermail/build-dev/2019-April/025274.html}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{artigo:kennke-lrb-2019, author={Roman Kennke}, title={Shenandoah GC in JDK 13, Part 1: Load reference barriers},
+  date={2019-06-27}, organization={Red Hat Developer},
+  url={https://developers.redhat.com/blog/2019/06/27/shenandoah-gc-in-jdk-13-part-1-load-reference-barriers}, urldate={2026-10-20},
+  langid={english}, keywords={artigo}}
+@online{doc:hotspot-memmgmt-2006, author={{Sun Microsystems}},
+  title={Memory Management in the Java HotSpot Virtual Machine}, date={2006-04},
+  url={https://oracle.com/docs/tech/java/memorymanagement-technical-brief.pdf}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:hotspot-tlab-hpp, author={{OpenJDK}}, title={threadLocalAllocBuffer.hpp (HotSpot, branch master)},
+  url={https://github.com/openjdk/jdk/blob/master/src/hotspot/share/gc/shared/threadLocalAllocBuffer.hpp}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{artigo:shipilev-tlab, author={Aleksey Shipilëv}, title={JVM Anatomy Quark \#4: TLAB allocation},
+  url={https://shipilev.net/jvm/anatomy-quarks/4-tlab-allocation/}, urldate={2026-10-20},
+  langid={english}, keywords={artigo}}
