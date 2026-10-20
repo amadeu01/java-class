@@ -2,42 +2,41 @@
 A classe abaixo tem um campo \texttt{volatile} usado como flag, um campo
 \texttt{final} e duas formas de inicialização preguiçosa: um DCL com o
 campo \texttt{instancia} declarado \texttt{volatile} e o idiom do
-holder, com a classe aninhada \texttt{Portador}. A listagem usa
-\texttt{javap -v -p}, que mostra as flags de cada campo.
+\termo{holder}{Classe aninhada que guarda a instância num campo
+\texttt{static}; o FAQ da JSR~133 o chama de Initialization On Demand
+Holder.}, com a classe aninhada \texttt{Portador}.
 
 \lstinputlisting[language=Java]{generated/source/PublicacaoSegura.java}
 
 \inputbytecode{PublicacaoSegura}
 
 \begin{itemize}
-\item As flags dos campos estão logo depois do constant pool.
-  \texttt{instancia} tem \texttt{(0x004a) ACC\_PRIVATE, ACC\_STATIC,
-  ACC\_VOLATILE}, \texttt{limite} tem \texttt{(0x0012) ACC\_PRIVATE,
-  ACC\_FINAL} e \texttt{ativo} tem \texttt{(0x0042) ACC\_PRIVATE,
-  ACC\_VOLATILE}. O valor é a soma das flags da Tabela 4.5-A da JVMS
-  SE~25 (§4.5): \texttt{ACC\_PRIVATE} vale \texttt{0x0002},
-  \texttt{ACC\_STATIC} \texttt{0x0008}, \texttt{ACC\_FINAL}
-  \texttt{0x0010} e \texttt{ACC\_VOLATILE} \texttt{0x0040}. A tabela
-  descreve \texttt{ACC\_VOLATILE} como \enquote{Declared volatile;
-  cannot be cached} e \texttt{ACC\_FINAL} como \enquote{never directly
-  assigned to after object construction (JLS §17.5)}. Um campo não pode
-  ter as duas flags.
+\item O \texttt{javap -c -p} imprime as declarações dos campos com os
+  modificadores \texttt{volatile} e \texttt{final}. No class file, eles
+  são as flags de acesso do campo da Tabela 4.5-A da JVMS SE~25 (§4.5):
+  \texttt{ACC\_VOLATILE} (\texttt{0x0040}), \enquote{Declared volatile;
+  cannot be cached}, e \texttt{ACC\_FINAL} (\texttt{0x0010}),
+  \enquote{never directly assigned to after object construction (JLS
+  §17.5)}. Um campo não pode ter as duas flags. Para ver os valores
+  numéricos, use \texttt{javap -v}, como na seção~\ref{sec:constant-pool}.
 \item Em \texttt{obter}, a primeira leitura de \texttt{instancia} é o
   \texttt{getstatic} do offset~0, e a escrita é o \texttt{putstatic} do
   offset~32. O \texttt{getstatic} é o mesmo que
-  \texttt{obterPorPortador} usa para ler \texttt{Portador.INSTANCIA},
-  que não é \texttt{volatile}. No construtor, os \texttt{putfield} dos
-  offsets 6 e 11 gravam \texttt{ativo}, que é \texttt{volatile}, e
-  \texttt{limite}, que é \texttt{final}, com a mesma instrução. O que
-  marca o campo é a flag na declaração, não a instrução.
+  \texttt{obterPorPortador} usa no seu offset~0 para ler
+  \texttt{Portador.INSTANCIA}, que não é \texttt{volatile}. No
+  construtor, os \texttt{putfield} dos offsets 6 e 11 gravam
+  \texttt{ativo}, que é \texttt{volatile}, e \texttt{limite}, que é
+  \texttt{final}, com a mesma instrução. O que marca o campo é a flag na
+  declaração, não a instrução.
 \item O \texttt{ifnonnull} do offset~5 pula para o offset~45 quando a
   primeira leitura já vê o objeto: é o caminho sem lock. Senão, o
   \texttt{monitorenter} do offset~12 trava o objeto \texttt{Class}, o
   \texttt{getstatic} do offset~13 lê o campo de novo e o
   \texttt{ifnonnull} do offset~18 pula a criação se outra thread já a
-  fez. O \texttt{monitorexit} está nos offsets 36 e 42; a tabela de
-  exceções desvia os offsets 13--37 para o 40, que libera o monitor e
-  relança a exceção.
+  fez. O \texttt{monitorexit} está nos offsets 36 e 42. A tabela de
+  exceções desvia qualquer exceção dos offsets 13 a 36 para o~40, que
+  libera o monitor no offset~42 e relança a exceção no~44; a segunda
+  entrada cobre os offsets 40 a 42 com o mesmo destino.
 \item O objeto é criado nos offsets 21--27, e o \texttt{invokespecial}
   do offset~27 executa o construtor. Na thread que cria, as gravações
   do construtor vêm antes do \texttt{putstatic} do offset~32 na ordem
@@ -49,12 +48,13 @@ holder, com a classe aninhada \texttt{Portador}. A listagem usa
   pela thread que o constrói e a devolução do valor pela thread que o
   lê.
 \item \texttt{obterPorPortador} é um único \texttt{getstatic} de
-  \texttt{Portador.INSTANCIA}, sem lock no código. A classe aninhada
-  aparece nos atributos \texttt{NestMembers} e \texttt{InnerClasses}, no
-  fim da listagem. O FAQ da JSR~133 recomenda esse idiom e diz que ele
-  é correto pelas garantias de inicialização de campos \texttt{static}:
-  um campo atribuído num inicializador \texttt{static} fica visível,
-  corretamente, a toda thread que acessa a classe.
+  \texttt{Portador.INSTANCIA}, sem lock no código. A JLS SE~25 (§12.4.1)
+  inicializa uma classe imediatamente antes do primeiro uso de um campo
+  \texttt{static} dela que não seja constante. O FAQ da JSR~133
+  recomenda esse idiom e diz que ele é correto pelas garantias de
+  inicialização de campos \texttt{static}: um campo atribuído num
+  inicializador \texttt{static} fica visível, corretamente, a toda
+  thread que acessa a classe.
 \end{itemize}
 
 \paragraph{O que isso muda no seu código.}
@@ -63,9 +63,9 @@ Cada recomendação tem seu escopo.
 \item \emph{Java~5 (2004) em diante:} use \texttt{volatile} para uma
   flag que uma thread escreve e outras leem, como \texttt{ativo} acima,
   e para publicar uma referência. A escrita \texttt{volatile}
-  happens-before as leituras subsequentes (JLS SE~25, §17.4.5). No
-  modelo anterior, \texttt{volatile} podia ser reordenado com acessos
-  comuns, o que minava esse uso, segundo o FAQ. \texttt{volatile} não
+  happens-before as leituras subsequentes (JLS SE~25, §17.4.5); no
+  modelo antigo, esse uso era minado (veja acima). \texttt{volatile}
+  não
   torna atômico um ler-somar-gravar como \texttt{contador++}
   (seção~\ref{sec:modelo-memoria}).
 \item \emph{Java~5 (2004) em diante:} para um objeto imutável
@@ -74,10 +74,13 @@ Cada recomendação tem seu escopo.
   visíveis a todas as threads sem sincronização, desde que o objeto
   seja construído corretamente, isto é, sem deixar a referência a ele
   escapar durante a construção: nada de atribuí-la a um campo
-  \texttt{static} ou registrá-la como listener dentro do construtor. A
+  \texttt{static} ou registrá-la como \termo{listener}{Objeto registrado em outro para ser
+  avisado de eventos.} dentro do construtor. A
   garantia está na §17.5 da JLS SE~25. No modelo antigo, campos
   \texttt{final} não tinham essa garantia (FAQ).
-\item \emph{Java~5 (2004) em diante:} para um singleton
+\item \emph{Java~5 (2004) em diante:} para um
+  \termo{singleton}{Classe com uma única instância, obtida
+  por um método \texttt{static}.}
   \texttt{static} preguiçoso, prefira o holder; o FAQ o descreve como
   \enquote{thread-safe and a lot easier to understand}. Se usar DCL, o
   campo tem de ser \texttt{volatile}. Segundo a Declaração, isso
@@ -89,7 +92,8 @@ Cada recomendação tem seu escopo.
 O modelo atual, com o exemplo do \texttt{contador++}, está na
 seção~\ref{sec:modelo-memoria}; \texttt{monitorenter} e
 \texttt{monitorexit}, na seção~\ref{sec:sincronizacao}. O FAQ, a
-especificação e o cookbook da JSR~133 estão na página de Pugh, o site
+especificação e o \termo{cookbook}{Guia de receitas; o FAQ o indica a
+quem escreve uma JVM.} da JSR~133 estão na página de Pugh, o site
 oficial da JSR (\citetitle{doc:pugh-jmm-pagina}). Para o modelo
 formal, veja \citetitle{paper:java-memory-model}; para as consequências
 práticas, \citetitle{artigo:shipilev-jmm} e \citetitle{livro:goetz2006}.

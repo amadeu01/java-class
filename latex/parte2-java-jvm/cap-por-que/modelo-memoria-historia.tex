@@ -21,21 +21,21 @@ is free to update the main memory in an order that may be surprising.}
 
 Para \texttt{volatile}, a §17.7 só permite um \texttt{use} se a ação
 anterior da thread sobre a variável foi um \texttt{load}, e só permite
-um \texttt{store} se a anterior foi um \texttt{assign}. As ações sobre as cópias mestras de variáveis
-\texttt{volatile} são feitas na ordem pedida pela thread, e são
-atômicas mesmo para \texttt{double} e \texttt{long}. Para campos
-\texttt{final}, o capítulo~17 não tem regra: a palavra
-\enquote{final} não aparece nele.
+um \texttt{store} se a anterior foi um \texttt{assign}. Entre duas
+variáveis \texttt{volatile}, as ações sobre as cópias mestras seguem
+a ordem pedida pela thread, e essas ações são atômicas mesmo para
+\texttt{double} e \texttt{long}. Para campos \texttt{final}, o
+capítulo~17 não tem regra própria.
 
 Em 2000, William Pugh publicou
 \citetitle{paper:pugh2000-fatally-flawed}, na revista
 \emph{Concurrency: Practice and Experience}. A tese de Jeremy Manson,
 orientada por Pugh (\citetitle{paper:manson-tese-jmm-2004}, 2004),
-abre com o diagnóstico: \enquote{Java's original threading
+traz no resumo: \enquote{Java's original threading
 specification, its memory model, was fundamentally flawed.} Segundo o
-resumo da tese, o tratamento de \texttt{volatile} era \enquote{so weak
+mesmo resumo, o tratamento de \texttt{volatile} era \enquote{so weak
 as to render them useless}. Os campos comuns eram super-especificados,
-e o modelo impedia quase todas as otimizações de código que os usa.
+e o modelo impedia quase todas as otimizações de código que os usava.
 Os campos \texttt{final} não tinham especificação além da de um campo
 comum.
 
@@ -84,10 +84,10 @@ artigo de Manson, Pugh e Sarita Adve no POPL 2005
 \paragraph{O que mudou depois.}
 Na JLS do Java SE~25, a §17.4 define o modelo de memória como o
 critério que diz se o rastro de uma execução é uma execução legal do
-programa. O texto não fala em memória de trabalho: a base é a relação
+programa, com base na relação
 \termo{happens-before}{\enquote{Acontece antes}: se uma ação
 happens-before outra, a primeira é visível para a segunda e ordenada
-antes dela.} (§17.4.5): \enquote{If one action happens-before another,
+antes dela.} (§17.4.5), sem memória de trabalho: \enquote{If one action happens-before another,
 then the first is visible to and ordered before the second.} Entre as
 arestas da §17.4.5 estão o \texttt{unlock} de um monitor, que
 happens-before todo \texttt{lock} subsequente do mesmo monitor, e a
@@ -112,8 +112,8 @@ happens-before (JLS §17.4, §17.4.5) \\
 Locks & \texttt{lock} descarrega a memória de trabalho;
 \texttt{unlock} grava na principal (JLS §17.9) & \texttt{unlock}
 happens-before o \texttt{lock} subsequente (JLS §17.4.5) \\
-\texttt{volatile} & Ações nas cópias mestras na ordem pedida pela thread
-(JLS §17.7) & Escrita happens-before a leitura subsequente
+\texttt{volatile} & \texttt{use} só após \texttt{load}; ordem entre
+variáveis \texttt{volatile} (JLS §17.7) & Escrita happens-before a leitura subsequente
 (JLS §17.4.5) \\
 \texttt{final} & Não mencionado (JLS cap.~17) & Congelamento ao fim do
 construtor (JLS §17.5) \\
