@@ -52,11 +52,10 @@ trabalha.} em comparação com os coletores geracionais tradicionais? O
 guia de GC do Java SE~21 descreve o G1 como \enquote{a generational,
 incremental, parallel, mostly concurrent, stop-the-world, and evacuating
 garbage collector} e diz que ele não é um coletor de tempo real
-(\citetitle{doc:gctuning-se21}). A
+(\citetitle{doc:gctuning-g1-se21}). Segundo o \citetitle{doc:jep189}, a
 \termo{evacuation}{Evacuação: copiar os objetos vivos de uma região para
 outra e liberar a região de origem inteira.} é a parte que o G1 não faz
-junto com o programa: \enquote{it does not do concurrent evacuation}
-(\citetitle{doc:jep189}). O ZGC e o Shenandoah movem objetos com as
+junto com o programa: \enquote{it does not do concurrent evacuation}. O ZGC e o Shenandoah movem objetos com as
 threads Java rodando, e cada um resolve de um jeito o problema de um
 objeto mudar de endereço enquanto o programa o usa.
 \begin{itemize}
@@ -71,7 +70,8 @@ objeto mudar de endereço enquanto o programa o usa.
   \citetitle{doc:jep439} (JDK~21) acrescenta \termo{store
   barriers}{Barreiras de escrita: um trecho de código que a JVM executa
   quando o programa grava uma referência no heap.} no modo
-  geracional, põe a meta abaixo de 1~ms e diz que as pausas do ZGC são
+  geracional e mantém, como propriedade essencial do ZGC não geracional,
+  a meta de pausas de no máximo 1~ms; diz ainda que as pausas do ZGC são
   medidas em microssegundos, enquanto as do G1 vão de milissegundos a
   segundos.
 \item \emph{Shenandoah.} O \citetitle{doc:jep189} (JDK~12, experimental)

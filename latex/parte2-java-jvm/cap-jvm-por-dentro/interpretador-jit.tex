@@ -26,7 +26,8 @@ do tempo de startup com compilação dinâmica e estática? Na HotSpot, quem
 decide entre interpretador e JIT é a política de compilação, descrita no
 comentário de cabeçalho de \citetitle{doc:hotspot-compilationpolicy}. Ela
 tem cinco níveis: o 0 é o interpretador, o 1, o 2 e o 3 são o C1 com
-graus diferentes de coleta de perfil, e o 4 é o C2, \enquote{with full
+graus diferentes de coleta de perfil, de nenhum (nível~1) a completo
+(nível~3), e o 4 é o C2, \enquote{with full
 profile guided optimization}. A execução começa no nível~0, e a política
 pode compilar o método no nível~3 ou no~2; terminada a coleta de perfil
 no nível~3, o método passa ao nível~4. A passagem do nível~0 ao~3 compara

@@ -16,11 +16,11 @@ o mesmo objeto compartilhado.
 
 Domani e colegas deram a cada thread uma partição do heap, em que ela
 aloca e coleta sem sincronizar com as outras
-(\citetitle{paper:domani2002}, 2002). Uma \termo{write barrier}{Barreira
-de escrita: código que a JVM executa a cada gravação de referência no
-heap.} detecta
+(\citetitle{paper:domani2002}, 2002). Uma barreira de escrita
+(\emph{write barrier}) detecta
 quando um objeto passa a ser global. Numa JVM da IBM (um protótipo do
-JDK~1.3.0 para Windows), num servidor Netfinity de quatro processadores:
+JDK~1.3.0 para Windows) em modo interpretado, sem o JIT, num servidor
+Netfinity de quatro processadores:
 \begin{itemize}
 \item o tempo total de GC foi \enquote{substantially reduced} e a maior
   parte das pausas longas sumiu. As pausas de GC cheio ficavam na ordem de
@@ -28,7 +28,8 @@ JDK~1.3.0 para Windows), num servidor Netfinity de quatro processadores:
   direta, em cerca de 1~ms;
 \item o tempo total de execução ficou praticamente o mesmo: o ganho de
   2 a 3\% foi anulado pelo custo da write barrier, de 2,1 a 2,8\% do
-  tempo;
+  tempo. Os autores não implementaram a barreira no JIT e dizem que, com
+  ele, esse custo muito provavelmente vai subir de forma significativa;
 \item no benchmark pBOB, cerca de 30\% dos objetos criados eram globais;
 \item a coleta cheia continua existindo: ela para todas as threads e
   coleta o heap inteiro, mas acontece raramente.

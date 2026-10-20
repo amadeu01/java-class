@@ -23,8 +23,9 @@ regras de \emph{happens-before} da JLS SE~25, §17.4.5, diga que garantia
 o \texttt{obter()} perde e por que o \texttt{obterPorPortador()} não
 depende dessa flag.}
 
-\desafio{\emph{Vários núcleos.} Numa cópia do repositório, mude o laço
-\texttt{for t in 1 8} de \texttt{scripts/bench.sh} para incluir 2, 4 e o
+\desafio{\emph{Vários núcleos.} Numa cópia do repositório, mude os dois laços
+\texttt{for t in 1 8} de \texttt{scripts/bench.sh} (o que roda o benchmark
+e o que monta o resultado) para incluir 2, 4 e o
 número de CPUs da sua máquina, e rode o benchmark \texttt{Contencao} da
 seção~\ref{sec:juc}. Faça um gráfico de ops/\textmu{}s por número de threads
 para os três métodos. Como cada curva muda com o número de threads? Compare com
