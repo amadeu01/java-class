@@ -1,2 +1,95 @@
 \section{Muitos requests, memória compartilhada, vários núcleos}
 \label{sec:muitos-requests}
+
+\paragraph{O problema.}
+Num servidor de servlets, várias threads executam o mesmo código. A
+\citetitle{doc:jakarta-servlet61}, §2.3.3.1, diz que
+\enquote{A servlet container may send concurrent requests through the
+service method of the servlet}, e o desenvolvedor do servlet precisa
+prever a execução de várias threads nesse método. A mesma seção
+recomenda não sincronizar o método \texttt{service}, por causa da
+perda de desempenho: \enquote{It is strongly recommended that
+Developers not synchronize the service method}.
+
+Em 1999, Dan Kegel começou o texto \citetitle{artigo:kegel-c10k} (o
+primeiro snapshot no Internet Archive é de 8 de maio de 1999; a última
+atualização, de 5 de fevereiro de 2014). A abertura pergunta: \enquote{It's
+time for web servers to handle ten thousand clients simultaneously,
+don't you think?} O texto defende que atender dez mil clientes ao mesmo
+tempo pede algo além de uma thread por cliente, e diz sobre o Java:
+\enquote{Up through JDK 1.3, Java's standard networking libraries
+mostly offered the one-thread-per-client model.}
+
+\paragraph{A decisão.}
+A \citetitle{doc:jsr51}, com Final Release em 9 de maio de 2002, entrou
+no Java~1.4 (2002) como \texttt{java.nio}. O líder da JSR foi Mark
+Reinhold, e Kegel e Doug Lea estavam no grupo de especialistas. A
+descrição da JSR fala em \enquote{APIs for scalable I/O}. Segundo
+Kegel, o \texttt{java.nio} do JDK~1.4 trouxe ao Java o
+\termo{I/O não bloqueante}{Operação de entrada e saída que volta na
+hora, mesmo sem dados prontos, em vez de deixar a thread parada
+esperando.}.
+
+\paragraph{O que mudou depois.}
+Depois veio o padrão reativo. O \citetitle{doc:reactive-streams} se
+define como \enquote{a standard for
+asynchronous stream processing with non-blocking back pressure}. A
+\termo{back pressure}{Contrapressão: o consumidor diz ao produtor quanto
+consegue receber, para não ser inundado.} é parte da definição. A
+versão~1.0.0 para a JVM
+(\citetitle{doc:reactive-streams-jvm}) é de 29 de abril de 2015. O
+JDK~9 trouxe a interface \texttt{java.util.concurrent.Flow}
+(\enquote{Since: 9}), cujo javadoc diz: \enquote{These interfaces
+correspond to the reactive-streams specification}
+(\citetitle{doc:javase9-flow}).
+
+O \citetitle{doc:jep444} descreve o custo desse caminho. No estilo
+assíncrono, o código devolve a thread a um pool enquanto espera I/O, e
+o fim da operação é avisado por um \termo{callback}{Função passada
+para outra, que a chama quando um evento acontece, como o fim de uma
+operação de I/O.}. A lógica de cada requisição vira uma sequência de
+estágios pequenos, em geral lambdas, compostos por uma API como
+\texttt{CompletableFuture} ou um framework reativo, e o programador
+abre mão de construções como laços e blocos \texttt{try}/\texttt{catch}
+(\enquote{They thus forsake the language's basic sequential composition
+operators}). Um dos objetivos do JEP é que servidores no estilo
+thread-per-request escalem com virtual threads, finais no JDK~21
+(seção~\ref{sec:threads-ate-vt}).
+
+No Quarkus, os dois caminhos convivem. O guia
+\citetitle{doc:quarkus-reactive-architecture} diz que \enquote{A few
+threads can handle many concurrent I/O}. Uma requisição HTTP é
+processada numa dessas poucas threads de I/O, que por isso não podem
+bloquear (\enquote{you can't block the thread anymore}). Código
+bloqueante é desviado para \termo{worker threads}{Threads de um pool
+separado, usadas para executar código que bloqueia sem ocupar as
+threads de I/O.}: \enquote{Quarkus implements a proactor pattern that
+switches to worker thread when needed}. O guia
+\citetitle{doc:quarkus-virtual-threads} diz que \enquote{the support of
+virtual thread is implemented using the @RunOnVirtualThread
+annotation}, que faz o Quarkus invocar o método anotado numa nova
+virtual thread.
+
+\paragraph{O que isso muda no seu código.}
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{Jakarta Servlet~6.1:} o mesmo servlet pode atender
+  requisições concorrentes pelo método \texttt{service}, então escreva
+  esse código prevendo várias threads (seções~\ref{sec:monitores}
+  e~\ref{sec:jmm-historia}). A especificação recomenda não
+  sincronizar o método \texttt{service}.
+\item \emph{JDK~9 em diante:} \texttt{java.util.concurrent.Flow} é a
+  versão do JDK das interfaces do Reactive Streams.
+\item \emph{JDK~21 em diante:} código bloqueante no estilo
+  thread-per-request pode escalar com virtual threads, sem reescrever
+  a lógica em estágios assíncronos (seção~\ref{sec:threads-ate-vt}).
+\item \emph{Quarkus, com Java~21 ou mais novo para virtual threads:} \texttt{@RunOnVirtualThread}
+  executa o método anotado numa nova virtual thread; código nas threads
+  de I/O não pode bloquear, e código bloqueante vai para as worker
+  threads.
+\end{itemize}
+
+\paragraph{Onde aprofundar.}
+Quando escolher virtual threads, reativo ou worker threads no Quarkus
+é o tema da seção~\ref{sec:vt-vs-reativo}. As regras de uso das
+virtual threads estão na seção~\ref{sec:virtual-threads}.

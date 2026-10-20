@@ -1,0 +1,120 @@
+% Continuação de threads-vt.tex: Project Loom, os JEPs e o custo de escalar.
+
+O quinto passo é o Project Loom. Em 26 de setembro de 2017, Pressler
+abriu a discussão do projeto na lista do OpenJDK
+(\citetitle{doc:loom-cfd-2017}), propondo implementações alternativas
+de threads em modo usuário, \termo{delimited continuations}{Continuações delimitadas: um trecho de execução que pode
+ser suspenso e retomado depois, do ponto em que parou.} e outras
+construções. A página do projeto (\citetitle{doc:loom-project})
+fala em \enquote{lightweight user-mode threads (fibers), delimited
+continuations (of some form), and related features}. A proposta técnica
+(\citetitle{doc:loom-proposal}, arquivo atualizado em agosto de 2018)
+diz no primeiro parágrafo: \enquote{Project Loom
+will introduce fibers as lightweight, efficient threads managed by the
+Java Virtual Machine}. O \citetitle{doc:state-of-loom}, de 2020 e
+editado depois, diz que \enquote{Work on Project Loom started in late
+2017}.
+
+O nome mudou durante o desenvolvimento do Loom: a proposta falava em
+fibers, e em 22 de novembro de 2019 Pressler escreveu na lista loom-dev
+a mensagem \citetitle{doc:loom-dev-naming}, em que diz:
+\enquote{Loom's virtual threads are not coroutines under any common
+definition of that name.}
+
+As virtual threads entraram na plataforma por três JEPs, dois de
+\termo{preview}{Versão de teste de um recurso, anterior à versão
+final.} e um final, e um quarto JEP reduziu o \termo{pinning}{A
+virtual thread fica presa à thread de plataforma que a executa e não
+consegue liberá-la enquanto bloqueia.}. As datas de GA são das
+páginas do OpenJDK de cada versão
+(\citetitle{doc:openjdk-jdk19}, \citetitle{doc:openjdk-jdk20},
+\citetitle{doc:openjdk-jdk21} e \citetitle{doc:openjdk-jdk24}).
+
+\begin{center}
+\begin{tabular}{@{}p{0.2\textwidth}p{0.22\textwidth}p{0.5\textwidth}@{}}
+\toprule
+JEP & JDK (GA) & O que fez \\
+\midrule
+\citetitle{doc:jep425} & JDK~19 (20/09/2022) & primeiro preview:
+\enquote{Introduce virtual threads to the Java Platform.} \\
+\citetitle{doc:jep436} & JDK~20 (21/03/2023) & segundo preview, para
+dar tempo a mais retorno \\
+\citetitle{doc:jep444} & JDK~21 (19/09/2023) & versão final \\
+\citetitle{doc:jep491} & JDK~24 (18/03/2025) & elimina quase todos os
+casos de pinning em \texttt{synchronized} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Por dentro, segundo o JEP~444, \enquote{Virtual threads employ M:N
+scheduling}: muitas (M) virtual threads rodam sobre um número menor (N)
+de threads do sistema. O escalonador do JDK é um \texttt{ForkJoinPool}
+(a classe de \texttt{java.util.concurrent} da seção~\ref{sec:juc}) que
+opera em modo FIFO, e seu paralelismo padrão é o número de
+processadores disponíveis. A thread de plataforma que executa uma
+virtual thread é a \termo{carrier thread}{Thread portadora: a thread de
+plataforma sobre a qual a virtual thread está montada no momento.}.
+Quando a virtual thread bloqueia, segundo o \citetitle{doc:state-of-loom},
+\enquote{The scheduler will then unmount that virtual thread from its
+carrier, and pick another to mount}. As pilhas das virtual threads
+ficam no \termo{heap}{Área de memória dos objetos, gerenciada pelo
+coletor de lixo.}: \enquote{The stacks of virtual threads are stored in
+Java's garbage-collected heap as stack chunk objects}, e crescem e
+encolhem enquanto a aplicação roda.
+
+\paragraph{O que mudou depois.}
+No JDK~21, uma virtual thread que bloqueia dentro de
+\texttt{synchronized} fica presa à carrier thread (pinned). O
+\citetitle{doc:jep491} (JDK~24) diz que a mudança vai
+\enquote{eliminate nearly all cases of virtual threads being pinned to
+platform threads}. Os casos que sobram estão na
+seção~\ref{sec:virtual-threads}.
+
+Como as virtual threads mudam o custo de escalar em comparação com o
+modelo 1:1? O JEP~444 (JDK~21) dá um exemplo ilustrativo, não um
+benchmark: 10.000 tarefas, cada uma dormindo 1~s. Com
+\texttt{Executors.newCachedThreadPool()}, uma thread de plataforma por
+tarefa, seriam 10.000 threads do sistema, e \enquote{the program might
+crash, depending on the machine and operating system}. Com
+\texttt{Executors.newFixedThreadPool(200)}, muitas tarefas rodam em
+sequência: \enquote{a pool with 200 platform threads can only achieve a
+throughput of 200 tasks-per-second}. Com virtual threads, o JEP fala em
+cerca de 10.000 tarefas por segundo depois de um
+\termo{warmup}{Aquecimento: o período inicial de execução, antes de o
+desempenho se estabilizar.} suficiente, e em
+cerca de 1.000.000 por segundo com 1.000.000 de tarefas. O exemplo
+depende de tarefas que esperam: se cada uma calculasse por 1~s, o JEP
+diz que mais threads que núcleos \enquote{would not help, whether they
+are virtual threads or platform threads}.
+
+Experimento (JDK~25.0.4.1, imagem \texttt{eclipse-temurin:25-jdk},
+AMD Ryzen~5 9600X, 12 processadores vistos pelo container): o mesmo
+exemplo, 10.000 tarefas de 1~s, levou 1,0~s com
+\texttt{newVirtualThreadPerTaskExecutor} (9.860 tarefas/s, na segunda
+rodada) e 50,0~s com \texttt{newFixedThreadPool(200)} (200 tarefas/s).
+Os números são desta máquina.
+
+\paragraph{O que isso muda no seu código.}
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{JDK~19 e JDK~20:} virtual threads só existem como preview
+  (\citetitle{doc:jep425} e \citetitle{doc:jep436}).
+\item \emph{JDK~21 em diante:} com virtual threads, um servidor de I/O
+  no estilo thread-per-request pode escalar. Um dos objetivos do JEP~444 é
+  \enquote{Enable server applications written in the simple
+  thread-per-request style to scale with near-optimal hardware
+  utilization}. Para trabalho de CPU, o mesmo JEP diz que elas não
+  ajudam: \enquote{They exist to provide scale (higher throughput), not
+  speed (lower latency)}. As regras de uso estão na
+  seção~\ref{sec:virtual-threads}.
+\item \emph{JDK~24 em diante:} \texttt{synchronized} quase não causa
+  mais pinning (\citetitle{doc:jep491}); no JDK~21, ainda causa.
+\end{itemize}
+
+\paragraph{Onde aprofundar.}
+As regras de uso, o pinning que sobra e o bytecode de um programa com
+virtual threads estão na seção~\ref{sec:virtual-threads}. O
+\texttt{ForkJoinPool} está na seção~\ref{sec:juc}, e o caminho
+assíncrono, na seção~\ref{sec:muitos-requests}. Como escolher entre
+virtual threads e o modelo reativo no Quarkus é o tema da
+seção~\ref{sec:vt-vs-reativo}.

@@ -1,2 +1,69 @@
 \section{De threads de plataforma a threads virtuais}
 \label{sec:threads-ate-vt}
+
+Como o Java chegou às virtual threads? Esta seção responde contando a
+sequência em cinco passos: as green threads dos primeiros JDKs, as
+threads do sistema operacional no modelo 1:1, o desvio pelo estilo
+assíncrono, as bibliotecas de fibers e o Project Loom, e os JEPs que
+levaram as virtual threads do preview do JDK~19 à versão final do
+JDK~21.
+
+\paragraph{O problema.}
+O primeiro passo são as \termo{green threads}{Threads implementadas
+pela própria JVM, em nível de usuário, sem que o sistema operacional
+saiba que elas existem.}. Segundo o guia do JDK~1.1 para Solaris
+(\citetitle{doc:jdk11-solaris-threads}), antes do Java no Solaris~2.6 o
+runtime usava \enquote{a user-level threads library called
+\enquote{green threads}}, no modelo muitos-para-um, sem paralelismo em
+multiprocessadores. O mesmo guia trata da JVM com threads nativas do
+JDK~1.1 para Solaris, no modelo muitos-para-muitos sobre as threads do
+Solaris. O \citetitle{doc:jep444} resume a história com outra notação:
+\enquote{Java's green threads all shared one OS thread (M:1
+scheduling)}, e foram superadas pelas threads de plataforma,
+\enquote{implemented as wrappers for OS threads (1:1 scheduling)}.
+
+O segundo passo é esse modelo 1:1, em que cada \texttt{Thread} do Java
+é uma thread do sistema operacional. O bug \citetitle{doc:jdk-6993732},
+resolvido em 18 de maio de 2011 para o JDK~7, pede a remoção da HPI,
+\enquote{left over from bygone years where we needed to support both
+green and native threading models}, e registra: \enquote{Some of the
+code has not been used since we transitioned to HotSpot in JDK 1.3.}
+
+O preço do modelo 1:1 aparece num servidor no estilo
+\termo{thread-per-request}{Uma thread por requisição: cada request é
+atendido do começo ao fim por uma thread dedicada.}. O JEP~444 parte
+da Lei de Little: com latência média de 50~ms, uma aplicação que
+processa 10 requisições ao mesmo tempo chega a 200 requisições por
+segundo; para chegar a 2.000 por segundo, precisa de 100 ao mesmo
+tempo. Com uma thread por requisição, o número de threads tem de
+crescer com a vazão, e o JEP diz que \enquote{OS threads are costly, so
+we cannot have too many of them}. Por isso o número de threads
+\enquote{often becomes the limiting factor long before other
+resources, such as CPU or network connections, are exhausted}. Um
+\termo{thread pool}{Conjunto fixo de threads reaproveitadas para
+executar muitas tarefas, uma de cada vez por thread.} não resolve:
+\enquote{pooling helps avoid the high cost of starting a new thread but
+does not increase the total number of threads}.
+
+\paragraph{A decisão.}
+O terceiro passo foi contornar a escassez de threads do sistema. O
+\texttt{java.nio}, da \citetitle{doc:jsr51} (Java~1.4, 2002), trouxe I/O
+não bloqueante, e o Reactive Streams e a interface
+\texttt{java.util.concurrent.Flow} do JDK~9 vieram depois; a
+seção~\ref{sec:muitos-requests} conta esse caminho. Segundo o JEP~444,
+esse estilo assíncrono remove o limite de vazão imposto pela falta de
+threads do sistema, mas \enquote{it comes at a high price}: a lógica de
+cada requisição é quebrada em estágios pequenos, compostos por uma API.
+
+O quarto passo foram as \termo{fibers}{Threads leves, criadas e
+escalonadas por uma biblioteca ou pela JVM, e não pelo sistema
+operacional.}. O Quasar, cujo repositório foi criado em 27 de março de
+2013, se descreve como \enquote{Fibers, Channels and Actors for the
+JVM} (\citetitle{doc:quasar-github}). A documentação da versão~0.8.0
+(\citetitle{doc:quasar-docs}) diz que \enquote{Quasar fibers rely on
+bytecode instrumentation}, feita por um agente Java ou por uma tarefa
+Ant, e que as fibers são escalonadas em um ou mais
+\texttt{ForkJoinPool}. O maior contribuidor do repositório do Quasar é
+Ron Pressler.
+
+\input{parte2-java-jvm/cap-por-que/threads-vt-loom}
