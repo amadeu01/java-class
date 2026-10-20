@@ -1,0 +1,43 @@
+\paragraph{O benchmark: contenção num contador.}
+O \termo{microbenchmark}{Benchmark de um trecho pequeno de código,
+isolado do resto do programa.} abaixo, feito com o
+\citetitle{doc:jmh}, testa a frase do javadoc do \texttt{LongAdder} num
+caso só: todas as threads incrementam o mesmo contador. São três
+formas de fazer isso, cada uma num método \texttt{@Benchmark}:
+\texttt{long} protegido por \texttt{synchronized}, \texttt{AtomicLong}
+e \texttt{LongAdder}. O modo é \termo{throughput}{Vazão: quantas
+operações são concluídas por unidade de tempo.}, em operações por
+microssegundo.
+
+\lstinputlisting[language=Java,firstline=19]{../examples/bench/src/main/java/apostila/bench/Contencao.java}
+
+O script \texttt{scripts/bench.sh} compila o projeto
+\texttt{examples/bench} e roda cada método com uma e com oito threads,
+num container com JDK~25. Ele grava o resultado em
+\texttt{latex/dados/bench/contencao.txt}, com JDK, número de CPUs,
+modelo do processador e data no cabeçalho, e gera desse arquivo a
+tabela abaixo. Nenhum número da tabela foi digitado à mão.
+
+\begin{center}
+\input{dados/bench/contencao-tabela}
+\end{center}
+
+\paragraph{Como ler a tabela.}
+A coluna Erro é a metade do intervalo de confiança de 99{,}9\% que o
+JMH imprime para cada resultado (\enquote{$\pm$(99.9\%)} na saída da
+execução). Com \texttt{-f~1}, cada benchmark roda numa única invocação
+da JVM, e o intervalo é calculado entre as iterações dessa invocação, e
+não entre invocações, como recomenda a
+seção~\ref{sec:como-ler-benchmark}.
+
+Nesta execução, com uma thread, o \texttt{synchronized} fica abaixo
+de \texttt{AtomicLong} e de \texttt{LongAdder}. Com oito threads, o
+\texttt{LongAdder} fica muito acima dos outros dois, enquanto
+\texttt{AtomicLong} e \texttt{synchronized} ficam abaixo dos próprios
+resultados com uma thread. Nesta máquina e neste JDK, o resultado com
+oito threads concorda com a frase do javadoc sobre alta contenção.
+
+A tabela mostra o custo da contenção num contador e nada além disso.
+Ela não prevê o desempenho do seu serviço: o benchmark só incrementa
+um contador compartilhado, sem nenhum outro trabalho. Para decidir com base num
+benchmark, siga os passos da seção~\ref{sec:como-ler-benchmark}.

@@ -38,6 +38,14 @@ if [ -f "$blg" ]; then
   fi
 fi
 
+# Resultado do benchmark de contenção (seção sec:juc): gerado por scripts/bench.sh.
+bench=latex/dados/bench/contencao.txt
+if [ ! -f "$bench" ]; then
+  echo "ERRO: $bench não existe; rode scripts/bench.sh e versione o resultado."; fail=1
+elif ! grep -q '^# jdk:' "$bench"; then
+  echo "ERRO: $bench sem a linha '# jdk:' no cabeçalho; gere de novo com scripts/bench.sh."; fail=1
+fi
+
 out=$(find latex -name '*.tex' -not -path 'latex/build/*' -print0 | xargs -0 wc -l \
   | awk '$2!="total" && $1>200 {print "  " $2 " (" $1 " linhas)"}')
 if [ -n "$out" ]; then

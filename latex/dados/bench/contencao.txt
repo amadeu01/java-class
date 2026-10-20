@@ -1,0 +1,17 @@
+# jdk: openjdk version "25.0.4.1" 2026-08-18 LTS
+# cpus: 12
+# cpu: AMD Ryzen 5 9600X 6-Core Processor
+# data: 2026-10-20T04:57:24Z
+# jmh: -wi 3 -i 5 -f 1 -rf text (imagem maven:3-eclipse-temurin-25)
+
+## threads: 1
+Benchmark                         Mode  Cnt    Score    Error   Units
+Contencao.atomicLongIncrement    thrpt    5  234.426 ±  9.646  ops/us
+Contencao.longAdderIncrement     thrpt    5  258.474 ± 15.163  ops/us
+Contencao.synchronizedIncrement  thrpt    5  121.571 ±  2.609  ops/us
+
+## threads: 8
+Benchmark                         Mode  Cnt     Score     Error   Units
+Contencao.atomicLongIncrement    thrpt    5   141.998 ±   4.855  ops/us
+Contencao.longAdderIncrement     thrpt    5  1662.726 ± 226.669  ops/us
+Contencao.synchronizedIncrement  thrpt    5    17.915 ±   8.773  ops/us
