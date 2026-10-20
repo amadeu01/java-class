@@ -23,8 +23,9 @@ o método \texttt{synchronized} as executam aos pares. Um método de
 instância trava o lock de \texttt{this}, e um método \texttt{static}
 trava o do objeto \texttt{Class} da classe (§17.13). Os métodos
 \texttt{wait}, \texttt{notify} e \texttt{notifyAll} de \texttt{Object}
-transferem o controle entre threads: em vez de girar, a thread se
-suspende com \texttt{wait} até outra acordá-la com \texttt{notify}
+dão suporte à transferência eficiente de controle entre threads: em vez
+de girar, uma thread pode se suspender com \texttt{wait} até outra
+acordá-la com \texttt{notify}
 (cap.~17, abertura).
 
 Cada objeto tem, além do lock, um \termo{wait set}{Conjunto das
@@ -37,7 +38,7 @@ pendentes. A thread fica dormente até acontecer uma de três coisas: um
 o fim do tempo limite, se houver. Depois ela trava o objeto de novo e
 volta de \texttt{wait} com o lock no mesmo estado em que estava.
 
-A JVMS 2ª ed. traz o mesmo modelo no capítulo~8, \enquote{adapted with
+A JVMS 2ª ed. traz o modelo de threads e locks no capítulo~8, \enquote{adapted with
 minimal changes from Chapter 17 of the first edition of The Java
 Language Specification}, nas seções §8.12 a §8.14. Na §8.14, um
 \texttt{notify} remove do wait set uma thread escolhida arbitrariamente.
@@ -65,8 +66,8 @@ set na §17.2 e o modelo de memória na §17.4. A §17.1 define:
 \enquote{Each object in Java is associated with a monitor, which a
 thread can lock or unlock.} Só uma thread por vez detém o lock de um
 monitor. A §17.1 descreve o bloco e o método \texttt{synchronized} com o texto
-da §17.13 da 2ª edição, exceto que o objeto travado passa a ser o
-monitor e sai a observação sobre a memória principal. A mesma seção cita as classes de
+da §17.13 da 2ª edição, exceto que o que se trava é o monitor do
+objeto e sai a observação sobre a memória principal. A mesma seção cita as classes de
 \texttt{java.util.concurrent} entre os outros meios de sincronização.
 
 A §17.2.1 detalha o \texttt{wait}. Se a thread não detém o lock do
@@ -78,9 +79,9 @@ interrupção da thread e uma ação interna da implementação. Essa última é
 o \termo{spurious wakeup}{Acordar espúrio: a thread sai de
 \texttt{wait} sem \texttt{notify}, interrupção nem fim do tempo
 limite.}: \enquote{Implementations are permitted, although not
-encouraged, to perform "spurious wake-ups"}. A mesma seção diz que
-essa permissão exige usar \texttt{wait} só dentro de laços que terminam
-quando a condição esperada vale. A §17.2.2 não dá garantia sobre qual
+encouraged, to perform \enquote{spurious wake-ups}}. A mesma seção diz que
+essa permissão exige usar \texttt{wait} só dentro de laços que só
+terminam quando a condição esperada vale. A §17.2.2 não dá garantia sobre qual
 thread o \texttt{notify} escolhe, e, após um \texttt{notifyAll}, só uma
 thread por vez retoma o lock. O javadoc de \texttt{Object.wait} no
 JDK~25 recomenda testar a condição num laço \texttt{while} em volta da
@@ -135,29 +136,43 @@ vazio, e os dois chamam \texttt{notifyAll} depois de mudar o estado.
   \texttt{Object.wait} sobre \texttt{this}, o mesmo objeto cujo monitor
   o método detém. O \texttt{goto} do offset~16 volta ao offset~0, e a
   condição é testada de novo.
-\item Entre a chamada do offset~13 e o retorno dela, a thread executa as
-  liberações e, ao sair do wait set, os travamentos de volta (JLS
-  SE~25, §17.2.1). Cada liberação desfaz um travamento (§17.1): nesse
-  intervalo, a thread não detém o monitor de \texttt{this}.
+\item Dentro da chamada do offset~13, a thread executa as liberações
+  e, ao sair do wait set, os travamentos de volta, antes de
+  \texttt{wait} retornar (JLS SE~25, §17.2.1). Entre as liberações e
+  os travamentos de volta, a thread não detém o monitor de
+  \texttt{this}: o javadoc de \texttt{Object.wait} diz que ela passa a
+  \enquote{relinquish any and all synchronization claims on this
+  object}.
 \item Em \texttt{retirar}, o padrão se repete: \texttt{ifne} no
   offset~4, \texttt{wait} no offset~8 e \texttt{goto} para o offset~0
   no offset~11. \texttt{notifyAll} está no offset~51 dos dois métodos,
   antes do \texttt{return} (54) e do \texttt{ireturn} (55).
 \end{itemize}
 
-Num experimento nosso no JDK~25 (\texttt{eclipse-temurin:25-jdk}), o
-\texttt{main} imprimiu os números de 1 a 5, na ordem.
+Experimento (JDK~25, imagem \texttt{eclipse-temurin:25-jdk}): a saída
+real de \texttt{main} foi \texttt{1}, \texttt{2}, \texttt{3},
+\texttt{4} e \texttt{5}, um número por linha.
 
 \paragraph{O que isso muda no seu código.}
-Vale para qualquer JDK, inclusive o 25, e para código que use
-\texttt{wait}/\texttt{notify}. Chame \texttt{wait} dentro de um
-\texttt{while} que testa a condição, nunca de um \texttt{if}: a JLS
-SE~25 permite o spurious wakeup (§17.2.1). Sincronize num objeto
-privado, como \texttt{private final Object lock = new Object()}, e não
-em \texttt{this}: qualquer thread pode travar o monitor de um objeto a
-que tenha acesso (§17.1). Para código novo, prefira as classes de
-\texttt{java.util.concurrent}, que a própria §17.1 cita como
-alternativa de sincronização.
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{JDK~25:} chame \texttt{wait} dentro de um \texttt{while}
+  que testa a condição, nunca de um \texttt{if}. A JLS SE~25 permite o
+  spurious wakeup (§17.2.1), e o javadoc de \texttt{Object.wait} do
+  JDK~25 recomenda o laço. O javadoc já descreve o spurious wakeup e
+  pede o laço desde o Java~5 (2004).
+\item \emph{JLS 2ª ed. e JDK~25:} sincronize num objeto privado, como
+  \texttt{private final Object lock = new Object()}, e não em
+  \texttt{this}. Todo objeto tem um lock (JLS 2ª ed., §17.13) ou
+  monitor (JLS SE~25, §17.1), que qualquer thread pode travar. O
+  exemplo acima trava \texttt{this} de propósito, para mostrar a flag
+  \texttt{ACC\_SYNCHRONIZED}; em código de produção, prefira o objeto
+  privado.
+\item \emph{Java~5 (2004) em diante:} para código novo, prefira as
+  classes de \texttt{java.util.concurrent}, que a própria §17.1 da JLS
+  SE~25 cita como alternativa de sincronização. O pacote veio da
+  \citetitle{doc:jsr166}, com versão final em 30 de setembro de 2004.
+\end{itemize}
 
 \paragraph{Onde aprofundar.}
 O \texttt{monitorenter} e o \texttt{monitorexit} estão na
