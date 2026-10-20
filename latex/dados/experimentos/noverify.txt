@@ -1,0 +1,19 @@
+# jdk: openjdk version "25.0.4.1" 2026-08-18 LTS
+# cpus: 12
+# cpu: AMD Ryzen 5 9600X 6-Core Processor
+# data: 2026-10-20T07:05:13Z
+# experimento: a mesma classe com -Xverify:none (gerado por scripts/experimentos.sh; não edite)
+# código de saída: 134
+
+$ java -Xverify:none -cp corrompida apostila.bytecode.VerificacaoTipos
+OpenJDK 64-Bit Server VM warning: Options -Xverify:none and -noverify were deprecated in JDK 13 and will likely be removed in a future release.
+# A fatal error has been detected by the Java Runtime Environment:
+#  SIGSEGV (0xb) at pc=0x00007f383bfc70f0, pid=131, tid=132
+# JRE version: OpenJDK Runtime Environment Temurin-25.0.4.1+1 (25.0.4.1+1) (build 25.0.4.1+1-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (25.0.4.1+1-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, linux-amd64)
+# Problematic frame:
+# V  [libjvm.so+0xced0f0]  LinkResolver::resolve_invokevirtual(CallInfo&, Handle, constantPoolHandle const&, int, JavaThread*)+0x100
+# An error report file with more information is saved as:
+# /tmp/hs_err_131.log
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues

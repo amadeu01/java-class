@@ -1,0 +1,16 @@
+# jdk: openjdk version "25.0.4.1" 2026-08-18 LTS
+# cpus: 12
+# cpu: AMD Ryzen 5 9600X 6-Core Processor
+# data: 2026-10-20T07:05:13Z
+# experimento: class file compilado com --release 25 e 21, executado no JDK 25 e no 21 (gerado por scripts/experimentos.sh; não edite)
+# jdk 21: openjdk version "21.0.12.1" 2026-08-18 LTS
+
+$ java -cp release-25 apostila.experimentos.VersaoClasse   (JDK 25)
+class file 69.0 rodou na JVM 25
+$ java -cp release-21 apostila.experimentos.VersaoClasse   (JDK 25)
+class file 65.0 rodou na JVM 25
+$ java -cp release-25 apostila.experimentos.VersaoClasse   (JDK 21)
+Error: LinkageError occurred while loading main class apostila.experimentos.VersaoClasse
+	java.lang.UnsupportedClassVersionError: apostila/experimentos/VersaoClasse has been compiled by a more recent version of the Java Runtime (class file version 69.0), this version of the Java Runtime only recognizes class file versions up to 65.0
+$ java -cp release-21 apostila.experimentos.VersaoClasse   (JDK 21)
+class file 65.0 rodou na JVM 21

@@ -84,13 +84,17 @@ cerca de 1.000.000 por segundo com 1.000.000 de tarefas. O exemplo
 depende de tarefas que esperam; o caso de tarefas que calculam está
 logo abaixo.
 
-Experimento (JDK~25.0.4.1, imagem \texttt{eclipse-temurin:25-jdk},
-AMD Ryzen~5 9600X, 12 processadores vistos pelo \termo{container}{Processo isolado que roda a partir de uma imagem
-com o sistema e as ferramentas, como o JDK, já instalados.}): o mesmo
-exemplo, 10.000 tarefas de 1~s, levou 1,0~s com
-\texttt{newVirtualThreadPerTaskExecutor} (9.860 tarefas/s, na segunda
-rodada) e 50,0~s com \texttt{newFixedThreadPool(200)} (200 tarefas/s).
-Os números são desta máquina.
+Experimento: o programa \texttt{ThreadsVirtuaisVsPool}, em
+\texttt{examples/experimentos}, roda o mesmo exemplo do JEP duas vezes
+com \texttt{newVirtualThreadPerTaskExecutor}, na mesma JVM, e uma vez com
+\texttt{newFixedThreadPool(200)}. O script
+\texttt{scripts/experimentos.sh} o executa num container com JDK~25 e
+grava a saída abaixo, com JDK, CPUs e processador no cabeçalho. Nesta
+execução, as duas rodadas com virtual threads ficam perto das 10.000
+tarefas por segundo do JEP, e o pool fixo, nas 200 tarefas por segundo
+que o JEP calcula para ele. Os números são desta máquina.
+
+\lstinputlisting[language={}]{dados/experimentos/vt.txt}
 
 \paragraph{O que isso muda no seu código.}
 Cada recomendação tem seu escopo.

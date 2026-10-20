@@ -1,0 +1,9 @@
+# jdk: openjdk version "25.0.4.1" 2026-08-18 LTS
+# cpus: 12
+# cpu: AMD Ryzen 5 9600X 6-Core Processor
+# data: 2026-10-20T07:05:13Z
+# experimento: 10.000 tarefas de 1 s, virtual threads x newFixedThreadPool(200) (gerado por scripts/experimentos.sh; não edite)
+
+virtual, rodada 1:   10000 tarefas em 1.03 s (9750 tarefas/s)
+virtual, rodada 2:   10000 tarefas em 1.02 s (9795 tarefas/s)
+pool fixo de 200:    10000 tarefas em 50.02 s (200 tarefas/s)

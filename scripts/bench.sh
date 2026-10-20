@@ -6,6 +6,9 @@
 # Uso: scripts/bench.sh
 #   JMH_OPTS="-wi 1 -i 1 -r 1s" scripts/bench.sh   # teste rápido de fiação
 #   scripts/bench.sh --tabela   # só regera o .tex a partir do .txt existente
+# Depois de rodar de novo, releia as frases que comparam os três métodos em
+# latex/parte2-java-jvm/cap-por-que/juc-bench.tex ("Nesta execução, ..."): a
+# tabela é regerada, mas essas frases são escritas à mão.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 opts=${JMH_OPTS:-"-wi 3 -i 5 -f 1"}

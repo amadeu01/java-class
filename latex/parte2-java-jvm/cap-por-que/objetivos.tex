@@ -50,11 +50,29 @@ binário que a JVM carrega.} de versão 50.0 ou maior. A comparação está
 na seção~\ref{sec:verificacao}.
 
 \paragraph{O que isso muda no seu código.}
-Vale para qualquer JDK, inclusive o 25: você compila uma vez e o mesmo
-\texttt{.class} roda onde houver JVM. Você não faz aritmética de
-ponteiros nem libera objetos manualmente; em troca, o tempo de coleta e
-o comportamento de threads entram no seu raciocínio sobre desempenho,
-temas das seções seguintes.
+Cada recomendação tem seu escopo.
+\begin{itemize}
+\item \emph{JDK~25:} o mesmo \texttt{.class} só é aceito por uma JVM
+  que suporte a versão desse class file. Uma JVM do Java
+  SE~25 suporta as versões major de 45 a 69 (JVMS SE~25, §4.1); um class
+  file de versão não suportada faz a JVM lançar
+  \texttt{UnsupportedClassVersionError} ao derivar a classe (§5.3.5).
+  Experimento: o script \texttt{scripts/experimentos.sh} compila a mesma
+  classe com \texttt{-{}-release 25} e com \texttt{-{}-release 21} e roda
+  as duas no JDK~25 e no JDK~21. O JDK~25 roda as duas; o JDK~21 roda a
+  compilada para 21 e recusa a compilada para 25 (saída abaixo).
+\item \emph{Java SE~25:} a linguagem tem gerenciamento automático de
+  memória, em geral com um coletor de lixo, para evitar os problemas de
+  segurança da desalocação explícita, e os detalhes da representação na
+  máquina não ficam acessíveis pela linguagem (JLS SE~25, cap.~1). Em
+  troca, o tempo de coleta e o comportamento de threads entram no seu
+  raciocínio sobre desempenho, temas das seções seguintes.
+\end{itemize}
+
+A saída do experimento do primeiro item, com JDK, CPUs e processador no
+cabeçalho, é a desta máquina:
+
+\lstinputlisting[language={}]{dados/experimentos/versao.txt}
 
 \paragraph{Onde aprofundar.}
 O formato do bytecode é lido em detalhe no capítulo~\ref{cap:lendo-bytecode},

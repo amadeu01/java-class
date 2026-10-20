@@ -13,58 +13,115 @@ Inglês & Português & Em uma linha \\
 \textit{accessors} & métodos de acesso & Métodos de leitura; num record, \texttt{x()} e não \texttt{getX()} \\
 \textit{adapter} & adaptador & Converte a API da porta para um dispositivo concreto (HTTP, SQL, fila) \\
 \textit{AOT (ahead-of-time)} & antecipado & Compilar ou preparar antes de executar, não durante \\
+\textit{AppCDS (application class data sharing)} & compartilhamento de dados de classes da aplicação & Arquivo com classes já processadas, que a JVM mapeia na inicialização \\
 \textit{augmentation} & aumento & Fase do build do Quarkus em que as extensões geram o código de runtime \\
+\textit{back pressure} & contrapressão & O consumidor diz ao produtor quanto consegue receber, para não ser inundado \\
 \textit{backoff} & (sem tradução usual) & Espera crescente entre uma tentativa e a próxima \\
 \textit{BEAM} & (nome próprio) & A máquina virtual do Erlang \\
+\textit{benchmark} & (sem tradução usual) & Programa que mede o desempenho de um código sob condições controladas \\
 \textit{blast radius} & raio de explosão & O tanto do sistema e dos usuários que um experimento pode afetar \\
 \textit{bootstrap} & método de inicialização & Chamado uma vez, na primeira execução de um \texttt{invokedynamic} \\
 \textit{build items} & itens do build & Objetos que um passo do build produz e outros consomem \\
 \textit{build steps} & passos do build & Métodos \texttt{@BuildStep} de uma extensão do Quarkus \\
 \textit{bulkhead} & antepara & Limitar os recursos de cada dependência para isolar falhas \\
+\textit{bump-the-pointer} & avançar o ponteiro & Alocar avançando um ponteiro até o fim do último objeto alocado \\
+\textit{bytecode} & (sem tradução usual) & Instruções da JVM, independentes de processador, que o \texttt{javac} grava em \texttt{.class} \\
+\textit{callback} & (sem tradução usual) & Função passada para outra, que a chama quando um evento acontece \\
+\textit{carrier thread} & thread portadora & Thread de plataforma sobre a qual a virtual thread está montada no momento \\
+\textit{class files} & arquivos de classe & Arquivos \texttt{.class}, o formato binário que a JVM carrega \\
 \textit{class loader} & carregador de classes & Encontra os bytes de uma classe e a define na JVM \\
 \textit{CLI (Common Language Infrastructure)} & infraestrutura comum de linguagem & Padrão de VM multilinguagem da plataforma .NET \\
 \textit{client proxy} & proxy do cliente & Objeto gerado no lugar do bean injetado, que delega à instância real \\
 \textit{closed-world assumption} & suposição de mundo fechado & Todo o código que pode executar é conhecido no build \\
 \textit{code smells} & cheiros de código & Sinais de código mal estruturado, mesmo que funcione \\
+\textit{colored pointers} & ponteiros coloridos & Referências que guardam, em bits do próprio ponteiro, metadados do GC \\
 \textit{constant pool} & tabela de constantes & Nomes, strings e números de um \texttt{.class} \\
+\textit{container} & contêiner & Processo isolado que roda a partir de uma imagem com o sistema e as ferramentas já instalados \\
+\textit{cookbook} & livro de receitas & Guia de receitas; o FAQ da JSR~133 o indica a quem escreve uma JVM \\
 \textit{coordinated omission} & omissão coordenada & O gerador de carga espera a resposta lenta e deixa de medir a espera real \\
 \textit{data race} & corrida de dados & Acessos concorrentes, ao menos um de escrita, sem happens-before \\
+\textit{delimited continuations} & continuações delimitadas & Trecho de execução que pode ser suspenso e retomado do ponto em que parou \\
 \textit{deoptimization} & desotimização & Trocar, em execução, código otimizado por código não otimizado \\
+\textit{double-checked locking (DCL)} & travamento com teste duplo & Testar sem lock e, se nulo, travar, testar de novo e inicializar \\
 \textit{escape analysis} & análise de escape & Descobre se um objeto sai do método ou da thread que o criou \\
+\textit{evacuation} & evacuação & Copiar os objetos vivos de uma região para outra e liberar a de origem inteira \\
 \textit{event loop} & laço de eventos & Thread que atende muitas conexões sem bloquear \\
+\textit{fibers} & fibras & Threads leves escalonadas por uma biblioteca ou pela JVM, não pelo sistema operacional \\
 \textit{fixture} & (sem tradução usual) & Estado inicial conhecido de que o teste precisa \\
+\textit{framework} & (sem tradução usual) & Classes que dão a estrutura de uma solução; o código do usuário preenche o específico \\
+\textit{GA (General Availability)} & disponibilidade geral & Data em que uma versão do JDK fica disponível para uso geral \\
 \textit{garbage collector (GC)} & coletor de lixo & Recupera a memória de objetos que não são mais alcançáveis \\
 \textit{Gizmo} & (nome próprio) & Biblioteca de geração de bytecode do Quarkus \\
+\textit{green threads} & (sem tradução usual) & Threads implementadas pela própria JVM, em nível de usuário, sem o sistema operacional saber \\
 \textit{happens-before} & acontece antes & Relação que garante visibilidade e ordem entre ações de threads \\
+\textit{heap} & (sem tradução usual) & Área de memória dos objetos, gerenciada pelo coletor de lixo \\
+\textit{holder} & (sem tradução usual) & Classe aninhada que guarda a instância num campo \texttt{static} \\
 \textit{hot code loading} & carga de código a quente & Trocar um módulo com o sistema rodando \\
 \textit{inline cache} & cache em linha & Resultado da busca de método guardado no ponto de chamada \\
 \textit{inlining} & expansão em linha & Copiar o corpo do método chamado para dentro do chamador \\
 \textit{Jandex} & (nome próprio) & Índice de arquivos \texttt{.class} da SmallRye \\
+\textit{JEPs (JDK Enhancement Proposals)} & propostas de melhoria do JDK & Propostas de mudança no JDK, registradas e revisadas pelo processo do JEP~1 \\
 \textit{JIT (just-in-time)} & compilação durante a execução & Compila com informação de como o programa está rodando \\
+\textit{JSR (Java Specification Request)} & pedido de especificação Java & Documento que propõe ao JCP uma especificação nova ou uma revisão importante \\
 \textit{let it crash} & deixe quebrar & O processo termina e outro cuida da recuperação \\
+\textit{listener} & ouvinte & Objeto registrado em outro para ser avisado de eventos \\
+\textit{load barriers} & barreiras de leitura & Código que a JVM executa quando o programa carrega uma referência do heap \\
 \textit{load shedding} & descarte de carga & Descartar requisições menos importantes sob sobrecarga \\
+\textit{locks} & travas & A thread adquire o lock antes de entrar na região protegida e o libera ao sair \\
 \textit{mailbox} & caixa de correio & Fila de mensagens de um processo Erlang \\
+\textit{microbenchmark} & (sem tradução usual) & Benchmark de um trecho pequeno de código, isolado do resto do programa \\
 \textit{mock} & (sem tradução usual) & Dublê que verifica as chamadas que recebe \\
-\textit{p-code (pseudo-code)} & pseudocódigo & Instruções da P-machine do Pascal, executadas por interpretador \\
+\textit{monitor} & monitor & Deixa uma única thread por vez executar a região de código que protege \\
+\textit{multithreaded} & com várias threads & Com suporte a várias threads de execução na própria linguagem \\
+\textit{non-blocking I/O} & I/O não bloqueante & Entrada e saída que volta na hora, mesmo sem dados prontos, sem parar a thread \\
+\textit{offset} & deslocamento & Posição, em bytes, da instrução dentro do código do método \\
 \textit{partial evaluation} & avaliação parcial & Especializar um programa para entradas já conhecidas \\
+\textit{p-code (pseudo-code)} & pseudocódigo & Instruções da P-machine do Pascal, executadas por interpretador \\
 \textit{PGO (profile-guided optimization)} & otimização guiada por perfil & AOT guiado por um perfil de uma execução de treino \\
 \textit{pinned} & presa & Virtual thread que não consegue desmontar da carrier thread \\
+\textit{pinning} & (sem tradução usual) & A virtual thread fica presa à thread de plataforma e não a libera enquanto bloqueia \\
 \textit{polymorphic inline caches (PICs)} & caches em linha polimórficos & Inline cache com uma entrada por tipo de receptor \\
 \textit{port} & porta & Ponto em que a aplicação conversa com o mundo de fora \\
 \textit{preview} & prévia & Recurso para experimentação, com \texttt{-{}-enable-preview} \\
+\textit{publish-subscribe} & publicação e assinatura & Um produtor publica itens e os assinantes interessados os recebem \\
 \textit{recorders} & gravadores & Chamadas gravadas no build e reproduzidas na subida da aplicação \\
 \textit{reductions} & reduções & Unidades de trabalho de um processo Erlang \\
+\textit{requests} & requisições & Pedidos que chegam ao servidor, cada um exigindo trabalho do programa \\
 \textit{RSS (resident set size)} & memória residente & Memória física de fato ocupada pelo processo \\
 \textit{safepoints} & pontos seguros & Pontos em que a JVM conhece o estado da thread e pode pará-la \\
 \textit{schedulers} & escalonadores & Threads do SO que executam processos Erlang \\
+\textit{sequentially consistent} & sequencialmente consistente & Ações de todas as threads numa ordem total que respeita a ordem de programa de cada uma \\
+\textit{singleton} & (sem tradução usual) & Classe com uma única instância, obtida por um método \texttt{static} \\
+\textit{slot} & posição & Posição no array de variáveis locais do frame do método \\
+\textit{split verification} & verificação dividida & Verificação dividida entre quem gera o class file e a JVM \\
+\textit{spurious wakeup} & acordar espúrio & A thread sai de \texttt{wait} sem \texttt{notify}, interrupção nem fim do tempo limite \\
+\textit{stack map frames} & quadros do mapa de pilha & Entradas do \texttt{StackMapTable} que descrevem os tipos em um ponto do método \\
+\textit{startup} & inicialização & Inicialização da aplicação \\
 \textit{steady state} & regime estável & Desempenho depois do aquecimento, sem tendência \\
+\textit{stop-the-world} & (sem tradução usual) & Pausa em que todas as threads do programa ficam paradas enquanto o GC trabalha \\
+\textit{store barriers} & barreiras de escrita & Código que a JVM executa quando o programa grava uma referência no heap \\
+\textit{streams} & fluxos & Sequências de elementos processadas por uma cadeia de operações (\texttt{java.util.stream}) \\
 \textit{stub} & (sem tradução usual) & Dublê que devolve respostas prontas \\
 \textit{supervision tree} & árvore de supervisão & Supervisores e seus processos filhos \\
 \textit{SUT (system under test)} & sistema sob teste & O código que o teste está exercitando \\
+\textit{thread pool} & pool de threads & Conjunto fixo de threads reaproveitadas para executar muitas tarefas \\
+\textit{thread-per-request} & uma thread por requisição & Cada request é atendido do começo ao fim por uma thread dedicada \\
+\textit{threads} & linhas de execução & Linhas de execução dentro do mesmo processo, que compartilham a memória \\
 \textit{throughput} & vazão & Trabalho útil por unidade de tempo: requisições por segundo num serviço; em GC, fração do tempo fora da coleta \\
 \textit{tiered compilation} & compilação em camadas & Interpretador, depois C1 com perfil, depois C2 \\
+\textit{TLAB (thread-local allocation buffer)} & buffer de alocação da thread & Pedaço do heap em que só uma thread aloca \\
+\textit{type checking} & checagem de tipos & O atributo \texttt{StackMapTable} informa os tipos e o verificador os confere \\
 \textit{uncommon trap} & (sem tradução usual) & Devolve o controle ao runtime num caminho tido como impossível \\
 \textit{unmount} & desmontar & A virtual thread sai da carrier thread, que fica livre \\
+\textit{virtual threads} & threads virtuais & Threads leves, criadas e escalonadas pela JVM, sobre menos threads do sistema operacional \\
+\textit{wait set} & conjunto de espera & Threads que chamaram \texttt{wait} no objeto e ainda não foram removidas dele \\
+\textit{warmup} & aquecimento & Período inicial de execução, antes de o desempenho se estabilizar \\
+\textit{white paper} & (sem tradução usual) & Documento técnico que apresenta e justifica um projeto \\
+\textit{worker threads} & threads de trabalho & Threads de um pool separado para código que bloqueia, sem ocupar as de I/O \\
+\textit{working memory} & memória de trabalho & Na JLS 2ª ed., onde a thread guarda cópias das variáveis, separada da memória principal \\
+\textit{workshop} & (sem tradução usual) & Encontro acadêmico menor que uma conferência, em geral com artigos curtos ou preliminares \\
+\textit{work-stealing} & roubo de trabalho & A thread sem tarefas pega tarefas da fila de outra thread \\
+\textit{Write Once, Run Anywhere} & escreva uma vez, rode em qualquer lugar & O mesmo \texttt{.class} roda em qualquer JVM que suporte a versão dele \\
 \bottomrule
 \end{longtable}
 \normalsize

@@ -25,7 +25,9 @@ estão na seção~\ref{sec:objetivos-1995}.
   páginas (04:02--04:27).
 \item[1995] O Java é lançado com a promessa \termo{Write Once, Run
   Anywhere}{\enquote{Escreva uma vez, rode em qualquer lugar}: o mesmo
-  \texttt{.class} roda em qualquer sistema que tenha uma JVM.}. O acordo
+  \texttt{.class} roda em qualquer sistema que tenha uma JVM de versão
+  compatível, isto é, que suporte a versão do class file (JVMS SE~25,
+  §4.1).}. O acordo
   com a Netscape para pôr Java no navegador é o que populariza a linguagem
   (06:34--06:57).
 \end{description}
@@ -107,7 +109,7 @@ fica na borda (seção~\ref{sec:circulos-quarkus}).
 \end{description}
 
 \paragraph{Project Loom e virtual threads.}
-O filme dedica um trecho ao Loom (00:59:52--01:03:30):
+O filme dedica ao Loom o trecho de 00:59:52 a 01:03:30:
 \begin{itemize}
 \item \textbf{O runtime troca, a API fica.} O Java mudou por dentro como o
   runtime gerencia threads. Você continua usando \texttt{Thread} e
@@ -120,7 +122,7 @@ O filme dedica um trecho ao Loom (00:59:52--01:03:30):
   sequencial e continua escalando (01:02:43--01:03:00).
 \item \textbf{Programas produtivos.} Josh Long resume: o Java~8 deixou o
   \emph{programador} mais produtivo; o Loom deixa o \emph{programa} mais
-  produtivo e escalável (01:03:10--01:03:30).
+  produtivo e escalável (01:03:10--\allowbreak 01:03:30).
 \end{itemize}
 \emph{Conferido:} as virtual threads entraram como preview no JDK~19
 (2022) e ficaram finais no JDK~21, em setembro de 2023
