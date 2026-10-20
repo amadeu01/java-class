@@ -1,13 +1,15 @@
-\section{Os objetivos de 1995}
+\section{Os objetivos de projeto}
 \label{sec:objetivos-1995}
 
 O problema da época era distribuir código por redes de máquinas
-diferentes. O white paper \citetitle{paper:java-language-environment}
+diferentes. O \termo{white paper}{Documento técnico que apresenta e justifica um
+projeto.} \citetitle{paper:java-language-environment}
 (maio de 1996, de Gosling e McGilton, lido hoje via Wayback) afirma que a
 tecnologia deve permitir \enquote{secure, high performance, and highly
 robust applications on multiple platforms in heterogeneous, distributed
 networks}. O mesmo texto resume o sistema como simples, familiar,
-orientado a objetos, \emph{multithreaded} e interpretado, para máxima
+orientado a objetos, \termo{multithreaded}{Com suporte a várias threads
+de execução na própria linguagem.} e interpretado, para máxima
 portabilidade e capacidades dinâmicas.
 
 \paragraph{A decisão.}
@@ -32,17 +34,16 @@ prioridade (§2.1.7). Já as threads são parte da linguagem, preemptivas e,
 conforme a plataforma, divididas por fatias de tempo (§7.1), assunto da
 seção~\ref{sec:monitores}.
 
-A neutralidade de arquitetura tem um custo declarado: a JVM é descrita
-como máquina abstrata baseada principalmente na interface POSIX
-(§1.2.3), o que pressupõe suporte a multithreading na plataforma de
-destino.
+O white paper descreve a JVM como máquina abstrata baseada
+principalmente na interface POSIX, o que exige suporte a multithreading
+na plataforma de destino (§1.2.3). Ele chama o carregador de bytecode de
+próxima linha de defesa depois do verificador (§6.2).
 
 \paragraph{O que mudou depois.}
-O formato do bytecode continuou o mesmo em espírito, mas a forma de
-verificá-lo mudou (seção~\ref{sec:verificacao}) e o carregamento de
-classes ficou mais elaborado (seção~\ref{sec:class-loading}). O white
-paper chama o carregador de bytecode de próxima linha de defesa depois
-do verificador (§6.2).
+A verificação de bytecode, uma das quatro escolhas acima, mudou de
+técnica: a JVMS 2ª ed. descreve análise de fluxo de dados, e a JVMS do
+Java SE~25 exige \emph{type checking} para class files de versão 50.0 ou
+maior. A comparação está na seção~\ref{sec:verificacao}.
 
 \paragraph{O que isso muda no seu código.}
 Vale para qualquer JDK, inclusive o 25: você compila uma vez e o mesmo
