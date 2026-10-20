@@ -14,3 +14,4 @@ ThreadsVirtuais -c -p
 SealedForma$Forma -v
 InjecaoSemReflexao -c -p
 VerificacaoTipos -c -p
+EsperaEmLaco -c -p

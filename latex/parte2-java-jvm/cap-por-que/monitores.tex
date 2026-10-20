@@ -1,2 +1,167 @@
 \section{Monitores e \texttt{synchronized}}
 \label{sec:monitores}
+
+\paragraph{O problema.}
+Na JLS 2ª ed., as threads executam código que opera sobre valores e
+objetos de uma memória principal compartilhada. A linguagem apoia a escrita de
+programas que, mesmo concorrentes, tenham comportamento determinístico,
+e para isso fornece mecanismos de sincronização (cap.~17, abertura). O
+mesmo texto descreve a alternativa a evitar: \enquote{spinning}, travar
+e destravar um objeto repetidamente para ver se o estado interno mudou,
+o que consome esforço computacional.
+
+\paragraph{A decisão.}
+A resposta da JLS 2ª ed. é o \termo{monitor}{Mecanismo que deixa uma
+única thread por vez executar a região de código que ele protege.}:
+\enquote{a high-level mechanism for allowing only one thread at a time
+to execute a region of code protected by the monitor}. O comportamento
+do monitor é explicado em termos de \termo{locks}{Travas. Uma thread
+adquire o lock antes de entrar na região protegida e o libera ao
+sair.}, um por objeto (cap.~17, abertura). A linguagem não oferece
+ações separadas de travar e destravar: o bloco \texttt{synchronized} e
+o método \texttt{synchronized} as executam aos pares. Um método de
+instância trava o lock de \texttt{this}, e um método \texttt{static}
+trava o do objeto \texttt{Class} da classe (§17.13). Os métodos
+\texttt{wait}, \texttt{notify} e \texttt{notifyAll} de \texttt{Object}
+transferem o controle entre threads: em vez de girar, a thread se
+suspende com \texttt{wait} até outra acordá-la com \texttt{notify}
+(cap.~17, abertura).
+
+Cada objeto tem, além do lock, um \termo{wait set}{Conjunto das
+threads que chamaram \texttt{wait} no objeto e ainda não foram
+removidas dele.} (§17.14). Segundo a §17.14, \texttt{wait} só deve ser
+chamado por quem já detém o lock do objeto. A chamada põe a thread no
+wait set e executa tantas liberações quantos forem os travamentos
+pendentes. A thread fica dormente até acontecer uma de três coisas: um
+\texttt{notify} que a escolha arbitrariamente, um \texttt{notifyAll} ou
+o fim do tempo limite, se houver. Depois ela trava o objeto de novo e
+volta de \texttt{wait} com o lock no mesmo estado em que estava.
+
+A JVMS 2ª ed. traz o mesmo modelo no capítulo~8, \enquote{adapted with
+minimal changes from Chapter 17 of the first edition of The Java
+Language Specification}, nas seções §8.12 a §8.14. Na §8.14, um
+\texttt{notify} remove do wait set uma thread escolhida arbitrariamente.
+
+Sobre a origem, o white paper diz que as primitivas de
+sincronização seguem o paradigma de monitor e variável de condição
+\enquote{introduced twenty years ago by C.A.R. Hoare}, e que foram
+modeladas no Cedar/Mesa (§7.1 do white paper,
+\citetitle{paper:java-language-environment}). O artigo de Hoare
+(\citetitle{paper:hoare1974-monitors}, 1974) \enquote{develops
+Brinch-Hansen's concept of a monitor as a method of structuring an
+operating system}, com variáveis de condição e as operações
+\texttt{wait} e \texttt{signal}. Em 1999, Per Brinch Hansen
+escreveu em \citetitle{paper:brinch-hansen1999-insecure}:
+\enquote{The claim that Java supports monitors is shown to be false.}
+Para ele, o que o Java oferece \enquote{is just a programming style that
+imitates insecure monitors}, e o artigo conclui que o Java ignora os
+últimos vinte e cinco anos de pesquisa em linguagens de programação
+paralela.
+
+\paragraph{O que mudou depois.}
+Na JLS do Java SE~25, o capítulo~17 continua se chamando
+\enquote{Threads and Locks}, mas a sincronização está na §17.1, o wait
+set na §17.2 e o modelo de memória na §17.4. A §17.1 define:
+\enquote{Each object in Java is associated with a monitor, which a
+thread can lock or unlock.} Só uma thread por vez detém o lock de um
+monitor. A §17.1 descreve o bloco e o método \texttt{synchronized} com o texto
+da §17.13 da 2ª edição, exceto que o objeto travado passa a ser o
+monitor e sai a observação sobre a memória principal. A mesma seção cita as classes de
+\texttt{java.util.concurrent} entre os outros meios de sincronização.
+
+A §17.2.1 detalha o \texttt{wait}. Se a thread não detém o lock do
+objeto, a chamada lança \texttt{IllegalMonitorStateException}. Se
+detém, ela entra no wait set e executa uma liberação para cada
+travamento pendente; ao sair, refaz os mesmos travamentos. A lista de saídas do wait set cresceu: além
+de \texttt{notify}, \texttt{notifyAll} e tempo limite, entram a
+interrupção da thread e uma ação interna da implementação. Essa última é
+o \termo{spurious wakeup}{Acordar espúrio: a thread sai de
+\texttt{wait} sem \texttt{notify}, interrupção nem fim do tempo
+limite.}: \enquote{Implementations are permitted, although not
+encouraged, to perform "spurious wake-ups"}. A mesma seção diz que
+essa permissão exige usar \texttt{wait} só dentro de laços que terminam
+quando a condição esperada vale. A §17.2.2 não dá garantia sobre qual
+thread o \texttt{notify} escolhe, e, após um \texttt{notifyAll}, só uma
+thread por vez retoma o lock. O javadoc de \texttt{Object.wait} no
+JDK~25 recomenda testar a condição num laço \texttt{while} em volta da
+chamada.
+
+Na JVMS do Java SE~25, a §2.11.10 diz que a JVM sincroniza métodos e
+sequências de instruções com \enquote{a single synchronization
+construct: the monitor}. A sincronização é feita pela entrada e saída
+do monitor, explícita, com \texttt{monitorenter} e \texttt{monitorexit},
+ou implícita, nas instruções de chamada e retorno de método (§3.14).
+
+\begin{center}
+\begin{tabular}{@{}p{0.22\textwidth}p{0.36\textwidth}p{0.36\textwidth}@{}}
+\toprule
+Aspecto & JLS/JVMS 2ª ed. (§) & SE 25 (§) \\
+\midrule
+Onde está & JLS §17.12--§17.14; JVMS §8.12--§8.14 & JLS §17.1 e
+§17.2; JVMS §2.11.10 e §3.14 \\
+Unidade & Um lock por objeto (JLS §17.13) & Um monitor por objeto
+(JLS §17.1) \\
+\texttt{wait} sem o lock & Só deve ser chamado com o lock (JLS §17.14)
+& Lança \texttt{IllegalMonitor\-StateException} (JLS §17.2.1) \\
+Saídas do wait set & \texttt{notify}, \texttt{notifyAll}, tempo limite
+(JLS §17.14) & Também interrupção e ação interna (JLS §17.2.1) \\
+Spurious wakeup & Não mencionado (JLS cap.~17) & Permitido, não
+encorajado (JLS §17.2.1) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Onde fica o \texttt{wait} dentro do monitor?}
+O exemplo abaixo é um buffer de duas posições. \texttt{colocar} espera
+enquanto o buffer está cheio, \texttt{retirar} espera enquanto está
+vazio, e os dois chamam \texttt{notifyAll} depois de mudar o estado.
+
+\lstinputlisting[language=Java]{generated/source/EsperaEmLaco.java}
+
+\inputbytecode{EsperaEmLaco}
+
+\begin{itemize}
+\item O cabeçalho mostra \texttt{synchronized void colocar(int)}, mas o
+  código não tem \texttt{monitorenter} nem \texttt{monitorexit}. O
+  método leva a flag \texttt{ACC\_SYNCHRONIZED}, conferida pelas
+  instruções de chamada: a thread entra no monitor de \texttt{this} antes
+  do offset~0 e sai dele no retorno, normal ou por exceção (JVMS SE~25,
+  §2.11.10). O bloco \texttt{synchronized}, com as duas instruções, está
+  na seção~\ref{sec:sincronizacao}.
+\item Em \texttt{colocar}, os offsets 0--9 testam
+  \texttt{quantidade == itens.length}; o \texttt{if\_icmpne} do
+  offset~9 sai do laço para o offset~19. Nos offsets 12--13,
+  \texttt{aload\_0} e \texttt{invokevirtual} chamam
+  \texttt{Object.wait} sobre \texttt{this}, o mesmo objeto cujo monitor
+  o método detém. O \texttt{goto} do offset~16 volta ao offset~0, e a
+  condição é testada de novo.
+\item Entre a chamada do offset~13 e o retorno dela, a thread executa as
+  liberações e, ao sair do wait set, os travamentos de volta (JLS
+  SE~25, §17.2.1). Cada liberação desfaz um travamento (§17.1): nesse
+  intervalo, a thread não detém o monitor de \texttt{this}.
+\item Em \texttt{retirar}, o padrão se repete: \texttt{ifne} no
+  offset~4, \texttt{wait} no offset~8 e \texttt{goto} para o offset~0
+  no offset~11. \texttt{notifyAll} está no offset~51 dos dois métodos,
+  antes do \texttt{return} (54) e do \texttt{ireturn} (55).
+\end{itemize}
+
+Num experimento nosso no JDK~25 (\texttt{eclipse-temurin:25-jdk}), o
+\texttt{main} imprimiu os números de 1 a 5, na ordem.
+
+\paragraph{O que isso muda no seu código.}
+Vale para qualquer JDK, inclusive o 25, e para código que use
+\texttt{wait}/\texttt{notify}. Chame \texttt{wait} dentro de um
+\texttt{while} que testa a condição, nunca de um \texttt{if}: a JLS
+SE~25 permite o spurious wakeup (§17.2.1). Sincronize num objeto
+privado, como \texttt{private final Object lock = new Object()}, e não
+em \texttt{this}: qualquer thread pode travar o monitor de um objeto a
+que tenha acesso (§17.1). Para código novo, prefira as classes de
+\texttt{java.util.concurrent}, que a própria §17.1 cita como
+alternativa de sincronização.
+
+\paragraph{Onde aprofundar.}
+O \texttt{monitorenter} e o \texttt{monitorexit} estão na
+seção~\ref{sec:sincronizacao}. As garantias de visibilidade de
+\texttt{synchronized} são tema da seção~\ref{sec:jmm-historia}, e as
+alternativas de \texttt{java.util.concurrent}, da
+seção~\ref{sec:juc}.
