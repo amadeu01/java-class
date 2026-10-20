@@ -84,8 +84,8 @@ essa permissão exige usar \texttt{wait} só dentro de laços que só
 terminam quando a condição esperada vale. A §17.2.2 não dá garantia sobre qual
 thread o \texttt{notify} escolhe, e, após um \texttt{notifyAll}, só uma
 thread por vez retoma o lock. O javadoc de \texttt{Object.wait} no
-JDK~25 recomenda testar a condição num laço \texttt{while} em volta da
-chamada.
+JDK~25 (\citetitle{doc:javase25-object}) recomenda testar a condição
+num laço \texttt{while} em volta da chamada.
 
 Na JVMS do Java SE~25, a §2.11.10 diz que a JVM sincroniza métodos e
 sequências de instruções com \enquote{a single synchronization
@@ -140,7 +140,8 @@ vazio, e os dois chamam \texttt{notifyAll} depois de mudar o estado.
   e, ao sair do wait set, os travamentos de volta, antes de
   \texttt{wait} retornar (JLS SE~25, §17.2.1). Entre as liberações e
   os travamentos de volta, a thread não detém o monitor de
-  \texttt{this}: o javadoc de \texttt{Object.wait} diz que ela passa a
+  \texttt{this}: o javadoc de \texttt{Object.wait}
+  (\citetitle{doc:javase25-object}) diz que ela passa a
   \enquote{relinquish any and all synchronization claims on this
   object}.
 \item Em \texttt{retirar}, o padrão se repete: \texttt{ifne} no
@@ -160,14 +161,14 @@ Cada recomendação tem seu escopo.
   que testa a condição, nunca de um \texttt{if}. A JLS SE~25 permite o
   spurious wakeup (§17.2.1), e o javadoc de \texttt{Object.wait} do
   JDK~25 recomenda o laço. O javadoc já descreve o spurious wakeup e
-  pede o laço desde o Java~5 (2004).
-\item \emph{JLS 2ª ed. e JDK~25:} sincronize num objeto privado, como
-  \texttt{private final Object lock = new Object()}, e não em
-  \texttt{this}. Todo objeto tem um lock (JLS 2ª ed., §17.13) ou
-  monitor (JLS SE~25, §17.1), que qualquer thread pode travar. O
-  exemplo acima trava \texttt{this} de propósito, para mostrar a flag
-  \texttt{ACC\_SYNCHRONIZED}; em código de produção, prefira o objeto
-  privado.
+  pede o laço desde o Java~5, de 2004 (\citetitle{doc:javase5-object}).
+\item \emph{JLS 2ª ed. e JDK~25:} todo objeto tem um lock (JLS 2ª
+  ed., §17.13) ou monitor (JLS SE~25, §17.1), que qualquer thread com
+  uma referência a ele pode travar. O exemplo acima trava \texttt{this}
+  de propósito, para mostrar um método \texttt{synchronized} sem
+  \texttt{monitorenter}; a flag \texttt{ACC\_SYNCHRONIZED} só aparece
+  com \texttt{javap -v}. Por que preferir um objeto de lock privado está
+  na seção~\ref{sec:sincronizacao}.
 \item \emph{Java~5 (2004) em diante:} para código novo, prefira as
   classes de \texttt{java.util.concurrent}, que a própria §17.1 da JLS
   SE~25 cita como alternativa de sincronização. O pacote veio da

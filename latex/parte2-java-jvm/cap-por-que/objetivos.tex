@@ -1,10 +1,11 @@
 \section{Os objetivos de projeto}
 \label{sec:objetivos-1995}
 
+\paragraph{O problema.}
 O problema da época era distribuir código por redes de máquinas
 diferentes. O \termo{white paper}{Documento técnico que apresenta e justifica um
 projeto.} \citetitle{paper:java-language-environment}
-(maio de 1996, de Gosling e McGilton, lido hoje via Wayback) afirma que a
+(maio de 1996, de Gosling e McGilton) afirma que a
 tecnologia deve permitir \enquote{secure, high performance, and highly
 robust applications on multiple platforms in heterogeneous, distributed
 networks}. O mesmo texto resume o sistema como simples, familiar,
@@ -42,8 +43,11 @@ próxima linha de defesa depois do verificador (§6.2).
 \paragraph{O que mudou depois.}
 A verificação de bytecode, uma das quatro escolhas acima, mudou de
 técnica: a JVMS 2ª ed. descreve análise de fluxo de dados, e a JVMS do
-Java SE~25 exige \emph{type checking} para class files de versão 50.0 ou
-maior. A comparação está na seção~\ref{sec:verificacao}.
+Java SE~25 exige \termo{type checking}{Verificação em que o
+atributo \texttt{StackMapTable} informa os tipos e o verificador os
+confere.} para \termo{class files}{Arquivos \texttt{.class}, o formato
+binário que a JVM carrega.} de versão 50.0 ou maior. A comparação está
+na seção~\ref{sec:verificacao}.
 
 \paragraph{O que isso muda no seu código.}
 Vale para qualquer JDK, inclusive o 25: você compila uma vez e o mesmo

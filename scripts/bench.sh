@@ -54,8 +54,14 @@ awk '
     gsub(/\001/, "\\textbackslash{}", x)
     return x
   }
-  # Vírgula decimal (pt-BR) nos números do JMH.
-  function dec(x) { sub(/\./, "{,}", x); return x }
+  # Números do JMH em pt-BR: ponto de milhar e vírgula decimal.
+  function dec(x,   p, i, f, o) {
+    p = index(x, "."); i = p ? substr(x, 1, p - 1) : x; f = p ? substr(x, p + 1) : ""
+    o = ""
+    while (length(i) > 3) { o = "{.}" substr(i, length(i) - 2) o; i = substr(i, 1, length(i) - 3) }
+    o = i o
+    return f != "" ? o "{,}" f : o
+  }
   BEGIN {
     print "% Gerado por scripts/bench.sh a partir de contencao.txt. Não edite."
     print "\\begin{tabular}{@{}llrrr@{}}"

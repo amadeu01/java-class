@@ -88,11 +88,10 @@ programa, com base na relação
 \termo{happens-before}{\enquote{Acontece antes}: se uma ação
 happens-before outra, a primeira é visível para a segunda e ordenada
 antes dela.} (§17.4.5), sem memória de trabalho: \enquote{If one action happens-before another,
-then the first is visible to and ordered before the second.} Entre as
-arestas da §17.4.5 estão o \texttt{unlock} de um monitor, que
-happens-before todo \texttt{lock} subsequente do mesmo monitor, e a
-escrita num campo \texttt{volatile}, que happens-before toda leitura
-subsequente desse campo. O FAQ resume o efeito: escrever num
+then the first is visible to and ordered before the second.} As
+arestas de \texttt{unlock}/\texttt{lock} e de \texttt{volatile} estão
+na tabela abaixo e na seção~\ref{sec:modelo-memoria}. O FAQ resume o
+efeito de \texttt{volatile}: escrever num
 \texttt{volatile} tem o efeito de memória de liberar um monitor, e ler,
 o de adquiri-lo. A §17.5 dá semântica aos campos \texttt{final}: o
 congelamento acontece quando o construtor termina, e \enquote{a

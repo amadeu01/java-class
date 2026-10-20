@@ -15,10 +15,12 @@
 % paper:manson-tese-jmm-2004, paper:shenandoah, paper:zgc-deep-dive,
 % paper:java-language-environment, livro:lindholm1999, artigo:goetz-virtual-threads.
 %
-% Fontes que só existem hoje no Internet Archive (JLS/JVMS 2a edição, bugs do
+% Fontes que só existem hoje no Internet Archive (JLS 2a edição, bugs do
 % JBS que bloqueiam robôs): url = endereço oficial original; a cópia do
-% Wayback fica em urlgratis (livro, paper) ou em note (doc). Abertas em
-% 2026-10-20; ver .superpowers/sdd/2026-10-19-historia-decisoes/research-historia.md.
+% Wayback fica em urlgratis (livro, paper) ou em note (doc). A JVMS 2a
+% edição continua no site da Oracle (docs.oracle.com/javase/specs/jvms/se6).
+% Abertas em 2026-10-20; ver
+% .superpowers/sdd/2026-10-19-historia-decisoes/research-historia.md.
 
 % ---- Livros ----
 @book{livro:gosling2000-jls2,
@@ -47,13 +49,15 @@
   journaltitle={Concurrency: Practice and Experience}, volume={12}, number={6}, pages={445--455}, date={2000-05},
   doi={10.1002/1096-9128(200005)12:6<445::AID-CPE484>3.0.CO;2-A},
   url={https://doi.org/10.1002/1096-9128(200005)12:6%3C445::aid-cpe484%3E3.0.co;2-a}, urldate={2026-10-20},
-  acesso={pago}, langid={english}, keywords={paper}}
+  urlgratis={https://www.cs.umd.edu/~pugh/java/broken.pdf},
+  acesso={pago}, note={Cópia gratuita do autor é a versão \enquote{to appear}, anterior à editoração da Wiley},
+  langid={english}, keywords={paper}}
 @article{paper:lea2005-aqs,
   author={Doug Lea}, title={The {java.util.concurrent} Synchronizer Framework},
   journaltitle={Science of Computer Programming}, volume={58}, number={3}, pages={293--309}, date={2005-12},
   doi={10.1016/j.scico.2005.03.007}, url={https://doi.org/10.1016/j.scico.2005.03.007},
   urlgratis={http://gee.cs.oswego.edu/dl/papers/aqs.pdf}, urldate={2026-10-20},
-  acesso={pago}, note={Cópia gratuita do autor é a versão do workshop CSJP 2004, não o texto da revista},
+  acesso={aberto}, note={Texto da revista aberto no acervo da Elsevier (licença de 2013-08-22 no Crossref); a cópia do autor (urlgratis) é a versão do workshop CSJP 2004},
   langid={english}, keywords={paper}}
 @inproceedings{paper:lea2000-forkjoin,
   author={Doug Lea}, title={A {Java} Fork/Join Framework},
@@ -81,9 +85,6 @@
   langid={english}, keywords={paper}}
 
 % ---- Especificações, JSRs e bugs do JDK ----
-@online{doc:jvms7, author={{Oracle}}, title={The Java Virtual Machine Specification, Java SE 7 Edition},
-  url={https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html}, urldate={2026-10-20},
-  langid={english}, keywords={doc}}
 @online{doc:jsr51, author={{Java Community Process}}, title={JSR 51: New I/O APIs for the Java Platform},
   url={https://jcp.org/en/jsr/detail?id=51}, urldate={2026-10-20}, langid={english}, keywords={doc}}
 @online{doc:jsr133, author={{Java Community Process}}, title={JSR 133: Java Memory Model and Thread Specification Revision},
@@ -144,6 +145,10 @@
   url={https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/LongAdder.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
 @online{doc:javase25-stream, author={{Oracle}}, title={java.util.stream (Java SE 25 API)},
   url={https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase25-object, author={{Oracle}}, title={Object (Java SE 25 API)},
+  url={https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:javase5-object, author={{Sun Microsystems}}, title={Object (J2SE 5.0 API)},
+  url={https://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Object.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
 @online{doc:javase9-flow, author={{Oracle}}, title={Flow (Java SE 9 API)},
   url={https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html}, urldate={2026-10-20}, langid={english}, keywords={doc}}
 
@@ -151,10 +156,6 @@
 @online{doc:jdk11-solaris-threads, author={{Sun Microsystems}},
   title={Multithreading (JDK 1.1 for Solaris Developer's Guide, cap. 2)},
   url={https://docs.oracle.com/cd/E19455-01/806-3461/6jck06gqe}, urldate={2026-10-20}, langid={english}, keywords={doc}}
-@online{doc:loom-dev-green-threads, author={Chris Phillips and David Holmes},
-  title={Did Java on Solaris once had a Fiber-like threads?}, date={2019-10-09}, organization={loom-dev},
-  url={https://mail.openjdk.org/pipermail/loom-dev/2019-October/000784.html}, urldate={2026-10-20},
-  langid={english}, keywords={doc}}
 @online{doc:loom-dev-naming, author={Ron Pressler}, title={Virtual Threads: A Short Note about Naming},
   date={2019-11-22}, organization={loom-dev},
   url={https://mail.openjdk.org/pipermail/loom-dev/2019-November/000871.html}, urldate={2026-10-20},
@@ -272,3 +273,14 @@
   date={2010-01-27}, url={https://web.archive.org/web/20260303160146/https://www.sec.gov/Archives/edgar/data/1341439/000119312510015241/dex991.htm},
   urldate={2026-10-20}, note={Exhibit 99.1 do Form 8-K à SEC; a SEC responde 403 a robôs, por isso o link do Internet Archive},
   langid={english}, keywords={doc}}
+
+% ---- Adicionadas na revisão por pares (Task 9) ----
+@online{doc:jcp-faq, author={{Java Community Process}}, title={FAQ: General JCP Questions},
+  url={https://jcp.org/en/introduction/faq}, urldate={2026-10-20}, langid={english}, keywords={doc}}
+@online{doc:cert-lck00j, author={{SEI CERT}},
+  title={LCK00-J. Use private final lock objects to synchronize classes that may interact with untrusted code},
+  organization={SEI CERT Oracle Coding Standard for Java},
+  url={https://cmu-sei.github.io/secure-coding-standards/sei-cert-oracle-coding-standard-for-java/rules/locking-lck/lck00-j/}, urldate={2026-10-20},
+  langid={english}, keywords={doc}}
+@online{doc:quarkus-getting-started, author={{Quarkus}}, title={Creating your first application},
+  url={https://quarkus.io/guides/getting-started}, urldate={2026-10-20}, langid={english}, keywords={doc}}

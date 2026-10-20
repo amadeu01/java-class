@@ -21,13 +21,24 @@ Parallel & \texttt{-XX:+UseParallelGC} & Como o Serial, mas com várias
   ou mais são aceitáveis \\
 G1 & \texttt{-XX:+UseG1GC} & Majoritariamente concorrente; busca cumprir
   uma meta de pausa com alta probabilidade mantendo bom throughput. É o
-  padrão (\citetitle{doc:jep248}, JDK~9) \\
+  padrão em máquinas \emph{server-class} (\citetitle{doc:jep248},
+  JDK~9) \\
 ZGC & \texttt{-XX:+UseZGC} & Baixa latência, pausas independentes do
   tamanho do heap; o guia fala em pausas máximas abaixo de um
   milissegundo, ao custo de algum throughput \\
 \bottomrule
 \end{longtable}
 \normalsize
+
+O G1 não é padrão em toda máquina. O guia de ergonomia do JDK~25
+(\citetitle{doc:gc-ergonomics}) diz que a JVM escolhe o G1 em máquinas
+server-class e o Serial nas outras, e considera server-class a máquina
+em que detecta duas ou mais CPUs e 1792~MB de memória ou mais. Num
+container, contam a CPU e a memória que a JVM vê. Experimento
+(JDK~25.0.4.1, imagem \texttt{eclipse-temurin:25-jdk}, AMD Ryzen~5
+9600X): \texttt{java -Xlog:gc -version} imprimiu \texttt{Using Serial}
+com \texttt{-{}-cpus=1 -m 1g} e com \texttt{-{}-cpus=2 -m 1g}, e
+\texttt{Using G1} com \texttt{-{}-cpus=2 -m 2g}.
 
 \paragraph{A evolução do ZGC.}
 O ZGC ficou pronto para produção no \citetitle{doc:jep377} (JDK~15).
@@ -83,9 +94,10 @@ objeto mudar de endereço enquanto o programa o usa.
   \citetitle{doc:jdk-8221766} trocou as barreiras antigas: antes, toda
   leitura de um objeto passava por uma barreira de leitura; as novas agem
   quando a referência é carregada, não em cada uso
-  (\citetitle{artigo:kennke-lrb-2019}).
+  (\citetitle{doc:kennke-lrb-rfr}; \citetitle{artigo:kennke-lrb-2019}).
 \end{itemize}
-O preço, segundo o guia do Java SE~21, aparece no throughput: o ZGC tem
+O preço, segundo o guia do Java SE~21 (\citetitle{doc:gctuning-se21}),
+aparece no throughput: o ZGC tem
 pausas máximas abaixo de um milissegundo \enquote{at the cost of some
 throughput}.
 
@@ -97,10 +109,13 @@ escolher, ajuste o tamanho do heap e só então troque de coletor, se o
 requisito não for atendido. Na prática:
 \begin{itemize}
 \item API com requisito de latência (p99) apertado: compare G1 e ZGC
-  medindo o p99 no teste de carga da Parte~I, não a média.
+  medindo o p99 no teste de carga da Parte~\ref{parte:testes}, não a média.
 \item Job batch que só precisa terminar rápido: Parallel é candidato.
-\item Container pequeno, com pouca memória e uma CPU: Serial é o que o
-  guia indica para esse perfil.
+\item Container pequeno, abaixo de duas CPUs ou de 1792~MB: a JVM do
+  JDK~25 já escolhe o Serial, o coletor que o guia indica para esse
+  perfil. Para usar o G1 nele, passe \texttt{-XX:+UseG1GC}.
+\item Em toda medição, registre qual coletor rodou: \texttt{-Xlog:gc}
+  imprime \texttt{Using} seguido do nome do coletor.
 \end{itemize}
 Antes de trocar de GC, confira se o problema não é alocação demais: o
 autoboxing da seção~\ref{sec:autoboxing} é um jeito comum de criar

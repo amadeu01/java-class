@@ -30,7 +30,10 @@ procure a flag.
 \texttt{synchronized(this)} usa como lock um objeto que qualquer código
 com referência a ele também pode usar para sincronizar. Um
 \texttt{private final Object lock = new Object()} deixa o lock sob seu
-controle. Em JDK~21, \texttt{monitorenter} era também o ponto em que uma
+controle. A regra LCK00-J do padrão CERT para Java
+(\citetitle{doc:cert-lck00j}) exige esse \enquote{private lock object
+idiom} em classes que podem interagir com código não confiável, e diz
+que, em geral, ele é preferido ao lock do próprio objeto. Em JDK~21, \texttt{monitorenter} era também o ponto em que uma
 virtual thread ficava presa à carrier ao bloquear; desde o JDK~24
 (\citetitle{doc:jep491}) não é mais (seção~\ref{sec:virtual-threads}).
 

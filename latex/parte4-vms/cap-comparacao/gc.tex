@@ -4,7 +4,8 @@
 \paragraph{HotSpot.}
 Um heap para todas as threads (§2.5.3 da \citetitle{doc:jvms25}) e um
 coletor que cuida dele inteiro. A seção~\ref{sec:gc} mostrou as opções do
-JDK~25: G1 por padrão, ZGC para pausas curtas, Parallel e Serial para
+JDK~25: G1 por padrão em máquinas server-class (duas ou mais CPUs e
+1792~MB ou mais; nas outras, Serial), ZGC para pausas curtas, Parallel e Serial para
 casos específicos. Como o heap é um só, o coletor precisa lidar com objetos
 de todas as threads ao mesmo tempo, e o tamanho do heap é uma decisão de
 toda a aplicação.

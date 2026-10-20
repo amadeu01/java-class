@@ -1,12 +1,16 @@
 \section{De threads de plataforma a threads virtuais}
 \label{sec:threads-ate-vt}
 
-Como o Java chegou às virtual threads? Esta seção responde contando a
+Como o Java chegou às \termo{virtual threads}{Threads virtuais: threads
+leves, criadas e escalonadas pela JVM, que rodam sobre um número menor
+de threads do sistema operacional.}? Esta seção responde contando a
 sequência em cinco passos: as green threads dos primeiros JDKs, as
 threads do sistema operacional no modelo 1:1, o desvio pelo estilo
-assíncrono, as bibliotecas de fibers e o Project Loom, e os JEPs que
-levaram as virtual threads do preview do JDK~19 à versão final do
-JDK~21.
+assíncrono, as bibliotecas de fibers e o Project Loom, e os
+\termo{JEPs}{JDK Enhancement Proposals: as propostas de mudança no JDK,
+registradas e revisadas pelo processo do JEP~1.} que levaram as virtual
+threads do \termo{preview}{Versão de teste de um recurso, anterior à
+versão final.} do JDK~19 à versão final do JDK~21.
 
 \paragraph{O problema.}
 O primeiro passo são as \termo{green threads}{Threads implementadas
@@ -58,13 +62,11 @@ conta esse caminho e o preço que o JEP descreve.
 
 O quarto passo foram as \termo{fibers}{Threads leves, criadas e
 escalonadas por uma biblioteca ou pela JVM, e não pelo sistema
-operacional.}. O Quasar, cujo repositório foi criado em 27 de março de
-2013, se descreve como \enquote{Fibers, Channels and Actors for the
+operacional.}. O Quasar se descreve como \enquote{Fibers, Channels and Actors for the
 JVM} (\citetitle{doc:quasar-github}). A documentação da versão~0.8.0
 (\citetitle{doc:quasar-docs}) diz que \enquote{Quasar fibers rely on
 bytecode instrumentation}, feita por um agente Java ou por uma tarefa
 Ant, e que as fibers são escalonadas em um ou mais
-\texttt{ForkJoinPool}. O maior contribuidor do repositório do Quasar é
-Ron Pressler.
+\texttt{ForkJoinPool}.
 
 \input{parte2-java-jvm/cap-por-que/threads-vt-loom}

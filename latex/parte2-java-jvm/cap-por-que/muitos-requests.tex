@@ -11,9 +11,8 @@ recomenda não sincronizar o método \texttt{service}, por causa da
 perda de desempenho: \enquote{It is strongly recommended that
 Developers not synchronize the service method}.
 
-Em 1999, Dan Kegel começou o texto \citetitle{artigo:kegel-c10k} (o
-primeiro snapshot no Internet Archive é de 8 de maio de 1999; a última
-atualização, de 5 de fevereiro de 2014). A abertura pergunta: \enquote{It's
+O texto \citetitle{artigo:kegel-c10k}, de Dan Kegel, traz copyright de
+1999 a 2018 e última atualização em 5 de fevereiro de 2014. A abertura pergunta: \enquote{It's
 time for web servers to handle ten thousand clients simultaneously,
 don't you think?} O texto defende que atender dez mil clientes ao mesmo
 tempo pede algo além de uma thread por cliente, e diz sobre o Java:
@@ -72,7 +71,8 @@ seção~\ref{sec:virtual-threads}.
 \paragraph{O que isso muda no seu código.}
 Cada recomendação tem seu escopo.
 \begin{itemize}
-\item \emph{Jakarta Servlet~6.1:} o mesmo servlet pode atender
+\item \emph{Jakarta Servlet~6.1, cujos containers exigem Java SE~17 ou
+  mais novo (§1.2):} o mesmo servlet pode atender
   requisições concorrentes pelo método \texttt{service}, então escreva
   esse código prevendo várias threads (seções~\ref{sec:monitores}
   e~\ref{sec:jmm-historia}). A especificação recomenda não
@@ -82,7 +82,8 @@ Cada recomendação tem seu escopo.
 \item \emph{JDK~21 em diante:} código bloqueante no estilo
   thread-per-request pode escalar com virtual threads, sem reescrever
   a lógica em estágios assíncronos (seção~\ref{sec:threads-ate-vt}).
-\item \emph{Quarkus:} código nas threads de I/O não pode bloquear, e
+\item \emph{Quarkus~3, sobre JDK~17 ou mais novo
+  (\citetitle{doc:quarkus-getting-started}):} código nas threads de I/O não pode bloquear, e
   código bloqueante vai para as worker threads; com Java~21 ou mais
   novo, \texttt{@RunOnVirtualThread} é a terceira opção
   (seção~\ref{sec:vt-vs-reativo}).

@@ -9,6 +9,19 @@ Doug Lea mantinha o pacote \texttt{EDU.oswego.cs.dl.util.concurrent},
 da versão~1.0, de 10 de julho de 1998, à versão~1.3.4, de 20 de maio de
 2004 (\citetitle{doc:lea-util-concurrent}).
 
+Em 2000, Lea publicou \citetitle{paper:lea2000-forkjoin}. O
+\termo{framework}{Conjunto de classes que dá a
+estrutura de uma solução; o código do usuário preenche as partes
+específicas.} do artigo resolve problemas \enquote{by (recursively)
+splitting them into subtasks that are solved in parallel}, e seu
+projeto \enquote{is a variant of
+the work-stealing framework devised for Cilk}. No
+\termo{work-stealing}{Roubo de trabalho: a thread que fica sem tarefas
+pega tarefas da fila de outra thread.} descrito no artigo (§2.1), cada
+thread de trabalho mantém as tarefas numa fila própria e, quando fica
+sem tarefas locais, tenta pegar uma da fila de outra, escolhida ao
+acaso.
+
 \paragraph{A decisão.}
 A \citetitle{doc:jsr166}, liderada por Lea, passou pela JSR Review
 Ballot de 8 a 22 de janeiro de 2002, e a versão final da JSR é de 30 de
@@ -19,31 +32,19 @@ J2SE 5.0, this package enters maintenance mode}, e o
 efficient, standardized versions of the main components in this
 package}.
 
-Lea descreveu o \termo{framework}{Conjunto de classes que dá a
-estrutura de uma solução; o código do usuário preenche as partes
-específicas.} de sincronizadores do pacote em
+Lea descreveu o framework de sincronizadores do pacote em
 \citetitle{paper:lea2005-aqs} (2005). O resumo diz que
 \enquote{Most synchronizers (locks, barriers, etc.) in the J2SE1.5
 java.util.concurrent package are constructed using a small framework
-based on class AbstractQueuedSynchronizer}. A versão de revista é paga;
-a cópia aberta do autor é a do \termo{workshop}{Encontro acadêmico
+based on class AbstractQueuedSynchronizer}. O texto da revista é de
+leitura gratuita no acervo aberto da Elsevier; a cópia do autor é a
+versão do \termo{workshop}{Encontro acadêmico
 menor que uma conferência, em geral com artigos curtos ou
 preliminares.} de 2004.
 
 \paragraph{O que mudou depois.}
-Em 2000, Lea já tinha publicado \citetitle{paper:lea2000-forkjoin}. O
-framework do artigo resolve problemas \enquote{by (recursively)
-splitting them into subtasks that are solved in parallel}, e seu
-projeto \enquote{is a variant of
-the work-stealing framework devised for Cilk}. No
-\termo{work-stealing}{Roubo de trabalho: a thread que fica sem tarefas
-pega tarefas da fila de outra thread.} descrito no artigo (§2.1), cada
-thread de trabalho mantém as tarefas numa fila própria e, quando fica
-sem tarefas locais, tenta pegar uma da fila de outra, escolhida ao
-acaso.
-
-A tabela resume o que veio depois na plataforma, com a data de
-GA de cada JDK. Entre as adições estão os
+A tabela resume o que veio depois na plataforma, a começar pelo
+\texttt{ForkJoinPool} do JDK~7, com a data de GA de cada JDK. Entre as adições estão os
 \termo{streams}{Sequências de elementos processadas por uma cadeia de
 operações (\texttt{map}, \texttt{filter}, \texttt{reduce}\ldots), da
 API \texttt{java.util.stream}.} do JDK~8 e a interface \texttt{Flow} do
@@ -67,7 +68,7 @@ JDK~9 (GA em 21/09/2017) & \texttt{Flow} (publish-subscribe) e melhorias no
 \end{tabular}
 \end{center}
 
-As datas de GA são das páginas \citetitle{doc:openjdk-jdk7} e
+As datas de GA são das páginas \citetitle{doc:openjdk-jdk7},
 \citetitle{doc:openjdk-jdk8} e \citetitle{doc:openjdk-jdk9} do OpenJDK. O javadoc define o
 \texttt{CompletableFuture} como \enquote{A Future that may be
 explicitly completed (setting its value and status), and may be used as

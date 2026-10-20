@@ -1,6 +1,6 @@
 % Continuação de threads-vt.tex: Project Loom, os JEPs e o custo de escalar.
 
-O quinto passo é o Project Loom. Em 26 de setembro de 2017, Pressler
+O quinto passo é o Project Loom. Em 26 de setembro de 2017, Ron Pressler
 abriu a discussão do projeto na lista do OpenJDK
 (\citetitle{doc:loom-cfd-2017}), propondo implementações alternativas
 de threads em modo usuário, \termo{delimited continuations}{Continuações delimitadas: um trecho de execução que pode
@@ -8,7 +8,7 @@ ser suspenso e retomado depois, do ponto em que parou.} e outras
 construções. A página do projeto (\citetitle{doc:loom-project})
 fala em \enquote{lightweight user-mode threads (fibers), delimited
 continuations (of some form), and related features}. A proposta técnica
-(\citetitle{doc:loom-proposal}, arquivo atualizado em agosto de 2018)
+(\citetitle{doc:loom-proposal}, sem data)
 diz no primeiro parágrafo: \enquote{Project Loom
 will introduce fibers as lightweight, efficient threads managed by the
 Java Virtual Machine}. O \citetitle{doc:state-of-loom}, de 2020 e
@@ -22,8 +22,7 @@ não chamá-las de coroutines, diz que esse nome \enquote{suffers from all
 the same problems \enquote{fiber} does, and then some}.
 
 As virtual threads entraram na plataforma por três JEPs, dois de
-\termo{preview}{Versão de teste de um recurso, anterior à versão
-final.} e um final, e um quarto JEP reduziu o \termo{pinning}{A
+preview e um final, e um quarto JEP reduziu o \termo{pinning}{A
 virtual thread fica presa à thread de plataforma que a executa e não
 consegue liberá-la enquanto bloqueia.}. As datas de \termo{GA}{General Availability: a data em que uma versão do JDK fica
 disponível para uso geral.} são das

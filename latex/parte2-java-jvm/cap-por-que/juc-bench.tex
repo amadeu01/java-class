@@ -24,9 +24,9 @@ tabela abaixo.
 A coluna Erro é a metade do intervalo de confiança de 99{,}9\% que o
 JMH imprime para cada resultado (\enquote{$\pm$(99.9\%)} na saída da
 execução). Com \texttt{-f~1}, cada benchmark roda numa única invocação
-da JVM, e o intervalo é calculado entre as iterações dessa invocação, e
-não entre invocações, como recomenda a
-seção~\ref{sec:como-ler-benchmark}.
+da JVM, e o intervalo é calculado entre as iterações dessa invocação.
+A seção~\ref{sec:como-ler-benchmark} recomenda o intervalo entre
+invocações; esta execução não segue essa recomendação.
 
 Nesta execução, com uma thread, o \texttt{synchronized} fica abaixo
 de \texttt{AtomicLong} e de \texttt{LongAdder}. Com oito threads, o
