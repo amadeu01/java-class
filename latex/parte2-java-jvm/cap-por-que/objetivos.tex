@@ -1,2 +1,57 @@
 \section{Os objetivos de 1995}
 \label{sec:objetivos-1995}
+
+O problema da época era distribuir código por redes de máquinas
+diferentes. O white paper \citetitle{paper:java-language-environment}
+(maio de 1996, de Gosling e McGilton, lido hoje via Wayback) afirma que a
+tecnologia deve permitir \enquote{secure, high performance, and highly
+robust applications on multiple platforms in heterogeneous, distributed
+networks}. O mesmo texto resume o sistema como simples, familiar,
+orientado a objetos, \emph{multithreaded} e interpretado, para máxima
+portabilidade e capacidades dinâmicas.
+
+\paragraph{A decisão.}
+As metas de segurança, robustez e neutralidade de arquitetura (§1.2.2 e
+§1.2.3 do white paper) levaram a quatro escolhas que o resto do capítulo
+retoma. Primeiro, o compilador gera \termo{bytecode}{Conjunto de
+instruções da JVM, independente de processador. O \texttt{javac} o
+grava em arquivos \texttt{.class}.}: um formato intermediário neutro,
+pensado para transportar código a várias plataformas (§1.2.3). Segundo,
+o bytecode foi desenhado para ser fácil de interpretar em qualquer
+máquina ou de traduzir dinamicamente para código nativo quando o
+desempenho pedir (§4.1.1). Terceiro, o código que chega pela rede não é
+confiável: o sistema de execução o submete à verificação de bytecode
+(§6.3), tratada na seção~\ref{sec:verificacao}. Quarto, o modelo de
+memória não tem tipos ponteiro definidos pelo programador, nem aritmética
+de ponteiros, e tem coleta automática de lixo (§1.2.2); o white paper
+também diz que programadores Java não conseguem forjar ponteiros para a
+memória (§6.1). Para a coleta, o texto descreve um \termo{garbage
+collector}{Coletor de lixo: componente da JVM que libera os objetos que
+o programa não alcança mais.} em segundo plano, numa thread de baixa
+prioridade (§2.1.7). Já as threads são parte da linguagem, preemptivas e,
+conforme a plataforma, divididas por fatias de tempo (§7.1), assunto da
+seção~\ref{sec:monitores}.
+
+A neutralidade de arquitetura tem um custo declarado: a JVM é descrita
+como máquina abstrata baseada principalmente na interface POSIX
+(§1.2.3), o que pressupõe suporte a multithreading na plataforma de
+destino.
+
+\paragraph{O que mudou depois.}
+O formato do bytecode continuou o mesmo em espírito, mas a forma de
+verificá-lo mudou (seção~\ref{sec:verificacao}) e o carregamento de
+classes ficou mais elaborado (seção~\ref{sec:class-loading}). O white
+paper chama o carregador de bytecode de próxima linha de defesa depois
+do verificador (§6.2).
+
+\paragraph{O que isso muda no seu código.}
+Vale para qualquer JDK, inclusive o 25: você compila uma vez e o mesmo
+\texttt{.class} roda onde houver JVM. Você não faz aritmética de
+ponteiros nem libera objetos manualmente; em troca, o tempo de coleta e
+o comportamento de threads entram no seu raciocínio sobre desempenho,
+temas das seções seguintes.
+
+\paragraph{Onde aprofundar.}
+O formato do bytecode é lido em detalhe no capítulo~\ref{cap:lendo-bytecode},
+e o carregamento, a ligação e a inicialização estão na
+seção~\ref{sec:class-loading}.
