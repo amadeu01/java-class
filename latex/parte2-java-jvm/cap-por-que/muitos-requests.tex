@@ -22,13 +22,12 @@ mostly offered the one-thread-per-client model.}
 
 \paragraph{A decisão.}
 A \citetitle{doc:jsr51}, com Final Release em 9 de maio de 2002, entrou
-no Java~1.4 (2002) como \texttt{java.nio}. O líder da JSR foi Mark
-Reinhold, e Kegel e Doug Lea estavam no grupo de especialistas. A
-descrição da JSR fala em \enquote{APIs for scalable I/O}. Segundo
-Kegel, o \texttt{java.nio} do JDK~1.4 trouxe ao Java o
-\termo{I/O não bloqueante}{Operação de entrada e saída que volta na
-hora, mesmo sem dados prontos, em vez de deixar a thread parada
-esperando.}.
+no Java~1.4 (2002). O líder da JSR foi Mark Reinhold, e Kegel e Doug
+Lea estavam no grupo de especialistas. A descrição da JSR lista
+\enquote{APIs for scalable I/O, fast buffered binary and character I/O,
+regular expressions, charset conversion, and an improved filesystem
+interface}. Segundo Kegel, o \texttt{java.nio} do JDK~1.4 trouxe ao
+Java o I/O não bloqueante.
 
 \paragraph{O que mudou depois.}
 Depois veio o padrão reativo. O \citetitle{doc:reactive-streams} se
@@ -56,7 +55,7 @@ operators}). Um dos objetivos do JEP é que servidores no estilo
 thread-per-request escalem com virtual threads, finais no JDK~21
 (seção~\ref{sec:threads-ate-vt}).
 
-No Quarkus, os dois caminhos convivem. O guia
+No Quarkus, o guia
 \citetitle{doc:quarkus-reactive-architecture} diz que \enquote{A few
 threads can handle many concurrent I/O}. Uma requisição HTTP é
 processada numa dessas poucas threads de I/O, que por isso não podem
@@ -67,8 +66,8 @@ threads de I/O.}: \enquote{Quarkus implements a proactor pattern that
 switches to worker thread when needed}. O guia
 \citetitle{doc:quarkus-virtual-threads} diz que \enquote{the support of
 virtual thread is implemented using the @RunOnVirtualThread
-annotation}, que faz o Quarkus invocar o método anotado numa nova
-virtual thread.
+annotation}; o que a anotação faz está na
+seção~\ref{sec:virtual-threads}.
 
 \paragraph{O que isso muda no seu código.}
 Cada recomendação tem seu escopo.
@@ -83,10 +82,10 @@ Cada recomendação tem seu escopo.
 \item \emph{JDK~21 em diante:} código bloqueante no estilo
   thread-per-request pode escalar com virtual threads, sem reescrever
   a lógica em estágios assíncronos (seção~\ref{sec:threads-ate-vt}).
-\item \emph{Quarkus, com Java~21 ou mais novo para virtual threads:} \texttt{@RunOnVirtualThread}
-  executa o método anotado numa nova virtual thread; código nas threads
-  de I/O não pode bloquear, e código bloqueante vai para as worker
-  threads.
+\item \emph{Quarkus:} código nas threads de I/O não pode bloquear, e
+  código bloqueante vai para as worker threads; com Java~21 ou mais
+  novo, \texttt{@RunOnVirtualThread} é a terceira opção
+  (seção~\ref{sec:vt-vs-reativo}).
 \end{itemize}
 
 \paragraph{Onde aprofundar.}

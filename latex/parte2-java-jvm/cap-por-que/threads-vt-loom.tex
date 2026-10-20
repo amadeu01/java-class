@@ -17,15 +17,16 @@ editado depois, diz que \enquote{Work on Project Loom started in late
 
 O nome mudou durante o desenvolvimento do Loom: a proposta falava em
 fibers, e em 22 de novembro de 2019 Pressler escreveu na lista loom-dev
-a mensagem \citetitle{doc:loom-dev-naming}, em que diz:
-\enquote{Loom's virtual threads are not coroutines under any common
-definition of that name.}
+a mensagem \citetitle{doc:loom-dev-naming}. Nela, ao explicar por que
+não chamá-las de coroutines, diz que esse nome \enquote{suffers from all
+the same problems \enquote{fiber} does, and then some}.
 
 As virtual threads entraram na plataforma por três JEPs, dois de
 \termo{preview}{Versão de teste de um recurso, anterior à versão
 final.} e um final, e um quarto JEP reduziu o \termo{pinning}{A
 virtual thread fica presa à thread de plataforma que a executa e não
-consegue liberá-la enquanto bloqueia.}. As datas de GA são das
+consegue liberá-la enquanto bloqueia.}. As datas de \termo{GA}{General Availability: a data em que uma versão do JDK fica
+disponível para uso geral.} são das
 páginas do OpenJDK de cada versão
 (\citetitle{doc:openjdk-jdk19}, \citetitle{doc:openjdk-jdk20},
 \citetitle{doc:openjdk-jdk21} e \citetitle{doc:openjdk-jdk24}).
@@ -63,16 +64,14 @@ Java's garbage-collected heap as stack chunk objects}, e crescem e
 encolhem enquanto a aplicação roda.
 
 \paragraph{O que mudou depois.}
-No JDK~21, uma virtual thread que bloqueia dentro de
-\texttt{synchronized} fica presa à carrier thread (pinned). O
-\citetitle{doc:jep491} (JDK~24) diz que a mudança vai
-\enquote{eliminate nearly all cases of virtual threads being pinned to
-platform threads}. Os casos que sobram estão na
+Depois do JDK~21, o \citetitle{doc:jep491} (JDK~24, na tabela acima)
+mudou o pinning em \texttt{synchronized}; o antes e o depois estão na
 seção~\ref{sec:virtual-threads}.
 
 Como as virtual threads mudam o custo de escalar em comparação com o
 modelo 1:1? O JEP~444 (JDK~21) dá um exemplo ilustrativo, não um
-benchmark: 10.000 tarefas, cada uma dormindo 1~s. Com
+\termo{benchmark}{Programa que mede o desempenho de um código sob
+condições controladas.}: 10.000 tarefas, cada uma dormindo 1~s. Com
 \texttt{Executors.newCachedThreadPool()}, uma thread de plataforma por
 tarefa, seriam 10.000 threads do sistema, e \enquote{the program might
 crash, depending on the machine and operating system}. Com
@@ -83,12 +82,12 @@ cerca de 10.000 tarefas por segundo depois de um
 \termo{warmup}{Aquecimento: o período inicial de execução, antes de o
 desempenho se estabilizar.} suficiente, e em
 cerca de 1.000.000 por segundo com 1.000.000 de tarefas. O exemplo
-depende de tarefas que esperam: se cada uma calculasse por 1~s, o JEP
-diz que mais threads que núcleos \enquote{would not help, whether they
-are virtual threads or platform threads}.
+depende de tarefas que esperam; o caso de tarefas que calculam está
+logo abaixo.
 
 Experimento (JDK~25.0.4.1, imagem \texttt{eclipse-temurin:25-jdk},
-AMD Ryzen~5 9600X, 12 processadores vistos pelo container): o mesmo
+AMD Ryzen~5 9600X, 12 processadores vistos pelo \termo{container}{Processo isolado que roda a partir de uma imagem
+com o sistema e as ferramentas, como o JDK, já instalados.}): o mesmo
 exemplo, 10.000 tarefas de 1~s, levou 1,0~s com
 \texttt{newVirtualThreadPerTaskExecutor} (9.860 tarefas/s, na segunda
 rodada) e 50,0~s com \texttt{newFixedThreadPool(200)} (200 tarefas/s).
@@ -103,12 +102,11 @@ Cada recomendação tem seu escopo.
   no estilo thread-per-request pode escalar. Um dos objetivos do JEP~444 é
   \enquote{Enable server applications written in the simple
   thread-per-request style to scale with near-optimal hardware
-  utilization}. Para trabalho de CPU, o mesmo JEP diz que elas não
-  ajudam: \enquote{They exist to provide scale (higher throughput), not
-  speed (lower latency)}. As regras de uso estão na
-  seção~\ref{sec:virtual-threads}.
-\item \emph{JDK~24 em diante:} \texttt{synchronized} quase não causa
-  mais pinning (\citetitle{doc:jep491}); no JDK~21, ainda causa.
+  utilization}. Se cada tarefa calculasse em vez de esperar, o JEP diz
+  que aumentar o número de threads além do número de núcleos
+  \enquote{would not help, whether they are virtual threads or platform
+  threads}. As regras de uso, inclusive o pinning antes e depois do
+  JDK~24, estão na seção~\ref{sec:virtual-threads}.
 \end{itemize}
 
 \paragraph{Onde aprofundar.}

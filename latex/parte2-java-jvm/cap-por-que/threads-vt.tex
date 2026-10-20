@@ -46,14 +46,15 @@ executar muitas tarefas, uma de cada vez por thread.} não resolve:
 does not increase the total number of threads}.
 
 \paragraph{A decisão.}
-O terceiro passo foi contornar a escassez de threads do sistema. O
-\texttt{java.nio}, da \citetitle{doc:jsr51} (Java~1.4, 2002), trouxe I/O
-não bloqueante, e o Reactive Streams e a interface
-\texttt{java.util.concurrent.Flow} do JDK~9 vieram depois; a
-seção~\ref{sec:muitos-requests} conta esse caminho. Segundo o JEP~444,
-esse estilo assíncrono remove o limite de vazão imposto pela falta de
-threads do sistema, mas \enquote{it comes at a high price}: a lógica de
-cada requisição é quebrada em estágios pequenos, compostos por uma API.
+O terceiro passo foi o estilo assíncrono. O \texttt{java.nio}, da
+\citetitle{doc:jsr51} (Java~1.4, 2002), trouxe o \termo{I/O não
+bloqueante}{Operação de entrada e saída que volta na hora, mesmo sem
+dados prontos, em vez de deixar a thread parada esperando.}, e o
+Reactive Streams e a interface \texttt{java.util.concurrent.Flow} do
+JDK~9 vieram depois. Sobre esse estilo, o JEP~444 diz: \enquote{While
+it removes the limitation on throughput imposed by the scarcity of OS
+threads, it comes at a high price}. A seção~\ref{sec:muitos-requests}
+conta esse caminho e o preço que o JEP descreve.
 
 O quarto passo foram as \termo{fibers}{Threads leves, criadas e
 escalonadas por uma biblioteca ou pela JVM, e não pelo sistema
