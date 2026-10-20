@@ -33,13 +33,15 @@
 @article{paper:hoare1974-monitors,
   author={C. A. R. Hoare}, title={Monitors: An Operating System Structuring Concept},
   journaltitle={Communications of the ACM}, volume={17}, number={10}, pages={549--557}, date={1974-10},
-  doi={10.1145/355620.361161}, url={https://doi.org/10.1145/355620.361161}, urldate={2026-10-20},
-  acesso={aberto}, langid={english}, keywords={paper}}
+  doi={10.1145/355620.361161}, url={https://doi.org/10.1145/355620.361161},
+  urlgratis={https://www.seas.upenn.edu/~cis5050/hoare-monitors.pdf}, urldate={2026-10-20},
+  acesso={aberto}, note={Acervo ACM 1951--2000 aberto desde 2022}, langid={english}, keywords={paper}}
 @article{paper:brinch-hansen1999-insecure,
   author={Per Brinch Hansen}, title={Java's Insecure Parallelism},
   journaltitle={ACM SIGPLAN Notices}, volume={34}, number={4}, pages={38--45}, date={1999-04},
-  doi={10.1145/312009.312034}, url={https://doi.org/10.1145/312009.312034}, urldate={2026-10-20},
-  acesso={aberto}, langid={english}, keywords={paper}}
+  doi={10.1145/312009.312034}, url={https://doi.org/10.1145/312009.312034},
+  urlgratis={https://www.math.unipd.it/~tullio/SCD/2008/Materiale/PBH_SIGPLAN_Notices_34-4_199904.pdf}, urldate={2026-10-20},
+  acesso={aberto}, note={Acervo ACM 1951--2000 aberto desde 2022}, langid={english}, keywords={paper}}
 @article{paper:pugh2000-fatally-flawed,
   author={William Pugh}, title={The {Java} Memory Model is Fatally Flawed},
   journaltitle={Concurrency: Practice and Experience}, volume={12}, number={6}, pages={445--455}, date={2000-05},
@@ -59,7 +61,7 @@
   pages={36--43}, date={2000-06},
   doi={10.1145/337449.337465}, url={https://doi.org/10.1145/337449.337465},
   urlgratis={http://gee.cs.oswego.edu/dl/papers/fj.pdf}, urldate={2026-10-20},
-  acesso={pago}, note={Cópia do autor; identidade com a versão da ACM não conferida},
+  acesso={aberto}, note={Acervo ACM 1951--2000 aberto desde 2022. Cópia do autor; identidade com a versão da ACM não conferida},
   langid={english}, keywords={paper}}
 @inproceedings{paper:steensgaard2000,
   author={Bjarne Steensgaard}, title={Thread-Specific Heaps for Multi-Threaded Programs},
@@ -67,15 +69,16 @@
   pages={18--24}, date={2000-10},
   doi={10.1145/362422.362432}, url={https://doi.org/10.1145/362422.362432},
   urlgratis={https://web.archive.org/web/20180721063644/https://cs.purdue.edu/homes/hosking/ismm2000/papers/steensgaard.pdf},
-  urldate={2026-10-20}, acesso={pago},
-  note={Cópia no site do ISMM 2000, via Internet Archive}, langid={english}, keywords={paper}}
+  urldate={2026-10-20}, acesso={aberto},
+  note={Acervo ACM 1951--2000 aberto desde 2022. Cópia no site do ISMM 2000, via Internet Archive}, langid={english}, keywords={paper}}
 @inproceedings{paper:domani2002,
   author={Tamar Domani and Gal Goldshtein and Elliot K. Kolodner and Ethan Lewis and Erez Petrank and Dafna Sheinwald},
   title={Thread-Local Heaps for {Java}},
   booktitle={Proceedings of the 3rd International Symposium on Memory Management (ISMM)}, publisher={ACM},
   pages={76--87}, date={2002-06},
   doi={10.1145/512429.512439}, url={https://doi.org/10.1145/512429.512439}, urldate={2026-10-20},
-  acesso={pago}, langid={english}, keywords={paper}}
+  acesso={aberto}, note={ACM DL em acesso aberto desde 2026. Sem cópia gratuita na página dos autores nem na da editora, só na ACM DL},
+  langid={english}, keywords={paper}}
 
 % ---- Especificações, JSRs e bugs do JDK ----
 @online{doc:jvms7, author={{Oracle}}, title={The Java Virtual Machine Specification, Java SE 7 Edition},
@@ -197,8 +200,8 @@
 @online{doc:hotspot-tiered-se7, author={{Oracle}}, title={Java HotSpot VM Performance Enhancements (Java SE 7): Tiered Compilation},
   url={https://docs.oracle.com/javase/8/docs/technotes/guides/vm/performance-enhancements-7.html}, urldate={2026-10-20},
   langid={english}, keywords={doc}}
-@online{doc:hotspot-compilationpolicy, author={{OpenJDK}}, title={compilationPolicy.hpp (HotSpot, branch master)},
-  url={https://github.com/openjdk/jdk/blob/master/src/hotspot/share/compiler/compilationPolicy.hpp}, urldate={2026-10-20},
+@online{doc:hotspot-compilationpolicy, author={{OpenJDK}}, title={compilationPolicy.hpp (HotSpot, tag jdk-25+36)},
+  url={https://github.com/openjdk/jdk/blob/jdk-25+36/src/hotspot/share/compiler/compilationPolicy.hpp}, urldate={2026-10-20},
   langid={english}, keywords={doc}}
 @online{doc:graalvm-native-image, author={{Oracle}}, title={GraalVM Native Image},
   url={https://www.graalvm.org/latest/reference-manual/native-image/}, urldate={2026-10-20},
@@ -218,8 +221,8 @@
   title={Memory Management in the Java HotSpot Virtual Machine}, date={2006-04},
   url={https://oracle.com/docs/tech/java/memorymanagement-technical-brief.pdf}, urldate={2026-10-20},
   langid={english}, keywords={doc}}
-@online{doc:hotspot-tlab-hpp, author={{OpenJDK}}, title={threadLocalAllocBuffer.hpp (HotSpot, branch master)},
-  url={https://github.com/openjdk/jdk/blob/master/src/hotspot/share/gc/shared/threadLocalAllocBuffer.hpp}, urldate={2026-10-20},
+@online{doc:hotspot-tlab-hpp, author={{OpenJDK}}, title={threadLocalAllocBuffer.hpp (HotSpot, tag jdk-25+36)},
+  url={https://github.com/openjdk/jdk/blob/jdk-25+36/src/hotspot/share/gc/shared/threadLocalAllocBuffer.hpp}, urldate={2026-10-20},
   langid={english}, keywords={doc}}
 @online{artigo:shipilev-tlab, author={Aleksey Shipilëv}, title={JVM Anatomy Quark \#4: TLAB allocation},
   url={https://shipilev.net/jvm/anatomy-quarks/4-tlab-allocation/}, urldate={2026-10-20},
