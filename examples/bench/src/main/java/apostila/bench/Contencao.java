@@ -16,6 +16,7 @@ import org.openjdk.jmh.annotations.State;
  * threads do benchmark. O número de threads vem de fora (-t 1, -t 8),
  * passado por scripts/bench.sh.
  */
+// listagem: inicio
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -45,3 +46,4 @@ public class Contencao {
         contadorSomador.increment();
     }
 }
+// listagem: fim

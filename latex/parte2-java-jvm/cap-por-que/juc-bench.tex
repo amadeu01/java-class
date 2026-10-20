@@ -5,18 +5,17 @@ isolado do resto do programa.} abaixo, feito com o
 caso só: todas as threads incrementam o mesmo contador. São três
 formas de fazer isso, cada uma num método \texttt{@Benchmark}:
 \texttt{long} protegido por \texttt{synchronized}, \texttt{AtomicLong}
-e \texttt{LongAdder}. O modo é \termo{throughput}{Vazão: quantas
-operações são concluídas por unidade de tempo.}, em operações por
-microssegundo.
+e \texttt{LongAdder}. O modo é throughput, em operações por microssegundo.
 
-\lstinputlisting[language=Java,firstline=19]{../examples/bench/src/main/java/apostila/bench/Contencao.java}
+\lstinputlisting[language=Java,linerange=inicio-fim,rangeprefix=\/\/\ listagem:\ ,includerangemarker=false]{../examples/bench/src/main/java/apostila/bench/Contencao.java}
 
 O script \texttt{scripts/bench.sh} compila o projeto
 \texttt{examples/bench} e roda cada método com uma e com oito threads,
-num container com JDK~25. Ele grava o resultado em
+num \termo{container}{Processo isolado que roda a partir de uma imagem
+com o sistema e as ferramentas, como o JDK, já instalados.} com JDK~25. Ele grava o resultado em
 \texttt{latex/dados/bench/contencao.txt}, com JDK, número de CPUs,
 modelo do processador e data no cabeçalho, e gera desse arquivo a
-tabela abaixo. Nenhum número da tabela foi digitado à mão.
+tabela abaixo.
 
 \begin{center}
 \input{dados/bench/contencao-tabela}
@@ -39,5 +38,7 @@ oito threads concorda com a frase do javadoc sobre alta contenção.
 
 A tabela mostra o custo da contenção num contador e nada além disso.
 Ela não prevê o desempenho do seu serviço: o benchmark só incrementa
-um contador compartilhado, sem nenhum outro trabalho. Para decidir com base num
+um contador compartilhado, sem nenhum outro trabalho. Ele mede só
+incrementos: nenhum método chama \texttt{sum()}, e o custo de ler o
+\texttt{LongAdder} fica de fora. Para decidir com base num
 benchmark, siga os passos da seção~\ref{sec:como-ler-benchmark}.
